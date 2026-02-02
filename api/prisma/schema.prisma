@@ -1,0 +1,80 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id             Int       @id @default(autoincrement())
+  wallet         String    @unique @db.VarChar(44)
+  createdAt      DateTime  @default(now())
+  firstSeenAt    DateTime  @default(now())
+  lastSoldAt     DateTime?
+  isDiamondHands Boolean   @default(true)
+  
+  apiKeys        ApiKey[]
+  usageLogs      UsageLog[]
+  snapshots      DailySnapshot[]
+}
+
+model ApiKey {
+  id         Int       @id @default(autoincrement())
+  userId     Int
+  keyHash    String    @unique @db.VarChar(64)
+  keyPrefix  String    @db.VarChar(20) // fuel_sk_xxxx for display
+  name       String?   @db.VarChar(100)
+  createdAt  DateTime  @default(now())
+  lastUsedAt DateTime?
+  isActive   Boolean   @default(true)
+  
+  user       User      @relation(fields: [userId], references: [id])
+  
+  @@index([keyHash])
+}
+
+model UsageLog {
+  id           Int      @id @default(autoincrement())
+  userId       Int
+  model        String   @db.VarChar(100)
+  inputTokens  Int
+  outputTokens Int
+  costUsd      Decimal  @db.Decimal(10, 6)
+  createdAt    DateTime @default(now())
+  
+  user         User     @relation(fields: [userId], references: [id])
+  
+  @@index([userId, createdAt])
+}
+
+model DailySnapshot {
+  id              Int      @id @default(autoincrement())
+  userId          Int
+  date            DateTime @db.Date
+  balance         BigInt
+  creditAllocated Decimal  @db.Decimal(10, 4)
+  creditUsed      Decimal  @db.Decimal(10, 4) @default(0)
+  
+  user            User     @relation(fields: [userId], references: [id])
+  
+  @@unique([userId, date])
+  @@index([date])
+}
+
+model TreasuryLog {
+  id          Int      @id @default(autoincrement())
+  type        String   @db.VarChar(50) // deposit, api_spend, lp_fee
+  amount      Decimal  @db.Decimal(12, 2)
+  description String?
+  txHash      String?  @db.VarChar(100)
+  createdAt   DateTime @default(now())
+}
+
+model SystemConfig {
+  id        Int      @id @default(autoincrement())
+  key       String   @unique @db.VarChar(100)
+  value     String
+  updatedAt DateTime @updatedAt
+}
