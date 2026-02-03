@@ -111,12 +111,13 @@ router.post('/nonce', authRateLimit, async (req: Request, res: Response) => {
   const { wallet } = req.body;
   
   if (!wallet) {
-    return res.status(400).json({
+    res.status(400).json({
       error: {
         message: 'Missing wallet address',
         type: 'validation_error',
       },
     });
+    return;
   }
   
   // Generate sign message

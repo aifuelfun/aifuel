@@ -2,7 +2,7 @@ import { Router, Request, Response } from 'express';
 import { PrismaClient } from '@prisma/client';
 import { apiKeyAuth } from '../middleware/auth';
 import { apiRateLimit } from '../middleware/rateLimit';
-import { getCreditInfo, deductCredit, getTodayUsage } from '../services/credits';
+import { getCreditInfo, deductCredit } from '../services/credits';
 import { 
   forwardToOpenRouter, 
   forwardStreamToOpenRouter,
@@ -177,21 +177,16 @@ async function handleStreamingRequest(req: Request, res: Response, userId: numbe
 
 /**
  * POST /v1/completions
- * OpenAI-compatible text completions
+ * OpenAI-compatible text completions (legacy)
  */
-router.post('/completions', apiKeyAuth, apiRateLimit, async (req: Request, res: Response) => {
-  // Same logic as chat/completions but different endpoint format
-  // For now, forward to chat/completions format
-  const chatBody = {
-    ...req.body,
-    messages: [{ role: 'user', content: req.body.prompt }],
-  };
-  delete chatBody.prompt;
-  
-  req.body = chatBody;
-  
-  // Reuse chat completions handler
-  return router.handle(req, res, () => {});
+router.post('/completions', apiKeyAuth, apiRateLimit, async (_req: Request, res: Response) => {
+  // Legacy completions endpoint - redirect to chat
+  res.status(400).json({
+    error: {
+      message: 'Please use /v1/chat/completions instead',
+      type: 'deprecated',
+    },
+  });
 });
 
 /**

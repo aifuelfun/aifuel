@@ -60,7 +60,7 @@ app.use('/v1/keys', keysRouter);
 app.use('/v1', proxyRouter);
 
 // Root endpoint
-app.get('/', (req: Request, res: Response) => {
+app.get('/', (_req: Request, res: Response) => {
   res.json({
     name: 'AIFuel API',
     version: '1.0.0',
@@ -80,7 +80,8 @@ app.use((req: Request, res: Response) => {
 });
 
 // Global error handler
-app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
   console.error('Error:', err);
   
   res.status(500).json({

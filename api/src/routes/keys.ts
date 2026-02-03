@@ -1,7 +1,6 @@
 import { Router, Request, Response } from 'express';
 import { PrismaClient } from '@prisma/client';
 import { apiKeyAuth, generateApiKey, hashApiKey } from '../middleware/auth';
-import { authRateLimit } from '../middleware/rateLimit';
 
 const router = Router();
 const prisma = new PrismaClient();

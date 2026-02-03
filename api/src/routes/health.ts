@@ -6,7 +6,7 @@ const router = Router();
  * GET /health
  * Basic health check
  */
-router.get('/', (req: Request, res: Response) => {
+router.get('/', (_req: Request, res: Response) => {
   res.json({
     status: 'ok',
     timestamp: new Date().toISOString(),
@@ -17,7 +17,7 @@ router.get('/', (req: Request, res: Response) => {
  * GET /health/detailed
  * Detailed health check with system info
  */
-router.get('/detailed', (req: Request, res: Response) => {
+router.get('/detailed', (_req: Request, res: Response) => {
   const memUsage = process.memoryUsage();
   
   res.json({
