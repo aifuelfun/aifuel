@@ -40,8 +40,7 @@ const texts = {
     credit1: 'Credits calculated in real-time based on current balance',
     credit2: 'Diamond hands (never transferred out) get 100% multiplier',
     credit3: 'Wallets that ever transferred out capped at 80% multiplier',
-    credit4: 'Transfer out = immediate recalculation (0 balance = 0 credits)',
-    credit5: 'Check your credit balance at GET /v1/credits',
+    credit4: 'Check your credit balance at GET /v1/credits',
   },
   zh: {
     title: '文档',
@@ -77,8 +76,7 @@ const texts = {
     credit1: '额度基于当前余额实时计算',
     credit2: '钻石手（从未转出）获得 100% 倍数',
     credit3: '曾经转出过的钱包最高 80% 倍数',
-    credit4: '转出 = 立即重新计算（0 余额 = 0 额度）',
-    credit5: '通过 GET /v1/credits 查询额度余额',
+    credit4: '通过 GET /v1/credits 查询额度余额',
   }
 }
 
@@ -390,7 +388,6 @@ main();`}
             <li>• {t.credit2}</li>
             <li>• {t.credit3}</li>
             <li>• {t.credit4}</li>
-            <li>• {t.credit5}</li>
           </ul>
         </div>
       </section>
