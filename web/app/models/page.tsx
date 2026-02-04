@@ -3,6 +3,7 @@
 import { useState, useEffect, useMemo } from 'react'
 import { Search, Filter, Zap, Brain, Image, Mic, Video, ChevronDown, ExternalLink, Copy, Check } from 'lucide-react'
 import { Logo } from '@/components'
+import { useLocale } from '@/lib/useLocale'
 
 interface Model {
   id: string
@@ -39,6 +40,7 @@ const MODALITIES = [
 ]
 
 export default function ModelsPage() {
+  const { locale } = useLocale()
   const [models, setModels] = useState<Model[]>([])
   const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState('')
@@ -47,6 +49,51 @@ export default function ModelsPage() {
   const [sortBy, setSortBy] = useState<'name' | 'price' | 'context'>('name')
   const [showFreeOnly, setShowFreeOnly] = useState(false)
   const [copiedId, setCopiedId] = useState<string | null>(null)
+  
+  // i18n texts
+  const texts = {
+    en: {
+      title: 'AI Models',
+      subtitle: 'Access {total}+ AI models through a single API. Including {free} free models and {vision} vision models.',
+      totalModels: 'Total Models',
+      freeModels: 'Free Models',
+      visionModels: 'Vision Models',
+      searchPlaceholder: 'Search models...',
+      freeOnly: 'Free only',
+      sortName: 'Sort: Name',
+      sortPrice: 'Sort: Price',
+      sortContext: 'Sort: Context',
+      showing: 'Showing {count} of {total} models',
+      loading: 'Loading models...',
+      noResults: 'No models found matching your criteria',
+      input: 'Input',
+      output: 'Output',
+      context: 'Context',
+      quickStart: 'Quick Start',
+      apiNote: 'Use the model ID from the list above. All models are accessible via a single, unified API endpoint.',
+    },
+    zh: {
+      title: 'AI 模型',
+      subtitle: '通过单一 API 访问 {total}+ AI 模型。包含 {free} 个免费模型和 {vision} 个视觉模型。',
+      totalModels: '总模型数',
+      freeModels: '免费模型',
+      visionModels: '视觉模型',
+      searchPlaceholder: '搜索模型...',
+      freeOnly: '仅免费',
+      sortName: '排序：名称',
+      sortPrice: '排序：价格',
+      sortContext: '排序：上下文',
+      showing: '显示 {count} / {total} 个模型',
+      loading: '加载模型中...',
+      noResults: '没有找到符合条件的模型',
+      input: '输入',
+      output: '输出',
+      context: '上下文',
+      quickStart: '快速开始',
+      apiNote: '使用上面列表中的模型 ID。所有模型都可以通过统一的 API 端点访问。',
+    }
+  }
+  const t = texts[locale] || texts.en
 
   useEffect(() => {
     fetch('https://api.aifuel.fun/v1/models')
@@ -155,26 +202,25 @@ export default function ModelsPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center gap-3 mb-4">
             <Logo size={40} />
-            <h1 className="text-4xl font-bold">AI Models</h1>
+            <h1 className="text-4xl font-bold">{t.title}</h1>
           </div>
           <p className="text-xl text-white/80 max-w-2xl">
-            Access {stats.total}+ AI models through a single API. 
-            Including {stats.free} free models and {stats.vision} vision models.
+            {t.subtitle.replace('{total}', String(stats.total)).replace('{free}', String(stats.free)).replace('{vision}', String(stats.vision))}
           </p>
           
           {/* Stats */}
           <div className="flex gap-8 mt-8">
             <div className="bg-white/10 backdrop-blur-sm px-6 py-3 rounded-xl">
               <p className="text-3xl font-bold">{stats.total}+</p>
-              <p className="text-sm text-white/70">Total Models</p>
+              <p className="text-sm text-white/70">{t.totalModels}</p>
             </div>
             <div className="bg-white/10 backdrop-blur-sm px-6 py-3 rounded-xl">
               <p className="text-3xl font-bold">{stats.free}</p>
-              <p className="text-sm text-white/70">Free Models</p>
+              <p className="text-sm text-white/70">{t.freeModels}</p>
             </div>
             <div className="bg-white/10 backdrop-blur-sm px-6 py-3 rounded-xl">
               <p className="text-3xl font-bold">{stats.vision}</p>
-              <p className="text-sm text-white/70">Vision Models</p>
+              <p className="text-sm text-white/70">{t.visionModels}</p>
             </div>
           </div>
         </div>
@@ -189,7 +235,7 @@ export default function ModelsPage() {
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
               <input
                 type="text"
-                placeholder="Search models..."
+                placeholder={t.searchPlaceholder}
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 className="w-full pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
@@ -232,7 +278,7 @@ export default function ModelsPage() {
                 onChange={(e) => setShowFreeOnly(e.target.checked)}
                 className="w-4 h-4 text-primary rounded focus:ring-primary"
               />
-              <span className="text-sm text-gray-600">Free only</span>
+              <span className="text-sm text-gray-600">{t.freeOnly}</span>
             </label>
 
             {/* Sort */}
@@ -241,9 +287,9 @@ export default function ModelsPage() {
               onChange={(e) => setSortBy(e.target.value as any)}
               className="px-4 py-2 border rounded-lg bg-white focus:ring-2 focus:ring-primary"
             >
-              <option value="name">Sort: Name</option>
-              <option value="price">Sort: Price</option>
-              <option value="context">Sort: Context</option>
+              <option value="name">{t.sortName}</option>
+              <option value="price">{t.sortPrice}</option>
+              <option value="context">{t.sortContext}</option>
             </select>
           </div>
         </div>
@@ -254,12 +300,12 @@ export default function ModelsPage() {
         {loading ? (
           <div className="text-center py-20">
             <div className="animate-spin h-12 w-12 border-4 border-primary border-t-transparent rounded-full mx-auto mb-4" />
-            <p className="text-gray-500">Loading models...</p>
+            <p className="text-gray-500">{t.loading}</p>
           </div>
         ) : (
           <>
             <p className="text-sm text-gray-500 mb-4">
-              Showing {filteredModels.length} of {models.length} models
+              {t.showing.replace('{count}', String(filteredModels.length)).replace('{total}', String(models.length))}
             </p>
             
             <div className="grid gap-4">
@@ -320,21 +366,21 @@ export default function ModelsPage() {
                     {/* Pricing & Stats */}
                     <div className="flex flex-row md:flex-col gap-4 md:gap-2 md:text-right md:min-w-[150px]">
                       <div>
-                        <p className="text-xs text-gray-500">Input</p>
+                        <p className="text-xs text-gray-500">{t.input}</p>
                         <p className={`font-semibold ${isFree(model) ? 'text-green-600' : 'text-gray-900'}`}>
                           {formatPrice(model.pricing.prompt)}
                           {!isFree(model) && <span className="text-xs font-normal text-gray-500">/M</span>}
                         </p>
                       </div>
                       <div>
-                        <p className="text-xs text-gray-500">Output</p>
+                        <p className="text-xs text-gray-500">{t.output}</p>
                         <p className={`font-semibold ${isFree(model) ? 'text-green-600' : 'text-gray-900'}`}>
                           {formatPrice(model.pricing.completion)}
                           {!isFree(model) && <span className="text-xs font-normal text-gray-500">/M</span>}
                         </p>
                       </div>
                       <div>
-                        <p className="text-xs text-gray-500">Context</p>
+                        <p className="text-xs text-gray-500">{t.context}</p>
                         <p className="font-semibold text-gray-900">
                           {formatContext(model.context_length)}
                         </p>
@@ -347,7 +393,7 @@ export default function ModelsPage() {
 
             {filteredModels.length === 0 && (
               <div className="text-center py-20">
-                <p className="text-gray-500">No models found matching your criteria</p>
+                <p className="text-gray-500">{t.noResults}</p>
               </div>
             )}
           </>
@@ -357,7 +403,7 @@ export default function ModelsPage() {
       {/* API Info */}
       <div className="bg-dark text-white py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-2xl font-bold mb-6">Quick Start</h2>
+          <h2 className="text-2xl font-bold mb-6">{t.quickStart}</h2>
           <div className="bg-dark-light rounded-xl p-6 overflow-x-auto">
             <pre className="text-sm text-gray-300">
 {`curl https://api.aifuel.fun/v1/chat/completions \\
@@ -370,7 +416,7 @@ export default function ModelsPage() {
             </pre>
           </div>
           <p className="text-gray-400 mt-4">
-            Use the model ID from the list above. All models are accessible via a single, unified API endpoint.
+            {t.apiNote}
           </p>
         </div>
       </div>
