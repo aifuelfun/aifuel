@@ -7,7 +7,7 @@ import { SOCIAL_LINKS } from '@/lib/constants'
 import { Logo } from './Logo'
 
 interface Props {
-  t: (key: string) => string
+  t: (key: any) => string
 }
 
 export const Footer: FC<Props> = ({ t }) => {

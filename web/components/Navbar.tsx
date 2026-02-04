@@ -13,7 +13,7 @@ import { Locale } from '@/lib/i18n'
 interface Props {
   locale: Locale
   setLocale: (locale: Locale) => void
-  t: (key: string) => string
+  t: (key: any) => string
 }
 
 export const Navbar: FC<Props> = ({ locale, setLocale, t }) => {
