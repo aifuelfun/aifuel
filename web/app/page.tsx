@@ -205,7 +205,9 @@ export default function Home() {
           </div>
 
           <p className="text-center text-gray-400 mt-8">
-            {t('moreModels')}
+            <a href="/models" className="hover:text-primary transition underline">
+              {t('moreModels')}
+            </a>
           </p>
         </div>
       </section>

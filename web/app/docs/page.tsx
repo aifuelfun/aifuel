@@ -270,7 +270,9 @@ print(response.choices[0].message.content)`}
             </tbody>
           </table>
           <div className="p-4 bg-gray-50 text-sm text-gray-500 text-center">
-            {t.moreModels}
+            <a href="/models" className="hover:text-primary transition underline">
+              {t.moreModels}
+            </a>
           </div>
         </div>
       </section>
