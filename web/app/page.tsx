@@ -3,11 +3,18 @@
 import { useWallet } from '@solana/wallet-adapter-react'
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui'
 import Link from 'next/link'
-import { Zap, Shield, Coins, ArrowRight, Flame, Code, CheckCircle, Copy, ExternalLink } from 'lucide-react'
-import { FEATURES, MODELS, TOKEN_CA, BUY_LINKS } from '@/lib/constants'
+import Image from 'next/image'
+import { Zap, Shield, Coins, ArrowRight, Code, CheckCircle, Copy, ExternalLink } from 'lucide-react'
+import { MODELS, TOKEN_CA, BUY_LINKS } from '@/lib/constants'
+import { useLocale } from '@/lib/useLocale'
+import { Countdown, Logo } from '@/components'
+
+// Pool open time: 2026/2/6 04:42:00 UTC+8
+const POOL_OPEN_DATE = new Date('2026-02-06T04:42:00+08:00')
 
 export default function Home() {
   const { connected } = useWallet()
+  const { t } = useLocale()
   
   const copyCA = () => {
     navigator.clipboard.writeText(TOKEN_CA)
@@ -27,17 +34,18 @@ export default function Home() {
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-4xl mx-auto">
             <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full mb-6">
-              <Flame className="h-4 w-4" />
-              <span className="text-sm font-medium">Now on Solana</span>
+              <Logo size={20} />
+              <span className="text-sm font-medium">{t('nowOnSolana')}</span>
             </div>
             
             <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight">
-              Fuel Your AI
+              {t('fuelYourAI')}
             </h1>
             
             <p className="text-xl md:text-2xl mb-8 text-white/90 max-w-2xl mx-auto">
-              Hold <span className="font-bold text-yellow-300">$FUEL</span> tokens, 
-              get free access to 200+ AI models. No subscriptions. No credit cards.
+              {t('heroDesc').split('$FUEL')[0]}
+              <span className="font-bold text-yellow-300">$FUEL</span>
+              {t('heroDesc').split('$FUEL')[1]}
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -47,8 +55,8 @@ export default function Home() {
                 rel="noopener noreferrer"
                 className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-white text-primary font-semibold rounded-lg hover:bg-gray-100 transition shadow-lg"
               >
-                <Flame className="h-5 w-5" />
-                Buy $FUEL
+                <Logo size={20} />
+                {t('buyFuel')}
                 <ExternalLink className="h-4 w-4" />
               </a>
               {connected ? (
@@ -56,7 +64,7 @@ export default function Home() {
                   href="/dashboard"
                   className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-transparent border-2 border-white text-white font-semibold rounded-lg hover:bg-white/10 transition"
                 >
-                  Go to Dashboard
+                  {t('goToDashboard')}
                   <ArrowRight className="h-5 w-5" />
                 </Link>
               ) : (
@@ -77,19 +85,22 @@ export default function Home() {
               </button>
             </div>
 
+            {/* Countdown */}
+            <Countdown targetDate={POOL_OPEN_DATE} label={t('poolOpenAt')} />
+
             {/* Stats */}
-            <div className="grid grid-cols-3 gap-8 mt-16 max-w-2xl mx-auto">
+            <div className="grid grid-cols-3 gap-8 mt-12 max-w-2xl mx-auto">
               <div>
                 <p className="text-4xl font-bold">200+</p>
-                <p className="text-white/70">AI Models</p>
+                <p className="text-white/70">{t('aiModels')}</p>
               </div>
               <div>
                 <p className="text-4xl font-bold">$0</p>
-                <p className="text-white/70">Monthly Fee</p>
+                <p className="text-white/70">{t('monthlyFee')}</p>
               </div>
               <div>
                 <p className="text-4xl font-bold">24/7</p>
-                <p className="text-white/70">API Access</p>
+                <p className="text-white/70">{t('apiAccess')}</p>
               </div>
             </div>
           </div>
@@ -101,15 +112,19 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold text-gray-900 mb-4">
-              Why AIFuel?
+              {t('whyAIFuel')}
             </h2>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              A new paradigm for AI access. Hold tokens, use AI forever.
+              {t('whyAIFuelDesc')}
             </p>
           </div>
 
           <div className="grid md:grid-cols-3 gap-8">
-            {FEATURES.map((feature, index) => (
+            {[
+              { icon: 'Zap', titleKey: 'feature1Title', descKey: 'feature1Desc' },
+              { icon: 'Shield', titleKey: 'feature2Title', descKey: 'feature2Desc' },
+              { icon: 'Coins', titleKey: 'feature3Title', descKey: 'feature3Desc' },
+            ].map((feature, index) => (
               <div 
                 key={index}
                 className="bg-white p-8 rounded-2xl shadow-sm hover:shadow-lg transition card-hover border border-gray-100"
@@ -120,10 +135,10 @@ export default function Home() {
                   {feature.icon === 'Coins' && <Coins className="h-7 w-7 text-primary" />}
                 </div>
                 <h3 className="text-xl font-bold text-gray-900 mb-3">
-                  {feature.title}
+                  {t(feature.titleKey as any)}
                 </h3>
                 <p className="text-gray-600">
-                  {feature.description}
+                  {t(feature.descKey as any)}
                 </p>
               </div>
             ))}
@@ -136,41 +151,28 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold text-gray-900 mb-4">
-              How It Works
+              {t('howItWorks')}
             </h2>
             <p className="text-xl text-gray-600">
-              Three simple steps to free AI
+              {t('threeSteps')}
             </p>
           </div>
 
           <div className="grid md:grid-cols-3 gap-8">
             {[
-              {
-                step: '1',
-                title: 'Buy $FUEL',
-                description: 'Get $FUEL tokens on Raydium or Jupiter. Your tokens stay in your wallet.',
-                link: BUY_LINKS.raydium,
-              },
-              {
-                step: '2',
-                title: 'Connect Wallet',
-                description: 'Connect your Phantom or Solflare wallet to aifuel.fun and get your API key.',
-              },
-              {
-                step: '3',
-                title: 'Use AI Free',
-                description: 'Call our API like OpenAI. Daily credits based on your token holdings.',
-              },
+              { step: '1', titleKey: 'step1Title', descKey: 'step1Desc' },
+              { step: '2', titleKey: 'step2Title', descKey: 'step2Desc' },
+              { step: '3', titleKey: 'step3Title', descKey: 'step3Desc' },
             ].map((item, index) => (
               <div key={index} className="text-center">
                 <div className="w-16 h-16 bg-primary text-white text-2xl font-bold rounded-full flex items-center justify-center mx-auto mb-6">
                   {item.step}
                 </div>
                 <h3 className="text-xl font-bold text-gray-900 mb-3">
-                  {item.title}
+                  {t(item.titleKey as any)}
                 </h3>
                 <p className="text-gray-600">
-                  {item.description}
+                  {t(item.descKey as any)}
                 </p>
               </div>
             ))}
@@ -183,10 +185,10 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold mb-4">
-              200+ AI Models
+              {t('modelsTitle')}
             </h2>
             <p className="text-xl text-gray-400">
-              All the models you need, one API endpoint
+              {t('modelsDesc')}
             </p>
           </div>
 
@@ -203,7 +205,7 @@ export default function Home() {
           </div>
 
           <p className="text-center text-gray-400 mt-8">
-            + 190 more models via OpenRouter
+            {t('moreModels')}
           </p>
         </div>
       </section>
@@ -213,18 +215,18 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold text-gray-900 mb-4">
-              Simple Credit System
+              {t('simpleCreditSystem')}
             </h2>
             <p className="text-xl text-gray-600">
-              More tokens = More daily credits
+              {t('moreTokensMoreCredits')}
             </p>
           </div>
 
           <div className="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto">
             {[
-              { tokens: '100K', daily: '$0.20', label: 'Starter' },
-              { tokens: '1M', daily: '$2.00', label: 'Builder', featured: true },
-              { tokens: '10M', daily: '$20.00', label: 'Pro' },
+              { tokens: '100K', daily: '$0.20', labelKey: 'starter' },
+              { tokens: '1M', daily: '$2.00', labelKey: 'builder', featured: true },
+              { tokens: '10M', daily: '$20.00', labelKey: 'pro' },
             ].map((tier, index) => (
               <div 
                 key={index}
@@ -236,28 +238,28 @@ export default function Home() {
               >
                 {tier.featured && (
                   <span className="inline-block bg-primary text-white text-xs font-bold px-3 py-1 rounded-full mb-4">
-                    POPULAR
+                    {t('popular')}
                   </span>
                 )}
-                <p className="text-sm text-gray-500 mb-2">{tier.label}</p>
+                <p className="text-sm text-gray-500 mb-2">{t(tier.labelKey as any)}</p>
                 <p className="text-3xl font-bold text-gray-900 mb-1">
                   {tier.tokens} <span className="text-lg font-normal">$FUEL</span>
                 </p>
                 <p className="text-primary text-xl font-semibold mb-6">
-                  {tier.daily}/day
+                  {tier.daily}{t('perDay')}
                 </p>
                 <ul className="space-y-3 text-sm text-gray-600">
                   <li className="flex items-center gap-2">
                     <CheckCircle className="h-4 w-4 text-green-500" />
-                    All 200+ models
+                    {t('allModels')}
                   </li>
                   <li className="flex items-center gap-2">
                     <CheckCircle className="h-4 w-4 text-green-500" />
-                    Daily credit refresh
+                    {t('dailyRefresh')}
                   </li>
                   <li className="flex items-center gap-2">
                     <CheckCircle className="h-4 w-4 text-green-500" />
-                    OpenAI SDK compatible
+                    {t('sdkCompatible')}
                   </li>
                 </ul>
               </div>
@@ -265,7 +267,7 @@ export default function Home() {
           </div>
 
           <p className="text-center text-gray-500 mt-8">
-            Formula: Daily Credit = (Your Balance / Circulating Supply) × Daily Pool
+            {t('formula')}
           </p>
         </div>
       </section>
@@ -274,17 +276,17 @@ export default function Home() {
       <section className="py-24 bg-hero-gradient text-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-4xl font-bold mb-6">
-            Ready to Fuel Your AI?
+            {t('readyToFuel')}
           </h2>
           <p className="text-xl text-white/90 mb-8">
-            Join the future of AI access. No subscriptions, just tokens.
+            {t('joinFuture')}
           </p>
           {connected ? (
             <Link
               href="/dashboard"
               className="inline-flex items-center gap-2 px-8 py-4 bg-white text-primary font-semibold rounded-lg hover:bg-gray-100 transition shadow-lg"
             >
-              Go to Dashboard
+              {t('goToDashboard')}
               <ArrowRight className="h-5 w-5" />
             </Link>
           ) : (

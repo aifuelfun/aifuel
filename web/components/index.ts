@@ -1,3 +1,6 @@
 export { WalletProvider } from './WalletProvider'
 export { Navbar } from './Navbar'
 export { Footer } from './Footer'
+export { LanguageSwitch } from './LanguageSwitch'
+export { Countdown } from './Countdown'
+export { Logo } from './Logo'

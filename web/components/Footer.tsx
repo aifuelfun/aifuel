@@ -2,10 +2,15 @@
 
 import { FC } from 'react'
 import Link from 'next/link'
-import { Flame, Twitter, MessageCircle, Github } from 'lucide-react'
+import { Twitter, MessageCircle, Github } from 'lucide-react'
 import { SOCIAL_LINKS } from '@/lib/constants'
+import { Logo } from './Logo'
 
-export const Footer: FC = () => {
+interface Props {
+  t: (key: string) => string
+}
+
+export const Footer: FC<Props> = ({ t }) => {
   return (
     <footer className="bg-dark text-white py-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -13,11 +18,11 @@ export const Footer: FC = () => {
           {/* Brand */}
           <div className="md:col-span-2">
             <div className="flex items-center gap-2 mb-4">
-              <Flame className="h-8 w-8 text-primary" />
+              <Logo size={32} />
               <span className="text-xl font-bold">AIFuel</span>
             </div>
             <p className="text-gray-400 mb-4 max-w-md">
-              Hold $FUEL tokens to get free AI API credits. Access 200+ models including GPT-4, Claude, and more.
+              {t('footerDesc')}
             </p>
             <div className="flex gap-4">
               <a href={SOCIAL_LINKS.twitter} target="_blank" rel="noopener noreferrer" 
@@ -37,16 +42,16 @@ export const Footer: FC = () => {
 
           {/* Quick Links */}
           <div>
-            <h3 className="font-semibold mb-4">Product</h3>
+            <h3 className="font-semibold mb-4">{t('product')}</h3>
             <ul className="space-y-2">
               <li>
                 <Link href="/docs" className="text-gray-400 hover:text-white transition">
-                  Documentation
+                  {t('documentation')}
                 </Link>
               </li>
               <li>
                 <Link href="/dashboard" className="text-gray-400 hover:text-white transition">
-                  Dashboard
+                  {t('dashboard')}
                 </Link>
               </li>
               <li>
@@ -60,7 +65,7 @@ export const Footer: FC = () => {
 
           {/* Resources */}
           <div>
-            <h3 className="font-semibold mb-4">Resources</h3>
+            <h3 className="font-semibold mb-4">{t('resources')}</h3>
             <ul className="space-y-2">
               <li>
                 <a href={SOCIAL_LINKS.github} target="_blank" rel="noopener noreferrer"
@@ -85,7 +90,7 @@ export const Footer: FC = () => {
         </div>
 
         <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400 text-sm">
-          <p>© 2026 AIFuel. All rights reserved.</p>
+          <p>© 2026 AIFuel. {t('allRightsReserved')}</p>
         </div>
       </div>
     </footer>
