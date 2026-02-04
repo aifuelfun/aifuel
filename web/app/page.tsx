@@ -5,7 +5,7 @@ import { useWallet } from '@solana/wallet-adapter-react'
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui'
 import Link from 'next/link'
 import Image from 'next/image'
-import { Zap, Shield, Coins, ArrowRight, Code, CheckCircle, Copy, ExternalLink, ChevronDown } from 'lucide-react'
+import { Zap, Shield, Coins, ArrowRight, Code, CheckCircle, Copy, Check, ExternalLink, ChevronDown } from 'lucide-react'
 import { MODELS, TOKEN_CA, BUY_LINKS } from '@/lib/constants'
 import { useLocale } from '@/lib/LocaleContext'
 import { Countdown, Logo } from '@/components'
@@ -18,9 +18,12 @@ export default function Home() {
   const { t } = useLocale()
   const [openFaq, setOpenFaq] = useState<number | null>(null)
   
+  const [caCopied, setCaCopied] = useState(false)
+  
   const copyCA = () => {
     navigator.clipboard.writeText(TOKEN_CA)
-    alert('CA copied!')
+    setCaCopied(true)
+    setTimeout(() => setCaCopied(false), 2000)
   }
   
   const toggleFaq = (index: number) => {
@@ -79,16 +82,18 @@ export default function Home() {
             </div>
             
             {/* CA Address */}
-            <div className="mt-8 inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-3 rounded-lg">
-              <span className="text-sm text-white/70">CA:</span>
-              <code className="text-sm font-mono text-yellow-300">{TOKEN_CA}</code>
-              <button 
-                onClick={copyCA}
-                className="ml-2 p-1 hover:bg-white/20 rounded transition"
-                title="Copy CA"
-              >
-                <Copy className="h-4 w-4" />
-              </button>
+            <div className="mt-8 inline-flex flex-col sm:flex-row items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-3 rounded-lg max-w-full">
+              <span className="text-sm text-white/70 shrink-0">CA:</span>
+              <div className="flex items-center gap-2 min-w-0">
+                <code className="text-xs sm:text-sm font-mono text-yellow-300 truncate max-w-[200px] sm:max-w-none">{TOKEN_CA}</code>
+                <button 
+                  onClick={copyCA}
+                  className="shrink-0 p-1.5 hover:bg-white/20 rounded transition"
+                  title="Copy CA"
+                >
+                  {caCopied ? <Check className="h-4 w-4 text-green-400" /> : <Copy className="h-4 w-4" />}
+                </button>
+              </div>
             </div>
 
             {/* Countdown */}

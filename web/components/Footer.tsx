@@ -14,9 +14,9 @@ export const Footer: FC<Props> = ({ t }) => {
   return (
     <footer className="bg-dark text-white py-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid md:grid-cols-4 gap-8">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
           {/* Brand */}
-          <div className="md:col-span-2">
+          <div className="col-span-2">
             <div className="flex items-center gap-2 mb-4">
               <Logo size={32} />
               <span className="text-xl font-bold">AIFuel</span>
