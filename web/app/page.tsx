@@ -3,11 +3,16 @@
 import { useWallet } from '@solana/wallet-adapter-react'
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui'
 import Link from 'next/link'
-import { Zap, Shield, Coins, ArrowRight, Flame, Code, CheckCircle } from 'lucide-react'
-import { FEATURES, MODELS } from '@/lib/constants'
+import { Zap, Shield, Coins, ArrowRight, Flame, Code, CheckCircle, Copy, ExternalLink } from 'lucide-react'
+import { FEATURES, MODELS, TOKEN_CA, BUY_LINKS } from '@/lib/constants'
 
 export default function Home() {
   const { connected } = useWallet()
+  
+  const copyCA = () => {
+    navigator.clipboard.writeText(TOKEN_CA)
+    alert('CA copied!')
+  }
 
   return (
     <div>
@@ -36,24 +41,40 @@ export default function Home() {
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <a
+                href={BUY_LINKS.raydium}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-white text-primary font-semibold rounded-lg hover:bg-gray-100 transition shadow-lg"
+              >
+                <Flame className="h-5 w-5" />
+                Buy $FUEL
+                <ExternalLink className="h-4 w-4" />
+              </a>
               {connected ? (
                 <Link
                   href="/dashboard"
-                  className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-white text-primary font-semibold rounded-lg hover:bg-gray-100 transition shadow-lg"
+                  className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-transparent border-2 border-white text-white font-semibold rounded-lg hover:bg-white/10 transition"
                 >
                   Go to Dashboard
                   <ArrowRight className="h-5 w-5" />
                 </Link>
               ) : (
-                <WalletMultiButton className="!bg-white !text-primary hover:!bg-gray-100" />
+                <WalletMultiButton className="!bg-transparent !border-2 !border-white hover:!bg-white/10" />
               )}
-              <Link
-                href="/docs"
-                className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-transparent border-2 border-white text-white font-semibold rounded-lg hover:bg-white/10 transition"
+            </div>
+            
+            {/* CA Address */}
+            <div className="mt-8 inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-3 rounded-lg">
+              <span className="text-sm text-white/70">CA:</span>
+              <code className="text-sm font-mono text-yellow-300">{TOKEN_CA}</code>
+              <button 
+                onClick={copyCA}
+                className="ml-2 p-1 hover:bg-white/20 rounded transition"
+                title="Copy CA"
               >
-                <Code className="h-5 w-5" />
-                View API Docs
-              </Link>
+                <Copy className="h-4 w-4" />
+              </button>
             </div>
 
             {/* Stats */}
@@ -128,6 +149,7 @@ export default function Home() {
                 step: '1',
                 title: 'Buy $FUEL',
                 description: 'Get $FUEL tokens on Raydium or Jupiter. Your tokens stay in your wallet.',
+                link: BUY_LINKS.raydium,
               },
               {
                 step: '2',

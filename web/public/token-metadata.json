@@ -1,0 +1,26 @@
+{
+  "name": "AIFuel",
+  "symbol": "FUEL",
+  "description": "Hold $FUEL tokens, get free access to 200+ AI models. No subscriptions, no credit cards. The future of AI access.",
+  "image": "https://aifuel.fun/logo.png",
+  "external_url": "https://aifuel.fun",
+  "attributes": [
+    {
+      "trait_type": "Category",
+      "value": "AI Utility Token"
+    },
+    {
+      "trait_type": "Blockchain",
+      "value": "Solana"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://aifuel.fun/logo.png",
+        "type": "image/png"
+      }
+    ],
+    "category": "utility"
+  }
+}

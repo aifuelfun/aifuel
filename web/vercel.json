@@ -2,10 +2,9 @@
   "framework": "nextjs",
   "buildCommand": "npm run build",
   "installCommand": "npm install",
-  "regions": ["iad1", "sfo1", "sin1"],
   "env": {
     "NEXT_PUBLIC_API_URL": "https://api.aifuel.fun",
     "NEXT_PUBLIC_SOLANA_RPC": "https://api.mainnet-beta.solana.com",
-    "NEXT_PUBLIC_TOKEN_MINT": ""
+    "NEXT_PUBLIC_TOKEN_MINT": "5h2Pox9vA4gVouSboG7bMfcubnGS3885eexMGsCFUEL"
   }
 }

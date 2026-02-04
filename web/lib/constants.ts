@@ -42,11 +42,23 @@ export const MODELS = [
   { id: 'gemini-1.5-pro', name: 'Gemini 1.5 Pro', provider: 'Google', tier: 'premium' },
 ] as const
 
+// Token Contract Address
+export const TOKEN_CA = '5h2Pox9vA4gVouSboG7bMfcubnGS3885eexMGsCFUEL'
+
+// Buy Links
+export const BUY_LINKS = {
+  raydium: `https://raydium.io/swap/?inputMint=sol&outputMint=${TOKEN_CA}`,
+  jupiter: `https://jup.ag/swap/SOL-${TOKEN_CA}`,
+  dextools: 'https://www.dextools.io/app/solana/pair-explorer/8LpVD1ie8UgsWxm5uw2DpP6oSVg9Hg6WmfNQsHbcgsLn',
+  birdeye: `https://birdeye.so/token/${TOKEN_CA}?chain=solana`,
+  gmgn: `https://gmgn.ai/sol/token/${TOKEN_CA}`,
+} as const
+
 // Social Links
 export const SOCIAL_LINKS = {
-  twitter: 'https://twitter.com/aifuel_fun',
+  twitter: 'https://x.com/aifuelfun',
   discord: 'https://discord.gg/aifuel',
   telegram: 'https://t.me/aifuel_fun',
-  github: 'https://github.com/aifuel-fun',
+  github: 'https://github.com/aifuelfun/aifuel',
   docs: 'https://docs.aifuel.fun',
 } as const

@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="flameGrad" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#FF6B35"/>
+      <stop offset="50%" style="stop-color:#FF8C42"/>
+      <stop offset="100%" style="stop-color:#FFD93D"/>
+    </linearGradient>
+    <linearGradient id="circuitGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#4ECDC4"/>
+      <stop offset="100%" style="stop-color:#44A08D"/>
+    </linearGradient>
+  </defs>
+  
+  <!-- Background circle -->
+  <circle cx="256" cy="256" r="240" fill="#1a1a2e"/>
+  
+  <!-- Outer ring -->
+  <circle cx="256" cy="256" r="220" fill="none" stroke="url(#circuitGrad)" stroke-width="4" opacity="0.5"/>
+  
+  <!-- Circuit pattern dots -->
+  <circle cx="256" cy="46" r="8" fill="url(#circuitGrad)"/>
+  <circle cx="256" cy="466" r="8" fill="url(#circuitGrad)"/>
+  <circle cx="46" cy="256" r="8" fill="url(#circuitGrad)"/>
+  <circle cx="466" cy="256" r="8" fill="url(#circuitGrad)"/>
+  
+  <!-- Flame/Fuel drop shape -->
+  <path d="M256 80 
+           C 180 160, 140 240, 140 300 
+           C 140 380, 190 432, 256 432 
+           C 322 432, 372 380, 372 300 
+           C 372 240, 332 160, 256 80 Z" 
+        fill="url(#flameGrad)"/>
+  
+  <!-- Inner flame highlight -->
+  <path d="M256 160 
+           C 210 210, 190 260, 190 300 
+           C 190 350, 220 380, 256 380 
+           C 292 380, 322 350, 322 300 
+           C 322 260, 302 210, 256 160 Z" 
+        fill="#FFD93D" opacity="0.6"/>
+  
+  <!-- AI circuit lines inside flame -->
+  <path d="M220 280 L256 260 L292 280" 
+        stroke="url(#circuitGrad)" stroke-width="6" fill="none" stroke-linecap="round"/>
+  <path d="M230 320 L256 300 L282 320" 
+        stroke="url(#circuitGrad)" stroke-width="6" fill="none" stroke-linecap="round"/>
+  <circle cx="256" cy="260" r="8" fill="url(#circuitGrad)"/>
+  <circle cx="256" cy="300" r="6" fill="url(#circuitGrad)"/>
+  <circle cx="256" cy="340" r="4" fill="url(#circuitGrad)"/>
+</svg>
