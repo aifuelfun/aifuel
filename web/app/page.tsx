@@ -1,10 +1,11 @@
 'use client'
 
+import { useState } from 'react'
 import { useWallet } from '@solana/wallet-adapter-react'
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui'
 import Link from 'next/link'
 import Image from 'next/image'
-import { Zap, Shield, Coins, ArrowRight, Code, CheckCircle, Copy, ExternalLink } from 'lucide-react'
+import { Zap, Shield, Coins, ArrowRight, Code, CheckCircle, Copy, ExternalLink, ChevronDown } from 'lucide-react'
 import { MODELS, TOKEN_CA, BUY_LINKS } from '@/lib/constants'
 import { useLocale } from '@/lib/LocaleContext'
 import { Countdown, Logo } from '@/components'
@@ -15,10 +16,15 @@ const POOL_OPEN_DATE = new Date('2026-02-06T04:42:00+08:00')
 export default function Home() {
   const { connected } = useWallet()
   const { t } = useLocale()
+  const [openFaq, setOpenFaq] = useState<number | null>(null)
   
   const copyCA = () => {
     navigator.clipboard.writeText(TOKEN_CA)
     alert('CA copied!')
+  }
+  
+  const toggleFaq = (index: number) => {
+    setOpenFaq(openFaq === index ? null : index)
   }
 
   return (
@@ -271,6 +277,52 @@ export default function Home() {
           <p className="text-center text-gray-500 mt-8">
             {t('formula')}
           </p>
+        </div>
+      </section>
+
+      {/* FAQ Section */}
+      <section className="py-24 bg-gray-50">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 className="text-4xl font-bold text-gray-900 mb-4">
+              {t('faq')}
+            </h2>
+            <p className="text-xl text-gray-600">
+              {t('faqSubtitle')}
+            </p>
+          </div>
+
+          <div className="space-y-4">
+            {[
+              { q: t('faq1Q'), a: t('faq1A') },
+              { q: t('faq2Q'), a: t('faq2A') },
+              { q: t('faq3Q'), a: t('faq3A') },
+              { q: t('faq4Q'), a: t('faq4A') },
+              { q: t('faq5Q'), a: t('faq5A') },
+            ].map((faq, index) => (
+              <div 
+                key={index}
+                className="bg-white rounded-xl border border-gray-200 overflow-hidden"
+              >
+                <button
+                  onClick={() => toggleFaq(index)}
+                  className="w-full px-6 py-4 text-left flex items-center justify-between hover:bg-gray-50 transition"
+                >
+                  <span className="font-semibold text-gray-900">{faq.q}</span>
+                  <ChevronDown 
+                    className={`h-5 w-5 text-gray-500 transition-transform ${
+                      openFaq === index ? 'rotate-180' : ''
+                    }`}
+                  />
+                </button>
+                {openFaq === index && (
+                  <div className="px-6 pb-4">
+                    <p className="text-gray-600">{faq.a}</p>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 

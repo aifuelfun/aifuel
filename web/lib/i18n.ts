@@ -57,6 +57,20 @@ export const translations = {
     sdkCompatible: 'OpenAI SDK compatible',
     formula: 'Formula: Daily Credit = (Your Balance / Circulating Supply) × Daily Pool',
     
+    // FAQ
+    faq: 'FAQ',
+    faqSubtitle: 'Everything you need to know',
+    faq1Q: 'Is the AIFuel API stable? What\'s the upstream?',
+    faq1A: '✅ Stable and reliable! We use OpenRouter as our upstream, which routes to official OpenAI, Anthropic, Google and other providers. All calls go through official channels.',
+    faq2Q: 'Is wallet signing safe?',
+    faq2A: '✅ Completely safe! Signing only verifies wallet ownership. No on-chain transactions, no Gas fees. Your tokens always stay in your wallet.',
+    faq3Q: 'How does the credit system work?',
+    faq3A: 'Your daily credit is calculated based on your $FUEL holdings. Diamond hands (never transferred out) get 100% multiplier. Wallets that transferred out before are capped at 80%.',
+    faq4Q: 'What if I run out of credits?',
+    faq4A: '① Wait for daily reset at 00:00 UTC ② Buy more tokens to increase your quota ③ Become a diamond hand for 100% multiplier',
+    faq5Q: 'Is my conversation data safe?',
+    faq5A: '🔒 Absolutely private! We don\'t log, store, or analyze any conversation data. All requests are forwarded directly to upstream APIs. Your privacy is our priority.',
+    
     // CTA
     readyToFuel: 'Ready to Fuel Your AI?',
     joinFuture: 'Join the future of AI access. No subscriptions, just tokens.',
@@ -125,6 +139,20 @@ export const translations = {
     dailyRefresh: '每日额度刷新',
     sdkCompatible: 'OpenAI SDK 兼容',
     formula: '公式：每日额度 = (你的余额 / 流通量) × 每日池',
+    
+    // FAQ
+    faq: '常见问题',
+    faqSubtitle: '你想知道的一切',
+    faq1Q: 'AIFuel API 稳定吗？上游是什么？',
+    faq1A: '✅ 稳定可靠！我们使用 OpenRouter 作为上游，通过官方渠道调用 OpenAI、Anthropic、Google 等提供商。所有调用都走官方渠道。',
+    faq2Q: '钱包签名安全吗？',
+    faq2A: '✅ 完全安全！签名仅验证钱包所有权，不产生链上交易，不消耗 Gas。你的代币始终在你的钱包中。',
+    faq3Q: '额度系统是怎样的？',
+    faq3A: '每日额度基于你持有的 $FUEL 计算。钻石手（从未转出）获得 100% 倍数。曾经转出过的钱包最高 80% 倍数。',
+    faq4Q: '额度用完了怎么办？',
+    faq4A: '① 等待每日 UTC 00:00 重置 ② 增持代币获得更多额度 ③ 成为钻石手享受 100% 倍数',
+    faq5Q: '我的对话数据安全吗？',
+    faq5A: '🔒 绝对隐私！我们不会记录、存储或分析任何对话数据。所有请求直接转发至上游 API，你的隐私由我们全力守护。',
     
     // CTA
     readyToFuel: '准备好为你的 AI 加油了吗？',
