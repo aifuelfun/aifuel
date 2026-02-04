@@ -41,6 +41,9 @@ export const Navbar: FC<Props> = ({ locale, setLocale, t }) => {
             <Link href="/docs" className="text-gray-600 hover:text-primary transition">
               {t('docs')}
             </Link>
+            <Link href="/models" className="text-gray-600 hover:text-primary transition">
+              Models
+            </Link>
             {connected && (
               <Link href="/dashboard" className="text-gray-600 hover:text-primary transition">
                 {t('dashboard')}
@@ -79,6 +82,9 @@ export const Navbar: FC<Props> = ({ locale, setLocale, t }) => {
               </Link>
               <Link href="/docs" className="text-gray-600 hover:text-primary transition">
                 {t('docs')}
+              </Link>
+              <Link href="/models" className="text-gray-600 hover:text-primary transition">
+                Models
               </Link>
               {connected && (
                 <Link href="/dashboard" className="text-gray-600 hover:text-primary transition">

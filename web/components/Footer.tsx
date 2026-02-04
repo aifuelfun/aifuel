@@ -55,10 +55,9 @@ export const Footer: FC<Props> = ({ t }) => {
                 </Link>
               </li>
               <li>
-                <a href="https://api.aifuel.fun/v1/models" target="_blank" rel="noopener noreferrer"
-                   className="text-gray-400 hover:text-white transition">
-                  API Models
-                </a>
+                <Link href="/models" className="text-gray-400 hover:text-white transition">
+                  Models
+                </Link>
               </li>
             </ul>
           </div>
