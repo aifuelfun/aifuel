@@ -11,7 +11,7 @@ interface Props {
 export const Logo: FC<Props> = ({ size = 32, className = '' }) => {
   return (
     <Image 
-      src="/logo.png" 
+      src="/logo.webp" 
       alt="AIFuel" 
       width={size} 
       height={size} 

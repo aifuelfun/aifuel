@@ -12,8 +12,8 @@ export const metadata: Metadata = {
   description: 'Access 200+ AI models for free by holding $FUEL tokens. No subscriptions, no credit cards. GPT-4, Claude, Gemini and more.',
   keywords: ['AI', 'API', 'Solana', 'Token', 'GPT-4', 'Claude', 'Free AI', 'FUEL'],
   icons: {
-    icon: '/logo.png',
-    apple: '/logo.png',
+    icon: '/favicon.webp',
+    apple: '/logo.webp',
   },
   openGraph: {
     title: 'AIFuel - Fuel Your AI',
@@ -21,13 +21,13 @@ export const metadata: Metadata = {
     url: 'https://aifuel.fun',
     siteName: 'AIFuel',
     type: 'website',
-    images: ['/logo.png'],
+    images: ['/logo.webp'],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'AIFuel - Hold $FUEL, Use AI Free',
     description: 'Access 200+ AI models for free by holding $FUEL tokens',
-    images: ['/logo.png'],
+    images: ['/logo.webp'],
   },
 }
 
