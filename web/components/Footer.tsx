@@ -88,7 +88,10 @@ export const Footer: FC<Props> = ({ t }) => {
           </div>
         </div>
 
-        <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400 text-sm">
+        <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400 text-sm space-y-3">
+          <p className="text-xs text-gray-500 max-w-2xl mx-auto">
+            {t('disclaimer')}
+          </p>
           <p>© 2026 AIFuel. {t('allRightsReserved')}</p>
         </div>
       </div>

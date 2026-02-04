@@ -366,6 +366,81 @@ main();`}
   }'`}
             />
           </div>
+
+          {/* Switch Models */}
+          <div className="bg-white border border-gray-200 rounded-xl p-6">
+            <h3 className="font-semibold text-gray-900 mb-4">🔄 Switch Models (Claude, DeepSeek, Gemini)</h3>
+            <CodeBlock
+              id="switch-model"
+              language="python"
+              code={`# Use Claude 3.5 Sonnet
+response = client.chat.completions.create(
+    model="anthropic/claude-3.5-sonnet",
+    messages=[{"role": "user", "content": "Explain Solana"}]
+)
+
+# Use DeepSeek R1 (reasoning)
+response = client.chat.completions.create(
+    model="deepseek/deepseek-r1",
+    messages=[{"role": "user", "content": "Solve: x^2 + 5x + 6 = 0"}]
+)
+
+# Use Gemini 2.0 Flash
+response = client.chat.completions.create(
+    model="google/gemini-2.0-flash-001",
+    messages=[{"role": "user", "content": "Write a haiku about coding"}]
+)`}
+            />
+          </div>
+
+          {/* Vision */}
+          <div className="bg-white border border-gray-200 rounded-xl p-6">
+            <h3 className="font-semibold text-gray-900 mb-4">🖼️ Vision (Image Analysis)</h3>
+            <CodeBlock
+              id="vision-example"
+              language="python"
+              code={`# Analyze an image with GPT-4o Vision
+response = client.chat.completions.create(
+    model="gpt-4o",
+    messages=[
+        {
+            "role": "user",
+            "content": [
+                {"type": "text", "text": "What's in this image?"},
+                {
+                    "type": "image_url",
+                    "image_url": {
+                        "url": "https://example.com/image.jpg"
+                    }
+                }
+            ]
+        }
+    ]
+)
+
+print(response.choices[0].message.content)`}
+            />
+          </div>
+
+          {/* Streaming */}
+          <div className="bg-white border border-gray-200 rounded-xl p-6">
+            <h3 className="font-semibold text-gray-900 mb-4">⚡ Streaming Response</h3>
+            <CodeBlock
+              id="streaming-example"
+              language="typescript"
+              code={`// Node.js streaming example
+const stream = await client.chat.completions.create({
+  model: 'gpt-4o',
+  messages: [{ role: 'user', content: 'Tell me a story' }],
+  stream: true,
+});
+
+for await (const chunk of stream) {
+  const content = chunk.choices[0]?.delta?.content || '';
+  process.stdout.write(content);
+}`}
+            />
+          </div>
         </div>
       </section>
 

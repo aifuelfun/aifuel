@@ -11,10 +11,6 @@ const nextConfig = {
     formats: ['image/webp'],
     minimumCacheTTL: 60 * 60 * 24 * 30, // 30 days
   },
-  // Enable experimental optimizations
-  experimental: {
-    optimizeCss: true,
-  },
   // Handle Solana wallet adapter
   webpack: (config) => {
     config.resolve.fallback = {

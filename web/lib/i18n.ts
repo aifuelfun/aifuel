@@ -97,6 +97,7 @@ export const translations = {
     documentation: 'Documentation',
     resources: 'Resources',
     allRightsReserved: 'All rights reserved.',
+    disclaimer: 'This service routes requests to third-party AI providers under their respective terms. $FUEL is a utility token for AI access. Cryptocurrency investments carry high risk. No guarantees of token value or returns. DYOR.',
   },
   zh: {
     // Navbar
@@ -196,6 +197,7 @@ export const translations = {
     documentation: '文档',
     resources: '资源',
     allRightsReserved: '保留所有权利。',
+    disclaimer: '本服务将请求转发至第三方 AI 提供商，需遵守其各自条款。$FUEL 是用于 AI 访问的功能代币。加密货币投资风险高，不保证代币价值或收益。DYOR（自行研究）。',
   },
 }
 
