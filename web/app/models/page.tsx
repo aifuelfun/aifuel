@@ -3,7 +3,7 @@
 import { useState, useEffect, useMemo } from 'react'
 import { Search, Filter, Zap, Brain, Image, Mic, Video, ChevronDown, ExternalLink, Copy, Check } from 'lucide-react'
 import { Logo } from '@/components'
-import { useLocale } from '@/lib/useLocale'
+import { useLocale } from '@/lib/LocaleContext'
 
 interface Model {
   id: string

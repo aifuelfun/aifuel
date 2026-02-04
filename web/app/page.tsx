@@ -6,7 +6,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { Zap, Shield, Coins, ArrowRight, Code, CheckCircle, Copy, ExternalLink } from 'lucide-react'
 import { MODELS, TOKEN_CA, BUY_LINKS } from '@/lib/constants'
-import { useLocale } from '@/lib/useLocale'
+import { useLocale } from '@/lib/LocaleContext'
 import { Countdown, Logo } from '@/components'
 
 // Pool open time: 2026/2/6 04:42:00 UTC+8

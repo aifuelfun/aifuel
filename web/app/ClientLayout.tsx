@@ -1,7 +1,7 @@
 'use client'
 
 import { Navbar, Footer } from '@/components'
-import { useLocale } from '@/lib/useLocale'
+import { useLocale } from '@/lib/LocaleContext'
 
 export function ClientLayout({ children }: { children: React.ReactNode }) {
   const { locale, setLocale, t } = useLocale()
