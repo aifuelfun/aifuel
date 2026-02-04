@@ -3,8 +3,86 @@
 import { useState } from 'react'
 import { Copy, Check, Book, Code, Zap, Terminal, MessageSquare } from 'lucide-react'
 import { MODELS } from '@/lib/constants'
+import { useLocale } from '@/lib/LocaleContext'
+
+const texts = {
+  en: {
+    title: 'Documentation',
+    subtitle: 'Everything you need to integrate AIFuel into your applications.',
+    quickStart: 'Quick Start',
+    step1Title: '1. Get your API Key',
+    step1Desc: 'Connect your wallet at',
+    step1Link: 'dashboard',
+    step1Desc2: 'and create an API key.',
+    step2Title: '2. Install the SDK',
+    step2Desc: 'Use the official OpenAI SDK - our API is fully compatible.',
+    step3Title: '3. Make your first request',
+    apiReference: 'API Reference',
+    baseUrl: 'Base URL',
+    authentication: 'Authentication',
+    authDesc: 'Include your API key in the Authorization header:',
+    endpoints: 'Endpoints',
+    endpoint1: 'Chat completions (GPT-4, Claude, etc.)',
+    endpoint2: 'Text completions',
+    endpoint3: 'Text embeddings',
+    endpoint4: 'List available models',
+    endpoint5: 'Check your credit balance',
+    availableModels: 'Available Models',
+    modelId: 'Model ID',
+    provider: 'Provider',
+    tier: 'Tier',
+    moreModels: '+ 190 more models available via OpenRouter',
+    codeExamples: 'Code Examples',
+    creditSystem: 'Credit System',
+    howCreditsWork: 'How Credits Work',
+    creditsDesc: 'Your daily credit is calculated based on your $FUEL token holdings:',
+    creditFormula: 'Daily Credit = (Your Balance / Circulating Supply) × Daily Pool × Multiplier',
+    credit1: 'Credits refresh daily at midnight UTC',
+    credit2: 'Diamond hands (never sold) get 100% multiplier',
+    credit3: 'Former sellers capped at 80% multiplier',
+    credit4: 'Check your credit balance at GET /v1/credits',
+  },
+  zh: {
+    title: '文档',
+    subtitle: '将 AIFuel 集成到你的应用所需的一切。',
+    quickStart: '快速开始',
+    step1Title: '1. 获取 API 密钥',
+    step1Desc: '在',
+    step1Link: '控制台',
+    step1Desc2: '连接钱包并创建 API 密钥。',
+    step2Title: '2. 安装 SDK',
+    step2Desc: '使用官方 OpenAI SDK - 我们的 API 完全兼容。',
+    step3Title: '3. 发起第一个请求',
+    apiReference: 'API 参考',
+    baseUrl: '基础 URL',
+    authentication: '认证',
+    authDesc: '在 Authorization 头中包含你的 API 密钥：',
+    endpoints: '端点',
+    endpoint1: '对话补全 (GPT-4, Claude 等)',
+    endpoint2: '文本补全',
+    endpoint3: '文本嵌入',
+    endpoint4: '列出可用模型',
+    endpoint5: '查询额度余额',
+    availableModels: '可用模型',
+    modelId: '模型 ID',
+    provider: '提供商',
+    tier: '等级',
+    moreModels: '+ 190 个更多模型通过 OpenRouter 提供',
+    codeExamples: '代码示例',
+    creditSystem: '额度系统',
+    howCreditsWork: '额度如何计算',
+    creditsDesc: '你的每日额度基于持有的 $FUEL 代币计算：',
+    creditFormula: '每日额度 = (你的余额 / 流通量) × 每日池 × 倍数',
+    credit1: '额度每天 UTC 午夜刷新',
+    credit2: '钻石手（从未卖出）获得 100% 倍数',
+    credit3: '曾经卖出者最高 80% 倍数',
+    credit4: '通过 GET /v1/credits 查询额度余额',
+  }
+}
 
 export default function DocsPage() {
+  const { locale } = useLocale()
+  const t = texts[locale] || texts.en
   const [copiedCode, setCopiedCode] = useState<string | null>(null)
 
   const copyCode = async (code: string, id: string) => {
@@ -40,10 +118,10 @@ export default function DocsPage() {
       <div className="mb-12">
         <div className="flex items-center gap-3 mb-4">
           <Book className="h-8 w-8 text-primary" />
-          <h1 className="text-4xl font-bold text-gray-900">Documentation</h1>
+          <h1 className="text-4xl font-bold text-gray-900">{t.title}</h1>
         </div>
         <p className="text-xl text-gray-600">
-          Everything you need to integrate AIFuel into your applications.
+          {t.subtitle}
         </p>
       </div>
 
@@ -51,21 +129,21 @@ export default function DocsPage() {
       <section className="mb-12">
         <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-2">
           <Zap className="h-6 w-6 text-primary" />
-          Quick Start
+          {t.quickStart}
         </h2>
         
         <div className="space-y-6">
           <div className="bg-white border border-gray-200 rounded-xl p-6">
-            <h3 className="font-semibold text-gray-900 mb-2">1. Get your API Key</h3>
+            <h3 className="font-semibold text-gray-900 mb-2">{t.step1Title}</h3>
             <p className="text-gray-600 mb-4">
-              Connect your wallet at <a href="/dashboard" className="text-primary hover:underline">dashboard</a> and create an API key.
+              {t.step1Desc} <a href="/dashboard" className="text-primary hover:underline">{t.step1Link}</a> {t.step1Desc2}
             </p>
           </div>
 
           <div className="bg-white border border-gray-200 rounded-xl p-6">
-            <h3 className="font-semibold text-gray-900 mb-2">2. Install the SDK</h3>
+            <h3 className="font-semibold text-gray-900 mb-2">{t.step2Title}</h3>
             <p className="text-gray-600 mb-4">
-              Use the official OpenAI SDK - our API is fully compatible.
+              {t.step2Desc}
             </p>
             <CodeBlock
               id="install"
@@ -79,7 +157,7 @@ npm install openai`}
           </div>
 
           <div className="bg-white border border-gray-200 rounded-xl p-6">
-            <h3 className="font-semibold text-gray-900 mb-2">3. Make your first request</h3>
+            <h3 className="font-semibold text-gray-900 mb-2">{t.step3Title}</h3>
             <CodeBlock
               id="first-request"
               language="python"
@@ -107,21 +185,21 @@ print(response.choices[0].message.content)`}
       <section className="mb-12">
         <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-2">
           <Code className="h-6 w-6 text-primary" />
-          API Reference
+          {t.apiReference}
         </h2>
 
         <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">
           <div className="p-6 border-b border-gray-200">
-            <h3 className="font-semibold text-gray-900">Base URL</h3>
+            <h3 className="font-semibold text-gray-900">{t.baseUrl}</h3>
             <code className="bg-gray-100 px-3 py-1 rounded text-sm mt-2 inline-block">
               https://api.aifuel.fun/v1
             </code>
           </div>
 
           <div className="p-6 border-b border-gray-200">
-            <h3 className="font-semibold text-gray-900 mb-4">Authentication</h3>
+            <h3 className="font-semibold text-gray-900 mb-4">{t.authentication}</h3>
             <p className="text-gray-600 mb-4">
-              Include your API key in the Authorization header:
+              {t.authDesc}
             </p>
             <CodeBlock
               id="auth"
@@ -131,14 +209,14 @@ print(response.choices[0].message.content)`}
           </div>
 
           <div className="p-6">
-            <h3 className="font-semibold text-gray-900 mb-4">Endpoints</h3>
+            <h3 className="font-semibold text-gray-900 mb-4">{t.endpoints}</h3>
             <div className="space-y-4">
               {[
-                { method: 'POST', path: '/v1/chat/completions', desc: 'Chat completions (GPT-4, Claude, etc.)' },
-                { method: 'POST', path: '/v1/completions', desc: 'Text completions' },
-                { method: 'POST', path: '/v1/embeddings', desc: 'Text embeddings' },
-                { method: 'GET', path: '/v1/models', desc: 'List available models' },
-                { method: 'GET', path: '/v1/credits', desc: 'Check your credit balance' },
+                { method: 'POST', path: '/v1/chat/completions', desc: t.endpoint1 },
+                { method: 'POST', path: '/v1/completions', desc: t.endpoint2 },
+                { method: 'POST', path: '/v1/embeddings', desc: t.endpoint3 },
+                { method: 'GET', path: '/v1/models', desc: t.endpoint4 },
+                { method: 'GET', path: '/v1/credits', desc: t.endpoint5 },
               ].map((endpoint, i) => (
                 <div key={i} className="flex items-center gap-4 p-3 bg-gray-50 rounded-lg">
                   <span className={`px-2 py-1 text-xs font-bold rounded ${
@@ -159,16 +237,16 @@ print(response.choices[0].message.content)`}
       <section className="mb-12">
         <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-2">
           <MessageSquare className="h-6 w-6 text-primary" />
-          Available Models
+          {t.availableModels}
         </h2>
 
         <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">
           <table className="w-full">
             <thead className="bg-gray-50">
               <tr>
-                <th className="text-left px-6 py-3 text-sm font-semibold text-gray-900">Model ID</th>
-                <th className="text-left px-6 py-3 text-sm font-semibold text-gray-900">Provider</th>
-                <th className="text-left px-6 py-3 text-sm font-semibold text-gray-900">Tier</th>
+                <th className="text-left px-6 py-3 text-sm font-semibold text-gray-900">{t.modelId}</th>
+                <th className="text-left px-6 py-3 text-sm font-semibold text-gray-900">{t.provider}</th>
+                <th className="text-left px-6 py-3 text-sm font-semibold text-gray-900">{t.tier}</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-200">
@@ -192,7 +270,7 @@ print(response.choices[0].message.content)`}
             </tbody>
           </table>
           <div className="p-4 bg-gray-50 text-sm text-gray-500 text-center">
-            + 190 more models available via OpenRouter
+            {t.moreModels}
           </div>
         </div>
       </section>
@@ -201,7 +279,7 @@ print(response.choices[0].message.content)`}
       <section className="mb-12">
         <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-2">
           <Terminal className="h-6 w-6 text-primary" />
-          Code Examples
+          {t.codeExamples}
         </h2>
 
         <div className="space-y-6">
@@ -291,23 +369,23 @@ main();`}
 
       {/* Credits */}
       <section>
-        <h2 className="text-2xl font-bold text-gray-900 mb-6">Credit System</h2>
+        <h2 className="text-2xl font-bold text-gray-900 mb-6">{t.creditSystem}</h2>
         
         <div className="bg-white border border-gray-200 rounded-xl p-6">
-          <h3 className="font-semibold text-gray-900 mb-4">How Credits Work</h3>
+          <h3 className="font-semibold text-gray-900 mb-4">{t.howCreditsWork}</h3>
           <p className="text-gray-600 mb-4">
-            Your daily credit is calculated based on your $FUEL token holdings:
+            {t.creditsDesc}
           </p>
           <div className="bg-primary/5 border border-primary/20 rounded-lg p-4 mb-4">
             <code className="text-primary">
-              Daily Credit = (Your Balance / Circulating Supply) × Daily Pool × Multiplier
+              {t.creditFormula}
             </code>
           </div>
           <ul className="space-y-2 text-gray-600">
-            <li>• Credits refresh daily at midnight UTC</li>
-            <li>• Diamond hands (never sold) get 100% multiplier</li>
-            <li>• Former sellers capped at 80% multiplier</li>
-            <li>• Check your credit balance at GET /v1/credits</li>
+            <li>• {t.credit1}</li>
+            <li>• {t.credit2}</li>
+            <li>• {t.credit3}</li>
+            <li>• {t.credit4}</li>
           </ul>
         </div>
       </section>
