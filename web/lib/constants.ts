@@ -45,6 +45,40 @@ export const MODELS = [
 // Token Contract Address
 export const TOKEN_CA = '5h2Pox9vA4gVouSboG7bMfcubnGS3885eexMGsCFUEL'
 
+// Token Distribution
+export const TOTAL_SUPPLY = 1_000_000_000 // 1B FUEL
+export const CIRCULATING_SUPPLY = 200_000_000 // 200M (liquidity pool)
+export const DAILY_CREDIT_POOL = 1000 // $1000 worth of credits distributed daily
+
+// Wallets (On-Chain Verification)
+export const WALLETS = {
+  treasury: {
+    address: '6tCcCWnfk2snJV2X7oPW6eWf7DdeGuqDJowe7Hiod17N',
+    name: 'Treasury',
+    amount: '350M FUEL (35%)',
+  },
+  liquidity: {
+    address: 'HcUupBo7871m17HDNvomuRi3j5hnHeBYr1MUiDnPRhGm',
+    name: 'Liquidity',
+    amount: '200M FUEL (20%)',
+  },
+  operations: {
+    address: '9rGnJqhVJtHbMqqALLVJSPs1M8zQo7zyabEJZkgJTfV',
+    name: 'Operations',
+    amount: '180M FUEL (18%)',
+  },
+  marketing: {
+    address: '7hvSPnQmTTUM8MPgFLgfA8Y13vSNzMwp8un7yaAtqxGc',
+    name: 'Marketing',
+    amount: '120M FUEL (12%)',
+  },
+  team: {
+    address: '8P8nyfacU7cUjh4YpBkwzcGeDXHzQwbypKExXXiFUyet',
+    name: 'Team (Locked)',
+    amount: '150M FUEL (15%)',
+  },
+} as const
+
 // Buy Links
 export const BUY_LINKS = {
   raydium: `https://raydium.io/swap/?inputMint=sol&outputMint=${TOKEN_CA}`,

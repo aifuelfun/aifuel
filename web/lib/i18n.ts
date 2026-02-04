@@ -57,6 +57,22 @@ export const translations = {
     sdkCompatible: 'OpenAI SDK compatible',
     formula: 'Formula: Daily Credit = (Your Balance / Circulating Supply) × Daily Pool',
     
+    // Credit Calculator
+    creditCalculator: 'Credit Calculator',
+    creditCalculatorDesc: 'See how much daily credit you can earn',
+    yourHolding: 'Your $FUEL Holding',
+    enterAmount: 'Enter amount',
+    estimatedDaily: 'Estimated Daily Credit',
+    multiplier: 'Multiplier',
+    diamondHand: 'Diamond Hand',
+    neverTransferred: '(never transferred out)',
+    
+    // On-Chain Proof
+    onChainProof: 'On-Chain Transparency',
+    onChainDesc: 'All wallets are public and verifiable on Solana',
+    verifyOnSolscan: 'Verify on Solscan',
+    tokenContract: 'Token Contract',
+    
     // FAQ
     faq: 'FAQ',
     faqSubtitle: 'Everything you need to know',
@@ -139,6 +155,22 @@ export const translations = {
     dailyRefresh: '每日额度刷新',
     sdkCompatible: 'OpenAI SDK 兼容',
     formula: '公式：每日额度 = (你的余额 / 流通量) × 每日池',
+    
+    // Credit Calculator
+    creditCalculator: '额度计算器',
+    creditCalculatorDesc: '查看你能获得多少每日额度',
+    yourHolding: '你的 $FUEL 持仓',
+    enterAmount: '输入数量',
+    estimatedDaily: '预估每日额度',
+    multiplier: '倍数',
+    diamondHand: '钻石手',
+    neverTransferred: '（从未转出）',
+    
+    // On-Chain Proof
+    onChainProof: '链上透明',
+    onChainDesc: '所有钱包公开可查，可在 Solana 链上验证',
+    verifyOnSolscan: '在 Solscan 验证',
+    tokenContract: '代币合约',
     
     // FAQ
     faq: '常见问题',

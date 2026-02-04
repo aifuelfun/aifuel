@@ -5,8 +5,8 @@ import { useWallet } from '@solana/wallet-adapter-react'
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui'
 import Link from 'next/link'
 import Image from 'next/image'
-import { Zap, Shield, Coins, ArrowRight, Code, CheckCircle, Copy, Check, ExternalLink, ChevronDown } from 'lucide-react'
-import { MODELS, TOKEN_CA, BUY_LINKS } from '@/lib/constants'
+import { Zap, Shield, Coins, ArrowRight, Code, CheckCircle, Copy, Check, ExternalLink, ChevronDown, Calculator, LinkIcon } from 'lucide-react'
+import { MODELS, TOKEN_CA, BUY_LINKS, WALLETS, CIRCULATING_SUPPLY, DAILY_CREDIT_POOL } from '@/lib/constants'
 import { useLocale } from '@/lib/LocaleContext'
 import { Countdown, Logo } from '@/components'
 
@@ -19,6 +19,17 @@ export default function Home() {
   const [openFaq, setOpenFaq] = useState<number | null>(null)
   
   const [caCopied, setCaCopied] = useState(false)
+  const [fuelAmount, setFuelAmount] = useState<string>('')
+  
+  // Calculate daily credit based on holding
+  const calculateCredit = (amount: number) => {
+    if (amount <= 0) return 0
+    const share = amount / CIRCULATING_SUPPLY
+    const dailyCredit = share * DAILY_CREDIT_POOL * 1.0 // 100% multiplier for diamond hand
+    return dailyCredit
+  }
+  
+  const estimatedCredit = calculateCredit(parseFloat(fuelAmount) || 0)
   
   const copyCA = () => {
     navigator.clipboard.writeText(TOKEN_CA)
@@ -282,6 +293,113 @@ export default function Home() {
           <p className="text-center text-gray-500 mt-8">
             {t('formula')}
           </p>
+        </div>
+      </section>
+
+      {/* Credit Calculator & On-Chain Proof Section */}
+      <section className="py-24 bg-gray-50">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid md:grid-cols-2 gap-8">
+            
+            {/* Credit Calculator */}
+            <div className="bg-white rounded-2xl p-8 shadow-sm border border-gray-200">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="p-3 bg-primary/10 rounded-xl">
+                  <Calculator className="h-6 w-6 text-primary" />
+                </div>
+                <div>
+                  <h3 className="text-2xl font-bold text-gray-900">{t('creditCalculator')}</h3>
+                  <p className="text-gray-500">{t('creditCalculatorDesc')}</p>
+                </div>
+              </div>
+              
+              <div className="space-y-6">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    {t('yourHolding')}
+                  </label>
+                  <input
+                    type="number"
+                    value={fuelAmount}
+                    onChange={(e) => setFuelAmount(e.target.value)}
+                    placeholder={t('enterAmount')}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent text-lg"
+                  />
+                </div>
+                
+                <div className="bg-gradient-to-r from-primary/5 to-primary/10 rounded-xl p-6">
+                  <div className="text-sm text-gray-600 mb-1">{t('estimatedDaily')}</div>
+                  <div className="text-4xl font-bold text-primary">
+                    ${estimatedCredit.toFixed(2)}
+                  </div>
+                  <div className="text-sm text-gray-500 mt-2">
+                    {t('multiplier')}: <span className="text-green-600 font-semibold">100% {t('diamondHand')}</span> {t('neverTransferred')}
+                  </div>
+                </div>
+                
+                <div className="text-xs text-gray-400 bg-gray-50 rounded-lg p-3">
+                  {t('formula')}
+                </div>
+              </div>
+            </div>
+            
+            {/* On-Chain Proof */}
+            <div className="bg-white rounded-2xl p-8 shadow-sm border border-gray-200">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="p-3 bg-green-100 rounded-xl">
+                  <LinkIcon className="h-6 w-6 text-green-600" />
+                </div>
+                <div>
+                  <h3 className="text-2xl font-bold text-gray-900">{t('onChainProof')}</h3>
+                  <p className="text-gray-500">{t('onChainDesc')}</p>
+                </div>
+              </div>
+              
+              <div className="space-y-3">
+                {/* Token Contract */}
+                <a
+                  href={`https://solscan.io/token/${TOKEN_CA}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition group"
+                >
+                  <div>
+                    <div className="font-medium text-gray-900">{t('tokenContract')}</div>
+                    <div className="text-xs font-mono text-gray-500 truncate max-w-[200px]">{TOKEN_CA}</div>
+                  </div>
+                  <ExternalLink className="h-4 w-4 text-gray-400 group-hover:text-primary" />
+                </a>
+                
+                {/* Wallets */}
+                {Object.values(WALLETS).map((wallet) => (
+                  <a
+                    key={wallet.address}
+                    href={`https://solscan.io/account/${wallet.address}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition group"
+                  >
+                    <div>
+                      <div className="font-medium text-gray-900">{wallet.name}</div>
+                      <div className="text-xs text-gray-500">{wallet.amount}</div>
+                    </div>
+                    <ExternalLink className="h-4 w-4 text-gray-400 group-hover:text-primary" />
+                  </a>
+                ))}
+              </div>
+              
+              <div className="mt-4 text-center">
+                <a
+                  href={`https://solscan.io/token/${TOKEN_CA}#holders`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-sm text-primary hover:underline inline-flex items-center gap-1"
+                >
+                  {t('verifyOnSolscan')} <ExternalLink className="h-3 w-3" />
+                </a>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
