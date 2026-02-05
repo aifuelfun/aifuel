@@ -63,7 +63,8 @@ app.use('/v1', proxyRouter);
 app.get('/', (_req: Request, res: Response) => {
   res.json({
     name: 'AIFuel API',
-    version: '1.0.0',
+    version: '1.0.1',
+    build: Date.now(),
     status: 'running',
     docs: 'https://aifuel.fun/docs',
   });
