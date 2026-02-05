@@ -1,37 +1,72 @@
 import { Router, Request, Response } from 'express';
 import { PrismaClient } from '@prisma/client';
-import { apiKeyAuth, generateApiKey, hashApiKey } from '../middleware/auth';
+import { jwtAuth } from '../middleware/jwt';
+import { generateApiKey, hashApiKey } from '../middleware/auth';
 
 const router = Router();
 const prisma = new PrismaClient();
 
 /**
- * POST /v1/keys
- * Create a new API key
+ * GET /v1/keys
+ * Get user's current API key (masked)
  */
-router.post('/', apiKeyAuth, async (req: Request, res: Response) => {
+router.get('/', jwtAuth, async (req: Request, res: Response) => {
   try {
     const userId = req.user!.id;
-    const { name } = req.body;
     
-    // Check if user has too many keys
-    const keyCount = await prisma.apiKey.count({
+    const key = await prisma.apiKey.findFirst({
       where: { userId, isActive: true },
+      select: {
+        id: true,
+        keyPrefix: true,
+        createdAt: true,
+        lastUsedAt: true,
+      },
     });
     
-    if (keyCount >= 10) {
-      return res.status(400).json({
-        error: {
-          message: 'Maximum API keys limit reached (10)',
-          type: 'validation_error',
-        },
-      });
+    if (!key) {
+      return res.json({ key: null });
     }
+    
+    res.json({
+      key: {
+        id: key.id.toString(),
+        prefix: key.keyPrefix,
+        createdAt: key.createdAt,
+        lastUsedAt: key.lastUsedAt,
+      },
+    });
+    
+  } catch (error) {
+    console.error('Get key error:', error);
+    res.status(500).json({
+      error: {
+        message: 'Failed to get API key',
+        type: 'server_error',
+      },
+    });
+  }
+});
+
+/**
+ * POST /v1/keys
+ * Create a new API key (invalidates any existing key)
+ * This is the ONLY time the full key is returned!
+ */
+router.post('/', jwtAuth, async (req: Request, res: Response) => {
+  try {
+    const userId = req.user!.id;
+    
+    // Deactivate ALL existing keys for this user (single key policy)
+    await prisma.apiKey.updateMany({
+      where: { userId, isActive: true },
+      data: { isActive: false },
+    });
     
     // Generate new key
     const apiKey = generateApiKey();
     const keyHash = hashApiKey(apiKey);
-    const keyPrefix = apiKey.substring(0, 15) + '...';
+    const keyPrefix = apiKey.substring(0, 12) + '...' + apiKey.substring(apiKey.length - 4);
     
     // Store in database
     const dbKey = await prisma.apiKey.create({
@@ -39,15 +74,16 @@ router.post('/', apiKeyAuth, async (req: Request, res: Response) => {
         userId,
         keyHash,
         keyPrefix,
-        name: name || 'Untitled',
+        name: 'Default',
       },
     });
     
     res.json({
       id: dbKey.id.toString(),
       key: apiKey, // Only returned once!
-      name: dbKey.name,
+      prefix: keyPrefix,
       createdAt: dbKey.createdAt,
+      message: 'Copy this key now. You won\'t be able to see it again.',
     });
     
   } catch (error) {
@@ -62,83 +98,27 @@ router.post('/', apiKeyAuth, async (req: Request, res: Response) => {
 });
 
 /**
- * GET /v1/keys
- * List user's API keys
+ * DELETE /v1/keys
+ * Revoke the current API key
  */
-router.get('/', apiKeyAuth, async (req: Request, res: Response) => {
+router.delete('/', jwtAuth, async (req: Request, res: Response) => {
   try {
     const userId = req.user!.id;
     
-    const keys = await prisma.apiKey.findMany({
+    // Deactivate all keys
+    const result = await prisma.apiKey.updateMany({
       where: { userId, isActive: true },
-      select: {
-        id: true,
-        keyPrefix: true,
-        name: true,
-        createdAt: true,
-        lastUsedAt: true,
-      },
-      orderBy: { createdAt: 'desc' },
+      data: { isActive: false },
     });
     
-    res.json({
-      keys: keys.map(k => ({
-        id: k.id.toString(),
-        prefix: k.keyPrefix,
-        name: k.name,
-        createdAt: k.createdAt,
-        lastUsedAt: k.lastUsedAt,
-      })),
-    });
-    
-  } catch (error) {
-    console.error('List keys error:', error);
-    res.status(500).json({
-      error: {
-        message: 'Failed to list API keys',
-        type: 'server_error',
-      },
-    });
-  }
-});
-
-/**
- * DELETE /v1/keys/:id
- * Revoke an API key
- */
-router.delete('/:id', apiKeyAuth, async (req: Request, res: Response) => {
-  try {
-    const userId = req.user!.id;
-    const keyId = parseInt(req.params.id);
-    
-    if (isNaN(keyId)) {
-      return res.status(400).json({
-        error: {
-          message: 'Invalid key ID',
-          type: 'validation_error',
-        },
-      });
-    }
-    
-    // Find and verify ownership
-    const key = await prisma.apiKey.findFirst({
-      where: { id: keyId, userId },
-    });
-    
-    if (!key) {
+    if (result.count === 0) {
       return res.status(404).json({
         error: {
-          message: 'API key not found',
+          message: 'No active API key found',
           type: 'not_found',
         },
       });
     }
-    
-    // Soft delete (deactivate)
-    await prisma.apiKey.update({
-      where: { id: keyId },
-      data: { isActive: false },
-    });
     
     res.json({
       success: true,

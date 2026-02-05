@@ -1,14 +1,14 @@
 import { Router, Request, Response } from 'express';
-import { apiKeyAuth } from '../middleware/auth';
+import { jwtAuth } from '../middleware/jwt';
 import { getCreditInfo } from '../services/credits';
 
 const router = Router();
 
 /**
  * GET /v1/credits
- * Get current credit balance and usage
+ * Get current credit balance and usage (for dashboard)
  */
-router.get('/', apiKeyAuth, async (req: Request, res: Response) => {
+router.get('/', jwtAuth, async (req: Request, res: Response) => {
   try {
     const userId = req.user!.id;
     const wallet = req.user!.wallet;

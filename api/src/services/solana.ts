@@ -2,7 +2,12 @@ import { Connection, PublicKey } from '@solana/web3.js';
 import { getAssociatedTokenAddress, getAccount } from '@solana/spl-token';
 import { config } from '../utils/config';
 
-const connection = new Connection(config.solanaRpcUrl, 'confirmed');
+// Use PublicNode RPC (more reliable for token queries)
+const RPC_URL = config.solanaRpcUrl || 'https://solana-rpc.publicnode.com';
+const connection = new Connection(RPC_URL, 'confirmed');
+
+// $FUEL token has 9 decimals
+const TOKEN_DECIMALS = 9;
 
 /**
  * Get token balance for a wallet
@@ -16,9 +21,8 @@ export async function getTokenBalance(walletAddress: string): Promise<number> {
     
     try {
       const account = await getAccount(connection, tokenAccount);
-      // Convert from raw amount (with decimals) to human readable
-      // Assuming 6 decimals
-      return Number(account.amount) / 1_000_000;
+      // Convert from raw amount (9 decimals) to human readable
+      return Number(account.amount) / Math.pow(10, TOKEN_DECIMALS);
     } catch (e) {
       // Token account doesn't exist = 0 balance
       return 0;
@@ -36,7 +40,7 @@ export async function getTotalSupply(): Promise<number> {
   try {
     const mintPubkey = new PublicKey(config.fuelTokenMint);
     const supply = await connection.getTokenSupply(mintPubkey);
-    return supply.value.uiAmount || 0;
+    return supply.value.uiAmount || 1_000_000_000;
   } catch (error) {
     console.error('Error getting total supply:', error);
     return 1_000_000_000; // Fallback to 1B
@@ -44,24 +48,23 @@ export async function getTotalSupply(): Promise<number> {
 }
 
 /**
- * Get circulating supply (total - locked wallets)
- * For now, just return total supply. In production, subtract team/reserve wallets.
+ * Get circulating supply
+ * Circulating = Total - Treasury - Team (locked)
+ * For AIFuel: 200M in liquidity pool = circulating
  */
 export async function getCirculatingSupply(): Promise<number> {
-  const total = await getTotalSupply();
-  // TODO: Subtract locked wallets
-  return total * 0.5; // Assume 50% circulating for now
+  // Hardcoded for now: 200M in liquidity is the circulating supply
+  // Treasury (350M), Team (150M), Operations (180M), Marketing (120M) are not in circulation
+  return 200_000_000;
 }
 
 /**
- * Verify a wallet signature
+ * Check if wallet has ever transferred tokens (for diamond hands)
+ * This would require indexing historical transactions
+ * For MVP, we track this in our database via sell events
  */
-export function verifySignature(
-  message: string,
-  signature: Uint8Array,
-  publicKey: PublicKey
-): boolean {
-  const nacl = require('tweetnacl');
-  const messageBytes = new TextEncoder().encode(message);
-  return nacl.sign.detached.verify(messageBytes, signature, publicKey.toBytes());
+export async function hasEverTransferred(walletAddress: string): Promise<boolean> {
+  // TODO: Implement transaction history check
+  // For now, return false (assume diamond hands)
+  return false;
 }

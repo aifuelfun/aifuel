@@ -4,7 +4,7 @@
   "installCommand": "npm install",
   "env": {
     "NEXT_PUBLIC_API_URL": "https://api.aifuel.fun",
-    "NEXT_PUBLIC_SOLANA_RPC": "https://api.mainnet-beta.solana.com",
+    "NEXT_PUBLIC_SOLANA_RPC": "https://solana-rpc.publicnode.com",
     "NEXT_PUBLIC_TOKEN_MINT": "5h2Pox9vA4gVouSboG7bMfcubnGS3885eexMGsCFUEL"
   }
 }

@@ -4,13 +4,54 @@ import { PublicKey } from '@solana/web3.js';
 import bs58 from 'bs58';
 import nacl from 'tweetnacl';
 import { authRateLimit } from '../middleware/rateLimit';
+import { generateJwt } from '../middleware/jwt';
 
 const router = Router();
 const prisma = new PrismaClient();
 
 /**
+ * POST /v1/auth/nonce
+ * Get a nonce/message to sign
+ */
+router.post('/nonce', authRateLimit, async (req: Request, res: Response) => {
+  const { wallet } = req.body;
+  
+  if (!wallet) {
+    return res.status(400).json({
+      error: {
+        message: 'Missing wallet address',
+        type: 'validation_error',
+      },
+    });
+  }
+  
+  // Validate wallet address
+  try {
+    new PublicKey(wallet);
+  } catch {
+    return res.status(400).json({
+      error: {
+        message: 'Invalid wallet address',
+        type: 'validation_error',
+      },
+    });
+  }
+  
+  // Generate sign message with nonce
+  const nonce = Math.random().toString(36).substring(2, 15);
+  const timestamp = Date.now();
+  const message = `Sign this message to connect to AIFuel.\n\nWallet: ${wallet}\nNonce: ${nonce}\nTimestamp: ${timestamp}`;
+  
+  res.json({
+    message,
+    nonce,
+    timestamp,
+  });
+});
+
+/**
  * POST /v1/auth/connect
- * Connect wallet and create/get user
+ * Connect wallet and create/get user, return JWT
  */
 router.post('/connect', authRateLimit, async (req: Request, res: Response) => {
   try {
@@ -34,6 +75,30 @@ router.post('/connect', authRateLimit, async (req: Request, res: Response) => {
       return res.status(400).json({
         error: {
           message: 'Invalid wallet address',
+          type: 'validation_error',
+        },
+      });
+    }
+    
+    // Check message format and timestamp (prevent replay attacks)
+    const timestampMatch = message.match(/Timestamp: (\d+)/);
+    if (!timestampMatch) {
+      return res.status(400).json({
+        error: {
+          message: 'Invalid message format',
+          type: 'validation_error',
+        },
+      });
+    }
+    
+    const msgTimestamp = parseInt(timestampMatch[1]);
+    const now = Date.now();
+    const fiveMinutes = 5 * 60 * 1000;
+    
+    if (now - msgTimestamp > fiveMinutes) {
+      return res.status(400).json({
+        error: {
+          message: 'Message expired, please request a new nonce',
           type: 'validation_error',
         },
       });
@@ -82,8 +147,12 @@ router.post('/connect', authRateLimit, async (req: Request, res: Response) => {
       });
     }
     
+    // Generate JWT token
+    const token = generateJwt(user.id, user.wallet);
+    
     res.json({
       success: true,
+      token,
       user: {
         id: user.id,
         wallet: user.wallet,
@@ -101,33 +170,6 @@ router.post('/connect', authRateLimit, async (req: Request, res: Response) => {
       },
     });
   }
-});
-
-/**
- * POST /v1/auth/nonce
- * Get a nonce/message to sign
- */
-router.post('/nonce', authRateLimit, async (req: Request, res: Response) => {
-  const { wallet } = req.body;
-  
-  if (!wallet) {
-    res.status(400).json({
-      error: {
-        message: 'Missing wallet address',
-        type: 'validation_error',
-      },
-    });
-    return;
-  }
-  
-  // Generate sign message
-  const timestamp = Date.now();
-  const message = `Sign this message to connect to AIFuel.\n\nWallet: ${wallet}\nTimestamp: ${timestamp}`;
-  
-  res.json({
-    message,
-    timestamp,
-  });
 });
 
 export default router;

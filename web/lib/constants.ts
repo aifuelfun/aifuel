@@ -3,8 +3,8 @@ import { PublicKey } from '@solana/web3.js'
 // API Configuration
 export const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'
 
-// Solana Configuration
-export const SOLANA_RPC_URL = process.env.NEXT_PUBLIC_SOLANA_RPC || 'https://api.mainnet-beta.solana.com'
+// Solana Configuration - PublicNode free RPC (mainnet blocks token queries)
+export const SOLANA_RPC_URL = process.env.NEXT_PUBLIC_SOLANA_RPC || 'https://solana-rpc.publicnode.com'
 export const FUEL_TOKEN_MINT = process.env.NEXT_PUBLIC_TOKEN_MINT || ''
 
 // Credit Calculation Constants
