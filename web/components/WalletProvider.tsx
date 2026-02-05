@@ -10,10 +10,7 @@ import {
   TrustWalletAdapter,
   LedgerWalletAdapter,
   TorusWalletAdapter,
-  // WalletConnect for QR code scanning (supports OKX, MetaMask, etc.)
-  WalletConnectWalletAdapter,
 } from '@solana/wallet-adapter-wallets'
-import { WalletAdapterNetwork } from '@solana/wallet-adapter-base'
 import { SOLANA_RPC_URL } from '@/lib/constants'
 
 // Import wallet adapter CSS
@@ -24,11 +21,9 @@ interface Props {
 }
 
 export const WalletProvider: FC<Props> = ({ children }) => {
-  const network = WalletAdapterNetwork.Mainnet
-  
   // Configure supported wallets
-  // OKX Wallet is auto-detected if installed (uses standard Solana interface)
-  // WalletConnect allows scanning QR code with any compatible mobile wallet
+  // Note: OKX Wallet is auto-detected if installed - it uses standard Solana wallet interface
+  // The wallet modal will show all detected wallets automatically
   const wallets = useMemo(
     () => [
       new PhantomWalletAdapter(),
@@ -36,17 +31,9 @@ export const WalletProvider: FC<Props> = ({ children }) => {
       new CoinbaseWalletAdapter(),
       new TrustWalletAdapter(),
       new LedgerWalletAdapter(),
-      new TorusWalletAdapter(),
-      // WalletConnect v2 - enables QR code scanning
-      // Supports OKX, MetaMask, Trust, Rainbow, and 300+ wallets
-      new WalletConnectWalletAdapter({
-        network,
-        options: {
-          projectId: process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID || 'aifuel',
-        },
-      }),
+      new TorusWalletAdapter(), // Social login (Google, Facebook, etc.)
     ],
-    [network]
+    []
   )
 
   return (
