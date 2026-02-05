@@ -131,11 +131,13 @@ router.post('/connect', authRateLimit, async (req: Request, res: Response) => {
     }
     
     // Create or get user
+    console.log('[auth] Signature verified, looking up user:', wallet);
     let user = await prisma.user.findUnique({
       where: { wallet },
     });
     
     if (!user) {
+      console.log('[auth] Creating new user for wallet:', wallet);
       user = await prisma.user.create({
         data: {
           wallet,
@@ -143,10 +145,15 @@ router.post('/connect', authRateLimit, async (req: Request, res: Response) => {
           isDiamondHands: true,
         },
       });
+      console.log('[auth] User created:', user.id);
+    } else {
+      console.log('[auth] Found existing user:', user.id);
     }
     
     // Generate JWT token
+    console.log('[auth] Generating JWT for user:', user.id);
     const token = generateJwt(user.id, user.wallet);
+    console.log('[auth] JWT generated successfully');
     
     res.json({
       success: true,
@@ -161,10 +168,12 @@ router.post('/connect', authRateLimit, async (req: Request, res: Response) => {
     
   } catch (error) {
     console.error('Auth error:', error);
+    console.error('Auth error stack:', error instanceof Error ? error.stack : 'no stack');
     res.status(500).json({
       error: {
         message: 'Authentication failed',
         type: 'server_error',
+        debug: error instanceof Error ? error.message : String(error),
       },
     });
   }
