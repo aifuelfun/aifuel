@@ -45,6 +45,7 @@ function maskApiKey(key: string): string {
   return key.substring(0, 7) + '••••••••••••' + key.substring(key.length - 4)
 }
 
+// v2.0.0 - 2026-02-05 18:15
 export default function Dashboard() {
   const { connected, publicKey, disconnect } = useWallet()
   const { connection } = useConnection()
