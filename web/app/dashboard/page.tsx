@@ -435,129 +435,134 @@ export default function Dashboard() {
         </div>
       )}
 
-      {/* New Key Created Alert */}
-      {showNewKey && (
-        <div className="bg-green-50 border border-green-200 rounded-xl p-4 mb-8">
-          <div className="flex items-start gap-3">
-            <AlertCircle className="h-5 w-5 text-green-600 mt-0.5" />
-            <div className="flex-grow">
-              <p className="font-semibold text-green-800">API Key Created!</p>
-              <p className="text-sm text-green-700 mt-1">
-                Copy this key now. You won't be able to see it again.
-              </p>
-              <div className="flex items-center gap-2 mt-3 bg-white rounded-lg p-3 border border-green-200">
-                <code className="flex-grow text-sm font-mono break-all">{showNewKey}</code>
-                <button
-                  onClick={() => copyToClipboard(showNewKey, 'new')}
-                  className="p-2 hover:bg-gray-100 rounded"
-                >
-                  {copiedKey === 'new' ? (
-                    <Check className="h-4 w-4 text-green-600" />
-                  ) : (
-                    <Copy className="h-4 w-4 text-gray-600" />
-                  )}
-                </button>
-              </div>
-              <button
-                onClick={() => setShowNewKey(null)}
-                className="mt-3 text-sm text-green-700 hover:text-green-800"
-              >
-                I've copied my key
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* API Key Section */}
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-        <div className="p-6 border-b border-gray-100">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <Key className="h-6 w-6 text-primary" />
-              <div>
-                <h2 className="text-xl font-bold text-gray-900">🔑 Your API Key</h2>
-                <p className="text-sm text-gray-500">Base URL: https://api.aifuel.fun/v1</p>
-              </div>
-            </div>
-            <button
-              onClick={regenerateApiKey}
-              disabled={regenerating}
-              className="inline-flex items-center justify-center gap-2 px-4 py-2 border border-gray-200 text-gray-600 font-medium rounded-lg hover:bg-gray-50 hover:text-gray-900 transition disabled:opacity-50"
-              title={apiKey ? "Regenerate (old key will be invalidated)" : "Generate API Key"}
-            >
-              {regenerating ? (
-                <RefreshCw className="h-4 w-4 animate-spin" />
-              ) : (
-                <RefreshCw className="h-4 w-4" />
-              )}
-              {apiKey ? 'Regenerate' : 'Generate'}
-            </button>
-          </div>
-        </div>
-
-        {/* Key Display */}
-        <div className="p-6">
-          {apiKey ? (
-            <div className="space-y-4">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 bg-gray-50 rounded-xl">
+      {/* API Key Section - Only show if user has $FUEL tokens */}
+      {credits && credits.balance > 0 && (
+        <>
+          {/* New Key Created Alert */}
+          {showNewKey && (
+            <div className="bg-green-50 border border-green-200 rounded-xl p-4 mb-8">
+              <div className="flex items-start gap-3">
+                <AlertCircle className="h-5 w-5 text-green-600 mt-0.5" />
                 <div className="flex-grow">
-                  <code className="text-sm text-gray-700 font-mono">
-                    {apiKey.prefix}
-                  </code>
-                  <p className="text-xs text-gray-500 mt-1">
-                    Created {new Date(apiKey.createdAt).toLocaleDateString()}
+                  <p className="font-semibold text-green-800">API Key Created!</p>
+                  <p className="text-sm text-green-700 mt-1">
+                    Copy this key now. You won't be able to see it again.
                   </p>
+                  <div className="flex items-center gap-2 mt-3 bg-white rounded-lg p-3 border border-green-200">
+                    <code className="flex-grow text-sm font-mono break-all">{showNewKey}</code>
+                    <button
+                      onClick={() => copyToClipboard(showNewKey, 'new')}
+                      className="p-2 hover:bg-gray-100 rounded"
+                    >
+                      {copiedKey === 'new' ? (
+                        <Check className="h-4 w-4 text-green-600" />
+                      ) : (
+                        <Copy className="h-4 w-4 text-gray-600" />
+                      )}
+                    </button>
+                  </div>
+                  <button
+                    onClick={() => setShowNewKey(null)}
+                    className="mt-3 text-sm text-green-700 hover:text-green-800"
+                  >
+                    I've copied my key
+                  </button>
                 </div>
-                <button
-                  onClick={() => copyToClipboard(apiKey.key, 'apikey')}
-                  className="inline-flex items-center gap-2 px-4 py-2 bg-primary text-white font-medium rounded-lg hover:bg-primary-dark transition"
-                >
-                  {copiedKey === 'apikey' ? (
-                    <>
-                      <Check className="h-4 w-4" />
-                      Copied!
-                    </>
-                  ) : (
-                    <>
-                      <Copy className="h-4 w-4" />
-                      Copy
-                    </>
-                  )}
-                </button>
               </div>
-              
-              <div className="flex items-start gap-2 text-sm text-amber-700 bg-amber-50 rounded-lg p-3">
-                <AlertCircle className="h-4 w-4 mt-0.5 shrink-0" />
-                <span>Regenerating will invalidate your current key. Any applications using the old key will stop working.</span>
-              </div>
-            </div>
-          ) : (
-            <div className="text-center py-8">
-              <Key className="h-12 w-12 text-gray-300 mx-auto mb-4" />
-              <p className="text-gray-500 mb-4">No API key yet. Generate one to start using the API.</p>
-              <button
-                onClick={regenerateApiKey}
-                disabled={regenerating}
-                className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-primary text-white font-semibold rounded-lg hover:bg-primary-dark transition disabled:opacity-50"
-              >
-                {regenerating ? (
-                  <RefreshCw className="h-4 w-4 animate-spin" />
-                ) : (
-                  <Plus className="h-4 w-4" />
-                )}
-                Generate API Key
-              </button>
             </div>
           )}
-        </div>
-      </div>
 
-      {/* Quick Start */}
-      <div className="mt-8 bg-dark rounded-2xl p-6 text-white">
-        <h3 className="text-lg font-bold mb-4">⚡ Quick Start</h3>
-        <pre className="bg-dark-light rounded-lg p-4 overflow-x-auto text-sm">
-          <code>{`from openai import OpenAI
+          {/* API Key Card */}
+          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+            <div className="p-6 border-b border-gray-100">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <Key className="h-6 w-6 text-primary" />
+                  <div>
+                    <h2 className="text-xl font-bold text-gray-900">🔑 Your API Key</h2>
+                    <p className="text-sm text-gray-500">Base URL: https://api.aifuel.fun/v1</p>
+                  </div>
+                </div>
+                {apiKey && (
+                  <button
+                    onClick={regenerateApiKey}
+                    disabled={regenerating}
+                    className="inline-flex items-center justify-center gap-2 px-4 py-2 border border-gray-200 text-gray-600 font-medium rounded-lg hover:bg-gray-50 hover:text-gray-900 transition disabled:opacity-50"
+                    title="Regenerate (old key will be invalidated)"
+                  >
+                    {regenerating ? (
+                      <RefreshCw className="h-4 w-4 animate-spin" />
+                    ) : (
+                      <RefreshCw className="h-4 w-4" />
+                    )}
+                    Regenerate
+                  </button>
+                )}
+              </div>
+            </div>
+
+            {/* Key Display */}
+            <div className="p-6">
+              {apiKey ? (
+                <div className="space-y-4">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 bg-gray-50 rounded-xl">
+                    <div className="flex-grow">
+                      <code className="text-sm text-gray-700 font-mono">
+                        {apiKey.prefix}
+                      </code>
+                      <p className="text-xs text-gray-500 mt-1">
+                        Created {new Date(apiKey.createdAt).toLocaleDateString()}
+                      </p>
+                    </div>
+                    <button
+                      onClick={() => copyToClipboard(apiKey.key, 'apikey')}
+                      className="inline-flex items-center gap-2 px-4 py-2 bg-primary text-white font-medium rounded-lg hover:bg-primary-dark transition"
+                    >
+                      {copiedKey === 'apikey' ? (
+                        <>
+                          <Check className="h-4 w-4" />
+                          Copied!
+                        </>
+                      ) : (
+                        <>
+                          <Copy className="h-4 w-4" />
+                          Copy
+                        </>
+                      )}
+                    </button>
+                  </div>
+                  
+                  <div className="flex items-start gap-2 text-sm text-amber-700 bg-amber-50 rounded-lg p-3">
+                    <AlertCircle className="h-4 w-4 mt-0.5 shrink-0" />
+                    <span>Regenerating will invalidate your current key. Any applications using the old key will stop working.</span>
+                  </div>
+                </div>
+              ) : (
+                <div className="text-center py-8">
+                  <Key className="h-12 w-12 text-gray-300 mx-auto mb-4" />
+                  <p className="text-gray-500 mb-4">Generate your API key to start using AIFuel.</p>
+                  <button
+                    onClick={regenerateApiKey}
+                    disabled={regenerating}
+                    className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-primary text-white font-semibold rounded-lg hover:bg-primary-dark transition disabled:opacity-50"
+                  >
+                    {regenerating ? (
+                      <RefreshCw className="h-4 w-4 animate-spin" />
+                    ) : (
+                      <Plus className="h-4 w-4" />
+                    )}
+                    Generate API Key
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Quick Start */}
+          <div className="mt-8 bg-dark rounded-2xl p-6 text-white">
+            <h3 className="text-lg font-bold mb-4">⚡ Quick Start</h3>
+            <pre className="bg-dark-light rounded-lg p-4 overflow-x-auto text-sm">
+              <code>{`from openai import OpenAI
 
 client = OpenAI(
     api_key="your_api_key_here",
@@ -570,8 +575,10 @@ response = client.chat.completions.create(
 )
 
 print(response.choices[0].message.content)`}</code>
-        </pre>
-      </div>
+            </pre>
+          </div>
+        </>
+      )}
     </div>
   )
 }
