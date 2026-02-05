@@ -1,6 +1,8 @@
 import { Router, Request, Response } from 'express';
+import { PrismaClient } from '@prisma/client';
 
 const router = Router();
+const prisma = new PrismaClient();
 
 /**
  * GET /health
@@ -10,7 +12,31 @@ router.get('/', (_req: Request, res: Response) => {
   res.json({
     status: 'ok',
     timestamp: new Date().toISOString(),
+    version: '1.0.2',
   });
+});
+
+/**
+ * GET /health/db
+ * Database connectivity check
+ */
+router.get('/db', async (_req: Request, res: Response) => {
+  try {
+    const result = await prisma.$queryRaw`SELECT 1 as test`;
+    const userCount = await prisma.user.count();
+    res.json({
+      status: 'ok',
+      database: 'connected',
+      userCount,
+      result,
+    });
+  } catch (error) {
+    res.status(500).json({
+      status: 'error',
+      database: 'disconnected',
+      error: error instanceof Error ? error.message : String(error),
+    });
+  }
 });
 
 /**
