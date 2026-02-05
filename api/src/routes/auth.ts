@@ -37,14 +37,12 @@ router.post('/nonce', authRateLimit, async (req: Request, res: Response) => {
     });
   }
   
-  // Generate sign message with nonce
-  const nonce = Math.random().toString(36).substring(2, 15);
+  // Generate sign message with timestamp (nonce)
   const timestamp = Date.now();
-  const message = `Sign this message to connect to AIFuel.\n\nWallet: ${wallet}\nNonce: ${nonce}\nTimestamp: ${timestamp}`;
+  const message = `Sign this message to connect to AIFuel.\n\nWallet: ${wallet}\nTimestamp: ${timestamp}`;
   
   res.json({
     message,
-    nonce,
     timestamp,
   });
 });
