@@ -91,7 +91,7 @@ export const BUY_LINKS = {
 // Social Links
 export const SOCIAL_LINKS = {
   twitter: 'https://x.com/aifuelfun',
-  discord: 'https://discord.gg/aifuel',
+  discord: 'https://discord.gg/dFc34GyU',
   telegram: 'https://t.me/aifuel_fun',
   github: 'https://github.com/aifuelfun/aifuel',
   docs: 'https://docs.aifuel.fun',
