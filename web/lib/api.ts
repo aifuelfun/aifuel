@@ -37,7 +37,7 @@ export interface AuthResponse {
 
 export interface NonceResponse {
   message: string;
-  nonce: string;
+  nonce?: string;  // Optional, message already contains nonce
   timestamp: number;
 }
 

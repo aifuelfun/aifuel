@@ -8,8 +8,6 @@ import {
   SolflareWalletAdapter,
   CoinbaseWalletAdapter,
   TrustWalletAdapter,
-  LedgerWalletAdapter,
-  TorusWalletAdapter,
 } from '@solana/wallet-adapter-wallets'
 import { SOLANA_RPC_URL } from '@/lib/constants'
 
@@ -30,8 +28,7 @@ export const WalletProvider: FC<Props> = ({ children }) => {
       new SolflareWalletAdapter(),
       new CoinbaseWalletAdapter(),
       new TrustWalletAdapter(),
-      new LedgerWalletAdapter(),
-      new TorusWalletAdapter(), // Social login (Google, Facebook, etc.)
+      // OKX Wallet is auto-detected if installed
     ],
     []
   )

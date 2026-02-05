@@ -1,7 +1,7 @@
 import { PublicKey } from '@solana/web3.js'
 
 // API Configuration
-export const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'
+export const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://api.aifuel.fun'
 
 // Solana Configuration - PublicNode free RPC (mainnet blocks token queries)
 export const SOLANA_RPC_URL = process.env.NEXT_PUBLIC_SOLANA_RPC || 'https://solana-rpc.publicnode.com'
