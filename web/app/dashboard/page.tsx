@@ -8,19 +8,16 @@ import { PublicKey } from '@solana/web3.js'
 import { 
   Flame, Copy, Check, Key, RefreshCw, 
   Zap, TrendingUp, Clock, AlertCircle,
-  Plus, Trash2, Diamond, LogOut, ExternalLink
+  Plus, Diamond, LogOut, ExternalLink
 } from 'lucide-react'
 import { shortenAddress, formatUSD, formatNumber } from '@/lib/utils'
 import { API_BASE_URL, TOKEN_CA, CIRCULATING_SUPPLY, DAILY_CREDIT_POOL } from '@/lib/constants'
 import { useLocale } from '@/lib/LocaleContext'
 
 interface ApiKey {
-  id: string
-  name: string
+  key: string
   prefix: string
-  key?: string
   createdAt: string
-  lastUsedAt?: string
 }
 
 interface Credits {
@@ -55,13 +52,12 @@ export default function Dashboard() {
   const { t } = useLocale()
   
   const [credits, setCredits] = useState<Credits | null>(null)
-  const [apiKeys, setApiKeys] = useState<ApiKey[]>([])
+  const [apiKey, setApiKey] = useState<ApiKey | null>(null)
   const [loading, setLoading] = useState(true)
   const [loadingBalance, setLoadingBalance] = useState(false)
   const [copiedKey, setCopiedKey] = useState<string | null>(null)
   const [showNewKey, setShowNewKey] = useState<string | null>(null)
-  const [newKeyName, setNewKeyName] = useState('')
-  const [creatingKey, setCreatingKey] = useState(false)
+  const [regenerating, setRegenerating] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
   // Calculate daily credit based on holding
@@ -112,26 +108,30 @@ export default function Dashboard() {
     }
   }, [publicKey, connection])
 
-  // Load API keys from localStorage (for demo - in production use backend)
-  const loadApiKeys = useCallback(() => {
-    if (!publicKey) return []
-    const storageKey = `aifuel_keys_${publicKey.toBase58()}`
+  // Load API key from localStorage (for demo - in production use backend)
+  const loadApiKey = useCallback((): ApiKey | null => {
+    if (!publicKey) return null
+    const storageKey = `aifuel_key_${publicKey.toBase58()}`
     const stored = localStorage.getItem(storageKey)
     if (stored) {
       try {
         return JSON.parse(stored)
       } catch {
-        return []
+        return null
       }
     }
-    return []
+    return null
   }, [publicKey])
 
-  // Save API keys to localStorage
-  const saveApiKeys = useCallback((keys: ApiKey[]) => {
+  // Save API key to localStorage
+  const saveApiKey = useCallback((key: ApiKey | null) => {
     if (!publicKey) return
-    const storageKey = `aifuel_keys_${publicKey.toBase58()}`
-    localStorage.setItem(storageKey, JSON.stringify(keys))
+    const storageKey = `aifuel_key_${publicKey.toBase58()}`
+    if (key) {
+      localStorage.setItem(storageKey, JSON.stringify(key))
+    } else {
+      localStorage.removeItem(storageKey)
+    }
   }, [publicKey])
 
   // Load usage from localStorage (for demo)
@@ -171,9 +171,9 @@ export default function Dashboard() {
           isDiamondHands,
         })
         
-        // Load API keys
-        const keys = loadApiKeys()
-        setApiKeys(keys)
+        // Load API key
+        const key = loadApiKey()
+        setApiKey(key)
         
       } catch (err) {
         console.error('Error loading data:', err)
@@ -184,7 +184,7 @@ export default function Dashboard() {
     }
     
     loadData()
-  }, [connected, publicKey, fetchTokenBalance, calculateCredit, loadApiKeys, loadUsage])
+  }, [connected, publicKey, fetchTokenBalance, calculateCredit, loadApiKey, loadUsage])
 
   // Redirect if not connected
   useEffect(() => {
@@ -199,31 +199,21 @@ export default function Dashboard() {
     setTimeout(() => setCopiedKey(null), 2000)
   }
 
-  const createApiKey = async () => {
-    setCreatingKey(true)
+  const regenerateApiKey = async () => {
+    setRegenerating(true)
     
-    // Generate new key
-    const apiKey = generateApiKey()
+    // Generate new key (this invalidates the old one)
+    const newKeyValue = generateApiKey()
     const newKey: ApiKey = {
-      id: Date.now().toString(),
-      name: newKeyName || 'Untitled',
-      prefix: maskApiKey(apiKey),
-      key: apiKey,
+      key: newKeyValue,
+      prefix: maskApiKey(newKeyValue),
       createdAt: new Date().toISOString(),
     }
     
-    const updatedKeys = [...apiKeys, newKey]
-    setApiKeys(updatedKeys)
-    saveApiKeys(updatedKeys)
-    setShowNewKey(apiKey)
-    setNewKeyName('')
-    setCreatingKey(false)
-  }
-
-  const deleteApiKey = (id: string) => {
-    const updatedKeys = apiKeys.filter(k => k.id !== id)
-    setApiKeys(updatedKeys)
-    saveApiKeys(updatedKeys)
+    setApiKey(newKey)
+    saveApiKey(newKey)
+    setShowNewKey(newKeyValue)
+    setRegenerating(false)
   }
 
   const refreshBalance = async () => {
@@ -479,87 +469,87 @@ export default function Dashboard() {
         </div>
       )}
 
-      {/* API Keys Section */}
+      {/* API Key Section */}
       <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
         <div className="p-6 border-b border-gray-100">
-          <div className="flex items-center gap-3">
-            <Key className="h-6 w-6 text-primary" />
-            <div>
-              <h2 className="text-xl font-bold text-gray-900">🔑 Your API Key</h2>
-              <p className="text-sm text-gray-500">Base URL: https://api.aifuel.fun/v1</p>
-            </div>
-          </div>
-        </div>
-
-        {/* Keys List */}
-        <div className="divide-y divide-gray-100">
-          {apiKeys.length === 0 ? (
-            <div className="p-8 text-center text-gray-500">
-              No API keys yet. Create one to get started.
-            </div>
-          ) : (
-            apiKeys.map((key) => (
-              <div key={key.id} className="p-4 hover:bg-gray-50 transition">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                  <div>
-                    <p className="font-semibold text-gray-900">{key.name}</p>
-                    <p className="text-sm text-gray-500">
-                      Created {new Date(key.createdAt).toLocaleDateString()}
-                      {key.lastUsedAt && ` • Last used ${new Date(key.lastUsedAt).toLocaleDateString()}`}
-                    </p>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <code className="text-sm text-gray-600 font-mono bg-gray-100 px-3 py-1.5 rounded-lg">
-                      {key.prefix}
-                    </code>
-                    <button
-                      onClick={() => copyToClipboard(key.key || '', key.id)}
-                      className="p-2 text-gray-400 hover:text-primary hover:bg-primary/10 rounded transition"
-                      title="Copy full key"
-                    >
-                      {copiedKey === key.id ? (
-                        <Check className="h-4 w-4 text-green-600" />
-                      ) : (
-                        <Copy className="h-4 w-4" />
-                      )}
-                    </button>
-                    <button
-                      onClick={() => deleteApiKey(key.id)}
-                      className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded transition"
-                      title="Delete"
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </button>
-                  </div>
-                </div>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <Key className="h-6 w-6 text-primary" />
+              <div>
+                <h2 className="text-xl font-bold text-gray-900">🔑 Your API Key</h2>
+                <p className="text-sm text-gray-500">Base URL: https://api.aifuel.fun/v1</p>
               </div>
-            ))
-          )}
-        </div>
-
-        {/* Create New Key */}
-        <div className="p-4 bg-gray-50 border-t border-gray-100">
-          <div className="flex flex-col sm:flex-row gap-3">
-            <input
-              type="text"
-              placeholder="Key name (optional)"
-              value={newKeyName}
-              onChange={(e) => setNewKeyName(e.target.value)}
-              className="flex-grow px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50"
-            />
+            </div>
             <button
-              onClick={createApiKey}
-              disabled={creatingKey}
-              className="inline-flex items-center justify-center gap-2 px-6 py-2 bg-primary text-white font-semibold rounded-lg hover:bg-primary-dark transition disabled:opacity-50"
+              onClick={regenerateApiKey}
+              disabled={regenerating}
+              className="inline-flex items-center justify-center gap-2 px-4 py-2 border border-gray-200 text-gray-600 font-medium rounded-lg hover:bg-gray-50 hover:text-gray-900 transition disabled:opacity-50"
+              title={apiKey ? "Regenerate (old key will be invalidated)" : "Generate API Key"}
             >
-              {creatingKey ? (
+              {regenerating ? (
                 <RefreshCw className="h-4 w-4 animate-spin" />
               ) : (
-                <Plus className="h-4 w-4" />
+                <RefreshCw className="h-4 w-4" />
               )}
-              Generate New Key
+              {apiKey ? 'Regenerate' : 'Generate'}
             </button>
           </div>
+        </div>
+
+        {/* Key Display */}
+        <div className="p-6">
+          {apiKey ? (
+            <div className="space-y-4">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 bg-gray-50 rounded-xl">
+                <div className="flex-grow">
+                  <code className="text-sm text-gray-700 font-mono">
+                    {apiKey.prefix}
+                  </code>
+                  <p className="text-xs text-gray-500 mt-1">
+                    Created {new Date(apiKey.createdAt).toLocaleDateString()}
+                  </p>
+                </div>
+                <button
+                  onClick={() => copyToClipboard(apiKey.key, 'apikey')}
+                  className="inline-flex items-center gap-2 px-4 py-2 bg-primary text-white font-medium rounded-lg hover:bg-primary-dark transition"
+                >
+                  {copiedKey === 'apikey' ? (
+                    <>
+                      <Check className="h-4 w-4" />
+                      Copied!
+                    </>
+                  ) : (
+                    <>
+                      <Copy className="h-4 w-4" />
+                      Copy
+                    </>
+                  )}
+                </button>
+              </div>
+              
+              <div className="flex items-start gap-2 text-sm text-amber-700 bg-amber-50 rounded-lg p-3">
+                <AlertCircle className="h-4 w-4 mt-0.5 shrink-0" />
+                <span>Regenerating will invalidate your current key. Any applications using the old key will stop working.</span>
+              </div>
+            </div>
+          ) : (
+            <div className="text-center py-8">
+              <Key className="h-12 w-12 text-gray-300 mx-auto mb-4" />
+              <p className="text-gray-500 mb-4">No API key yet. Generate one to start using the API.</p>
+              <button
+                onClick={regenerateApiKey}
+                disabled={regenerating}
+                className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-primary text-white font-semibold rounded-lg hover:bg-primary-dark transition disabled:opacity-50"
+              >
+                {regenerating ? (
+                  <RefreshCw className="h-4 w-4 animate-spin" />
+                ) : (
+                  <Plus className="h-4 w-4" />
+                )}
+                Generate API Key
+              </button>
+            </div>
+          )}
         </div>
       </div>
 
