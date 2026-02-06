@@ -7,6 +7,7 @@ import { API_BASE_URL } from './constants';
 
 // Token storage
 const TOKEN_KEY = 'aifuel_auth_token';
+const API_KEY_STORAGE = 'aifuel_api_key';
 
 export function getAuthToken(): string | null {
   if (typeof window === 'undefined') return null;
@@ -21,6 +22,22 @@ export function setAuthToken(token: string): void {
 export function clearAuthToken(): void {
   if (typeof window === 'undefined') return;
   localStorage.removeItem(TOKEN_KEY);
+}
+
+// API Key local storage (so user can see full key again)
+export function getStoredApiKey(): string | null {
+  if (typeof window === 'undefined') return null;
+  return localStorage.getItem(API_KEY_STORAGE);
+}
+
+export function setStoredApiKey(key: string): void {
+  if (typeof window === 'undefined') return;
+  localStorage.setItem(API_KEY_STORAGE, key);
+}
+
+export function clearStoredApiKey(): void {
+  if (typeof window === 'undefined') return;
+  localStorage.removeItem(API_KEY_STORAGE);
 }
 
 // API response types
@@ -180,4 +197,5 @@ export async function revokeApiKey(): Promise<{ success: boolean }> {
  */
 export function disconnectApi(): void {
   clearAuthToken();
+  clearStoredApiKey();
 }

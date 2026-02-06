@@ -30,13 +30,18 @@ interface CreditsData {
   resetsAt: string
 }
 
-// Token storage
+// Storage keys
 const TOKEN_KEY = 'aifuel_jwt'
+const API_KEY_STORAGE = 'aifuel_full_api_key'
+
 const getToken = () => typeof window !== 'undefined' ? localStorage.getItem(TOKEN_KEY) : null
 const setToken = (t: string) => typeof window !== 'undefined' && localStorage.setItem(TOKEN_KEY, t)
 const clearToken = () => typeof window !== 'undefined' && localStorage.removeItem(TOKEN_KEY)
 
-// v6.0.0 - Backend API Mode
+const getStoredApiKey = () => typeof window !== 'undefined' ? localStorage.getItem(API_KEY_STORAGE) : null
+const setStoredApiKey = (k: string) => typeof window !== 'undefined' && localStorage.setItem(API_KEY_STORAGE, k)
+const clearStoredApiKey = () => typeof window !== 'undefined' && localStorage.removeItem(API_KEY_STORAGE)
+
 export default function Dashboard() {
   const { connected, publicKey, signMessage, disconnect } = useWallet()
   const { connection } = useConnection()
@@ -44,7 +49,7 @@ export default function Dashboard() {
   
   const [credits, setCredits] = useState<CreditsData | null>(null)
   const [apiKey, setApiKey] = useState<ApiKeyData | null>(null)
-  const [newApiKey, setNewApiKey] = useState<string | null>(null)
+  const [fullApiKey, setFullApiKey] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
   const [loadingBalance, setLoadingBalance] = useState(false)
   const [copiedKey, setCopiedKey] = useState<string | null>(null)
@@ -54,30 +59,7 @@ export default function Dashboard() {
   
   const authAttemptedRef = useRef<string | null>(null)
 
-  // Fetch token balance from chain (fallback)
-  const fetchTokenBalance = useCallback(async () => {
-    if (!publicKey || !connection) return 0
-    
-    try {
-      setLoadingBalance(true)
-      const { getAssociatedTokenAddressSync, TOKEN_PROGRAM_ID, ASSOCIATED_TOKEN_PROGRAM_ID } = await import('@solana/spl-token')
-      const tokenMint = new PublicKey(TOKEN_CA)
-      const ataAddress = getAssociatedTokenAddressSync(tokenMint, publicKey, false, TOKEN_PROGRAM_ID, ASSOCIATED_TOKEN_PROGRAM_ID)
-      
-      try {
-        const balanceInfo = await connection.getTokenAccountBalance(ataAddress)
-        return balanceInfo.value.uiAmount || 0
-      } catch {
-        return 0
-      }
-    } catch {
-      return 0
-    } finally {
-      setLoadingBalance(false)
-    }
-  }, [publicKey, connection])
-
-  // API helpers
+  // API helper
   const apiCall = async (endpoint: string, options: RequestInit = {}) => {
     const token = getToken()
     const res = await fetch(`${API_BASE_URL}${endpoint}`, {
@@ -155,7 +137,8 @@ export default function Dashboard() {
       setRegenerating(true)
       const data = await apiCall('/v1/keys', { method: 'POST' })
       setApiKey({ id: data.id, prefix: data.prefix, createdAt: data.createdAt })
-      setNewApiKey(data.key) // Full key shown once
+      setFullApiKey(data.key)
+      setStoredApiKey(data.key) // Store locally for persistence
       return true
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to generate key')
@@ -175,33 +158,28 @@ export default function Dashboard() {
       
       const wallet = publicKey.toBase58()
       
-      // Get balance first (always works)
-      const balance = await fetchTokenBalance()
-      
-      // Show basic info while loading
-      setCredits({
-        balance,
-        daily: balance > 0 ? (balance / CIRCULATING_SUPPLY) * DAILY_CREDIT_POOL : 0,
-        used: 0,
-        remaining: balance > 0 ? (balance / CIRCULATING_SUPPLY) * DAILY_CREDIT_POOL : 0,
-        multiplier: 1.0,
-        isDiamondHands: true,
-        resetsAt: '',
-      })
-      setLoading(false)
-      
-      // No tokens = no need to auth
-      if (balance <= 0) return
-      
       // Already tried for this wallet?
-      if (authAttemptedRef.current === wallet) return
+      if (authAttemptedRef.current === wallet) {
+        setLoading(false)
+        return
+      }
       authAttemptedRef.current = wallet
+      
+      // Load stored API key first
+      const storedKey = getStoredApiKey()
+      if (storedKey) {
+        setFullApiKey(storedKey)
+      }
       
       // Try existing token
       if (getToken()) {
         const creditsOk = await loadCredits()
         if (creditsOk) {
-          await loadApiKey()
+          const existingKey = await loadApiKey()
+          if (!existingKey) {
+            await generateApiKey()
+          }
+          setLoading(false)
           return
         }
         clearToken() // Token invalid
@@ -210,13 +188,17 @@ export default function Dashboard() {
       // Need to authenticate
       if (!signMessage) {
         setError('Wallet does not support message signing')
+        setLoading(false)
         return
       }
       
       const authOk = await authenticate()
-      if (!authOk) return
+      if (!authOk) {
+        setLoading(false)
+        return
+      }
       
-      // Load data
+      // Load data after auth
       await loadCredits()
       const existingKey = await loadApiKey()
       
@@ -224,10 +206,12 @@ export default function Dashboard() {
       if (!existingKey) {
         await generateApiKey()
       }
+      
+      setLoading(false)
     }
     
     init()
-  }, [connected, publicKey, signMessage, fetchTokenBalance, authenticate, loadCredits, loadApiKey, generateApiKey])
+  }, [connected, publicKey, signMessage, authenticate, loadCredits, loadApiKey, generateApiKey])
 
   // Redirect if not connected
   useEffect(() => {
@@ -247,23 +231,20 @@ export default function Dashboard() {
       const ok = await authenticate()
       if (!ok) return
     }
+    clearStoredApiKey() // Clear old stored key
     await generateApiKey()
   }
 
   const refreshBalance = async () => {
     if (getToken()) {
       await loadCredits()
-    } else {
-      const balance = await fetchTokenBalance()
-      if (credits) {
-        setCredits({ ...credits, balance })
-      }
     }
   }
 
   const handleDisconnect = async () => {
     authAttemptedRef.current = null
     clearToken()
+    clearStoredApiKey()
     await disconnect()
     router.push('/')
   }
@@ -283,7 +264,7 @@ export default function Dashboard() {
     return (
       <div className="min-h-[80vh] flex flex-col items-center justify-center">
         <RefreshCw className="h-8 w-8 text-primary animate-spin mb-4" />
-        <p className="text-gray-600">Loading wallet data...</p>
+        <p className="text-gray-600">{status || 'Loading...'}</p>
       </div>
     )
   }
@@ -411,82 +392,69 @@ export default function Dashboard() {
 
       {/* API Key Section */}
       {credits && credits.balance > 0 && (
-        <>
-          {/* New Key Alert */}
-          {newApiKey && (
-            <div className="bg-green-50 border border-green-200 rounded-xl p-4 mb-8">
-              <div className="flex items-start gap-3">
-                <AlertCircle className="h-5 w-5 text-green-600 mt-0.5" />
-                <div className="flex-grow">
-                  <p className="font-semibold text-green-800">🎉 API Key Generated!</p>
-                  <p className="text-sm text-green-700 mt-1">Copy this key now. You won&apos;t see it again.</p>
-                  <div className="flex items-center gap-2 mt-3 bg-white rounded-lg p-3 border border-green-200">
-                    <code className="flex-grow text-sm font-mono break-all">{newApiKey}</code>
-                    <button onClick={() => copyToClipboard(newApiKey, 'newkey')} className="p-2 hover:bg-gray-100 rounded">
-                      {copiedKey === 'newkey' ? <Check className="h-4 w-4 text-green-600" /> : <Copy className="h-4 w-4 text-gray-600" />}
-                    </button>
-                  </div>
-                  <button onClick={() => setNewApiKey(null)} className="mt-3 text-sm text-green-700">✓ I&apos;ve copied my key</button>
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+          <div className="p-6 border-b border-gray-100">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <Key className="h-6 w-6 text-primary" />
+                <div>
+                  <h2 className="text-xl font-bold text-gray-900">🔑 Your API Key</h2>
+                  <p className="text-sm text-gray-500">Base URL: https://api.aifuel.fun/v1</p>
                 </div>
               </div>
-            </div>
-          )}
-
-          {/* API Key Card */}
-          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-            <div className="p-6 border-b border-gray-100">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <Key className="h-6 w-6 text-primary" />
-                  <div>
-                    <h2 className="text-xl font-bold text-gray-900">🔑 Your API Key</h2>
-                    <p className="text-sm text-gray-500">Base URL: https://api.aifuel.fun/v1</p>
-                  </div>
-                </div>
-                {apiKey && (
-                  <button onClick={handleRegenerateKey} disabled={regenerating} className="inline-flex items-center gap-2 px-4 py-2 border border-gray-200 text-gray-600 rounded-lg hover:bg-gray-50 disabled:opacity-50">
-                    <RefreshCw className={`h-4 w-4 ${regenerating ? 'animate-spin' : ''}`} /> Regenerate
-                  </button>
-                )}
-              </div>
-            </div>
-
-            <div className="p-6">
-              {apiKey ? (
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-                    <code className="text-sm font-mono text-gray-700">{apiKey.prefix}</code>
-                    <span className="text-xs text-gray-500">Created {new Date(apiKey.createdAt).toLocaleDateString()}</span>
-                  </div>
-                  <div className="bg-amber-50 border border-amber-200 rounded-lg p-3">
-                    <p className="text-sm text-amber-800">⚠️ Regenerating will invalidate your current key immediately.</p>
-                  </div>
-                </div>
-              ) : (
-                <div className="text-center py-8">
-                  <RefreshCw className="h-8 w-8 text-gray-300 mx-auto mb-4 animate-spin" />
-                  <p className="text-gray-500">Generating your API key...</p>
-                </div>
-              )}
+              <button onClick={handleRegenerateKey} disabled={regenerating} className="inline-flex items-center gap-2 px-4 py-2 border border-gray-200 text-gray-600 rounded-lg hover:bg-gray-50 disabled:opacity-50">
+                <RefreshCw className={`h-4 w-4 ${regenerating ? 'animate-spin' : ''}`} /> Regenerate
+              </button>
             </div>
           </div>
 
-          {/* Quick Start */}
-          {apiKey && (
-            <div className="mt-8 bg-gray-50 rounded-xl p-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">Quick Start</h3>
-              <pre className="bg-gray-900 text-green-400 p-4 rounded-lg overflow-x-auto text-sm">
+          <div className="p-6">
+            {fullApiKey ? (
+              <div className="space-y-4">
+                <div className="flex items-center gap-2 p-4 bg-gray-50 rounded-lg">
+                  <code className="flex-grow text-sm font-mono text-gray-900 break-all">{fullApiKey}</code>
+                  <button onClick={() => copyToClipboard(fullApiKey, 'apikey')} className="p-2 hover:bg-gray-200 rounded flex-shrink-0">
+                    {copiedKey === 'apikey' ? <Check className="h-5 w-5 text-green-600" /> : <Copy className="h-5 w-5 text-gray-600" />}
+                  </button>
+                </div>
+                <div className="bg-amber-50 border border-amber-200 rounded-lg p-3">
+                  <p className="text-sm text-amber-800">⚠️ Keep this key secure. Regenerating will invalidate the current key.</p>
+                </div>
+              </div>
+            ) : apiKey ? (
+              <div className="space-y-4">
+                <div className="flex items-center gap-2 p-4 bg-gray-50 rounded-lg">
+                  <code className="flex-grow text-sm font-mono text-gray-700">{apiKey.prefix}</code>
+                  <span className="text-xs text-gray-500 flex-shrink-0">Created {new Date(apiKey.createdAt).toLocaleDateString()}</span>
+                </div>
+                <div className="bg-amber-50 border border-amber-200 rounded-lg p-3">
+                  <p className="text-sm text-amber-800">⚠️ Click Regenerate to get a new visible key (old key will be invalidated).</p>
+                </div>
+              </div>
+            ) : (
+              <div className="text-center py-8">
+                <RefreshCw className="h-8 w-8 text-gray-300 mx-auto mb-4 animate-spin" />
+                <p className="text-gray-500">Generating your API key...</p>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Quick Start */}
+      {(fullApiKey || apiKey) && (
+        <div className="mt-8 bg-gray-50 rounded-xl p-6">
+          <h3 className="text-lg font-semibold text-gray-900 mb-4">Quick Start</h3>
+          <pre className="bg-gray-900 text-green-400 p-4 rounded-lg overflow-x-auto text-sm">
 {`curl https://api.aifuel.fun/v1/chat/completions \\
-  -H "Authorization: Bearer YOUR_API_KEY" \\
+  -H "Authorization: Bearer ${fullApiKey || 'YOUR_API_KEY'}" \\
   -H "Content-Type: application/json" \\
   -d '{
     "model": "gpt-4o-mini",
     "messages": [{"role": "user", "content": "Hello!"}]
   }'`}
-              </pre>
-            </div>
-          )}
-        </>
+          </pre>
+        </div>
       )}
     </div>
   )
