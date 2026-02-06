@@ -33,6 +33,7 @@ interface CreditsData {
 // Storage keys
 const TOKEN_KEY = 'aifuel_jwt'
 const API_KEY_STORAGE = 'aifuel_full_api_key'
+const WALLET_KEY = 'aifuel_wallet'
 
 const getToken = () => typeof window !== 'undefined' ? localStorage.getItem(TOKEN_KEY) : null
 const setToken = (t: string) => typeof window !== 'undefined' && localStorage.setItem(TOKEN_KEY, t)
@@ -41,6 +42,16 @@ const clearToken = () => typeof window !== 'undefined' && localStorage.removeIte
 const getStoredApiKey = () => typeof window !== 'undefined' ? localStorage.getItem(API_KEY_STORAGE) : null
 const setStoredApiKey = (k: string) => typeof window !== 'undefined' && localStorage.setItem(API_KEY_STORAGE, k)
 const clearStoredApiKey = () => typeof window !== 'undefined' && localStorage.removeItem(API_KEY_STORAGE)
+
+const getStoredWallet = () => typeof window !== 'undefined' ? localStorage.getItem(WALLET_KEY) : null
+const setStoredWallet = (w: string) => typeof window !== 'undefined' && localStorage.setItem(WALLET_KEY, w)
+
+const clearAllData = () => {
+  if (typeof window === 'undefined') return
+  localStorage.removeItem(TOKEN_KEY)
+  localStorage.removeItem(API_KEY_STORAGE)
+  localStorage.removeItem(WALLET_KEY)
+}
 
 export default function Dashboard() {
   const { connected, publicKey, signMessage, disconnect } = useWallet()
@@ -165,14 +176,25 @@ export default function Dashboard() {
       }
       authAttemptedRef.current = wallet
       
-      // Load stored API key first
-      const storedKey = getStoredApiKey()
-      if (storedKey) {
-        setFullApiKey(storedKey)
+      // Check if wallet changed - if so, clear old data
+      const storedWallet = getStoredWallet()
+      if (storedWallet && storedWallet !== wallet) {
+        clearAllData()
+        setFullApiKey(null)
+        setApiKey(null)
+        setCredits(null)
       }
       
-      // Try existing token
-      if (getToken()) {
+      // Load stored API key first (only if same wallet)
+      if (!storedWallet || storedWallet === wallet) {
+        const storedKey = getStoredApiKey()
+        if (storedKey) {
+          setFullApiKey(storedKey)
+        }
+      }
+      
+      // Try existing token (only if same wallet)
+      if (getToken() && storedWallet === wallet) {
         const creditsOk = await loadCredits()
         if (creditsOk) {
           const existingKey = await loadApiKey()
@@ -197,6 +219,9 @@ export default function Dashboard() {
         setLoading(false)
         return
       }
+      
+      // Store wallet after successful auth
+      setStoredWallet(wallet)
       
       // Load data after auth
       await loadCredits()
@@ -243,8 +268,7 @@ export default function Dashboard() {
 
   const handleDisconnect = async () => {
     authAttemptedRef.current = null
-    clearToken()
-    clearStoredApiKey()
+    clearAllData()
     await disconnect()
     router.push('/')
   }

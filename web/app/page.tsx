@@ -17,8 +17,22 @@ const POOL_OPEN_DATE = new Date('2026-02-06T04:42:00+08:00')
 
 // Storage keys
 const TOKEN_KEY = 'aifuel_jwt'
+const API_KEY_STORAGE = 'aifuel_full_api_key'
+const WALLET_KEY = 'aifuel_wallet'
+
 const setToken = (t: string) => typeof window !== 'undefined' && localStorage.setItem(TOKEN_KEY, t)
 const getToken = () => typeof window !== 'undefined' ? localStorage.getItem(TOKEN_KEY) : null
+const clearToken = () => typeof window !== 'undefined' && localStorage.removeItem(TOKEN_KEY)
+
+const setStoredWallet = (w: string) => typeof window !== 'undefined' && localStorage.setItem(WALLET_KEY, w)
+const getStoredWallet = () => typeof window !== 'undefined' ? localStorage.getItem(WALLET_KEY) : null
+
+const clearAllData = () => {
+  if (typeof window === 'undefined') return
+  localStorage.removeItem(TOKEN_KEY)
+  localStorage.removeItem(API_KEY_STORAGE)
+  localStorage.removeItem(WALLET_KEY)
+}
 
 export default function Home() {
   const { connected, publicKey, signMessage } = useWallet()
@@ -42,8 +56,14 @@ export default function Home() {
     if (authAttemptedRef.current === wallet) return false
     authAttemptedRef.current = wallet
     
-    // Already have valid token
-    if (getToken()) {
+    // Check if wallet changed - if so, clear old data
+    const storedWallet = getStoredWallet()
+    if (storedWallet && storedWallet !== wallet) {
+      clearAllData()
+    }
+    
+    // Already have valid token for this wallet
+    if (getToken() && storedWallet === wallet) {
       router.push('/dashboard')
       return true
     }
@@ -75,6 +95,7 @@ export default function Home() {
       
       if (data.token) {
         setToken(data.token)
+        setStoredWallet(wallet) // Store current wallet
         router.push('/dashboard')
         return true
       } else {
