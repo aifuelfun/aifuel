@@ -1,25 +1,100 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { useWallet } from '@solana/wallet-adapter-react'
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui'
+import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
-import { Zap, Shield, Coins, ArrowRight, Code, CheckCircle, Copy, Check, ExternalLink, ChevronDown, Calculator, LinkIcon } from 'lucide-react'
-import { MODELS, TOKEN_CA, BUY_LINKS, WALLETS, CIRCULATING_SUPPLY, DAILY_CREDIT_POOL } from '@/lib/constants'
+import bs58 from 'bs58'
+import { Zap, Shield, Coins, ArrowRight, Code, CheckCircle, Copy, Check, ExternalLink, ChevronDown, Calculator, LinkIcon, RefreshCw } from 'lucide-react'
+import { MODELS, TOKEN_CA, BUY_LINKS, WALLETS, CIRCULATING_SUPPLY, DAILY_CREDIT_POOL, API_BASE_URL } from '@/lib/constants'
 import { useLocale } from '@/lib/LocaleContext'
 import { Countdown, Logo } from '@/components'
 
 // Pool open time: 2026/2/6 04:42:00 UTC+8
 const POOL_OPEN_DATE = new Date('2026-02-06T04:42:00+08:00')
 
+// Storage keys
+const TOKEN_KEY = 'aifuel_jwt'
+const setToken = (t: string) => typeof window !== 'undefined' && localStorage.setItem(TOKEN_KEY, t)
+const getToken = () => typeof window !== 'undefined' ? localStorage.getItem(TOKEN_KEY) : null
+
 export default function Home() {
-  const { connected } = useWallet()
+  const { connected, publicKey, signMessage } = useWallet()
+  const router = useRouter()
   const { t } = useLocale()
   const [openFaq, setOpenFaq] = useState<number | null>(null)
+  const [authenticating, setAuthenticating] = useState(false)
+  const [authError, setAuthError] = useState<string | null>(null)
+  const authAttemptedRef = useRef<string | null>(null)
   
   const [caCopied, setCaCopied] = useState(false)
   const [fuelAmount, setFuelAmount] = useState<string>('')
+
+  // Auto authenticate when wallet connects
+  const authenticate = useCallback(async () => {
+    if (!publicKey || !signMessage) return false
+    
+    const wallet = publicKey.toBase58()
+    
+    // Already attempted for this wallet
+    if (authAttemptedRef.current === wallet) return false
+    authAttemptedRef.current = wallet
+    
+    // Already have valid token
+    if (getToken()) {
+      router.push('/dashboard')
+      return true
+    }
+    
+    try {
+      setAuthenticating(true)
+      setAuthError(null)
+      
+      // Get nonce
+      const nonceRes = await fetch(`${API_BASE_URL}/v1/auth/nonce`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ wallet }),
+      })
+      const { message } = await nonceRes.json()
+      
+      // Sign message
+      const messageBytes = new TextEncoder().encode(message)
+      const signatureBytes = await signMessage(messageBytes)
+      const signature = bs58.encode(signatureBytes)
+      
+      // Connect
+      const connectRes = await fetch(`${API_BASE_URL}/v1/auth/connect`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ wallet, signature, message }),
+      })
+      const data = await connectRes.json()
+      
+      if (data.token) {
+        setToken(data.token)
+        router.push('/dashboard')
+        return true
+      } else {
+        throw new Error(data.error?.message || 'Authentication failed')
+      }
+    } catch (err) {
+      setAuthError(err instanceof Error ? err.message : 'Authentication failed')
+      authAttemptedRef.current = null // Allow retry
+      return false
+    } finally {
+      setAuthenticating(false)
+    }
+  }, [publicKey, signMessage, router])
+
+  // Trigger auth when wallet connects
+  useEffect(() => {
+    if (connected && publicKey && signMessage && !authenticating) {
+      authenticate()
+    }
+  }, [connected, publicKey, signMessage, authenticate, authenticating])
   
   // Calculate daily credit based on holding
   const calculateCredit = (amount: number) => {
@@ -79,18 +154,22 @@ export default function Home() {
                 {t('buyFuel')}
                 <ExternalLink className="h-4 w-4" />
               </a>
-              {connected ? (
-                <Link
-                  href="/dashboard"
-                  className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-transparent border-2 border-white text-white font-semibold rounded-lg hover:bg-white/10 transition"
-                >
-                  {t('goToDashboard')}
-                  <ArrowRight className="h-5 w-5" />
-                </Link>
+              {authenticating ? (
+                <div className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-transparent border-2 border-white text-white font-semibold rounded-lg">
+                  <RefreshCw className="h-5 w-5 animate-spin" />
+                  Signing...
+                </div>
               ) : (
                 <WalletMultiButton className="!bg-transparent !border-2 !border-white hover:!bg-white/10" />
               )}
             </div>
+            
+            {/* Auth Error */}
+            {authError && (
+              <div className="mt-4 bg-red-500/20 border border-red-400 text-red-100 px-4 py-2 rounded-lg inline-block">
+                {authError}
+              </div>
+            )}
             
             {/* CA Address */}
             <div className="mt-8 inline-flex flex-col sm:flex-row items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-3 rounded-lg max-w-full">
@@ -458,14 +537,11 @@ export default function Home() {
           <p className="text-xl text-white/90 mb-8">
             {t('joinFuture')}
           </p>
-          {connected ? (
-            <Link
-              href="/dashboard"
-              className="inline-flex items-center gap-2 px-8 py-4 bg-white text-primary font-semibold rounded-lg hover:bg-gray-100 transition shadow-lg"
-            >
-              {t('goToDashboard')}
-              <ArrowRight className="h-5 w-5" />
-            </Link>
+          {authenticating ? (
+            <div className="inline-flex items-center gap-2 px-8 py-4 bg-white text-primary font-semibold rounded-lg">
+              <RefreshCw className="h-5 w-5 animate-spin" />
+              Signing...
+            </div>
           ) : (
             <WalletMultiButton className="!bg-white !text-primary hover:!bg-gray-100" />
           )}
