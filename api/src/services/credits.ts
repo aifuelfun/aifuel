@@ -4,20 +4,53 @@ import { getTokenBalance, getCirculatingSupply } from './solana';
 import { config } from '../utils/config';
 
 const prisma = new PrismaClient();
-const redis = new Redis(config.redisUrl);
+
+// Redis with error handling
+let redis: Redis | null = null;
+try {
+  redis = new Redis(config.redisUrl, {
+    maxRetriesPerRequest: 1,
+    connectTimeout: 5000,
+    lazyConnect: true,
+  });
+  redis.on('error', (err) => {
+    console.error('[redis] Connection error:', err.message);
+  });
+} catch (e) {
+  console.error('[redis] Failed to initialize:', e);
+}
+
+// Safe redis get/set
+async function redisGet(key: string): Promise<string | null> {
+  if (!redis) return null;
+  try {
+    return await redis.get(key);
+  } catch {
+    return null;
+  }
+}
+
+async function redisSetex(key: string, seconds: number, value: string): Promise<void> {
+  if (!redis) return;
+  try {
+    await redis.setex(key, seconds, value);
+  } catch {
+    // ignore
+  }
+}
 
 /**
  * Get dynamic daily pool based on treasury balance
  */
 async function getDailyPool(): Promise<number> {
-  const cached = await redis.get('daily_pool');
+  const cached = await redisGet('daily_pool');
   if (cached) return parseFloat(cached);
   
   // In production, query actual treasury balance
   // For now, use base config
   const pool = config.dailyPoolBase;
   
-  await redis.setex('daily_pool', 3600, pool.toString());
+  await redisSetex('daily_pool', 3600, pool.toString());
   return pool;
 }
 
@@ -64,10 +97,10 @@ export async function calculateDailyCredit(userId: number, wallet: string): Prom
   
   // Get circulating supply
   const cacheKey = `circulating_supply`;
-  let circulating = parseFloat(await redis.get(cacheKey) || '0');
+  let circulating = parseFloat(await redisGet(cacheKey) || '0');
   if (!circulating) {
     circulating = await getCirculatingSupply();
-    await redis.setex(cacheKey, 3600, circulating.toString());
+    await redisSetex(cacheKey, 3600, circulating.toString());
   }
   
   // Get daily pool
