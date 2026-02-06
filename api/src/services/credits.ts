@@ -28,14 +28,23 @@ async function getHoldingMultiplier(userId: number): Promise<number> {
   const user = await prisma.user.findUnique({ where: { id: userId } });
   if (!user) return 0;
   
-  // Check if ever sold (not diamond hands)
-  if (user.lastSoldAt || !user.isDiamondHands) {
-    // 80% for non-diamond hands
-    return 0.8;
+  const hoursSinceFirstSeen = (Date.now() - user.firstSeenAt.getTime()) / 3600000;
+  
+  // Check if ever sold
+  if (user.lastSoldAt) {
+    // Max 80% for non-diamond hands
+    const multiplier = Math.min(0.8, 0.1 + (hoursSinceFirstSeen * 0.04));
+    
+    // Check cooldown (30 min after sell)
+    const hoursSinceSold = (Date.now() - user.lastSoldAt.getTime()) / 3600000;
+    if (hoursSinceSold < 0.5) return 0;
+    
+    return multiplier;
   }
   
-  // Diamond hands: 100%
-  return 1.0;
+  // Diamond hands: up to 100%
+  if (hoursSinceFirstSeen < 0.083) return 0; // First 5 min warmup
+  return Math.min(1.0, 0.1 + ((hoursSinceFirstSeen - 0.083) * 0.04));
 }
 
 /**
@@ -129,9 +138,13 @@ export async function deductCredit(userId: number, amount: number): Promise<bool
  * Get full credit info for a user
  */
 export async function getCreditInfo(userId: number, wallet: string) {
+  console.log(`[credits] getCreditInfo for userId=${userId}, wallet=${wallet}`);
+  
   const { daily, multiplier, balance } = await calculateDailyCredit(userId, wallet);
   const used = await getTodayUsage(userId);
   const remaining = Math.max(0, daily - used);
+  
+  console.log(`[credits] result: balance=${balance}, daily=${daily}, multiplier=${multiplier}, used=${used}, remaining=${remaining}`);
   
   return {
     balance,
