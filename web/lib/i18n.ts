@@ -87,13 +87,44 @@ export const translations = {
     faq5Q: 'Is my conversation data safe?',
     faq5A: '🔒 Absolutely private! We don\'t log, store, or analyze any conversation data. All requests are forwarded directly to upstream APIs. Your privacy is our priority.',
     
-    // Wallet
-    walletSelect: 'Select Wallet',
-    walletConnect: 'Connect Wallet',
-    walletConnecting: 'Connecting...',
-    walletCopyAddress: 'Copy Address',
-    walletChange: 'Change Wallet',
-    walletDisconnect: 'Disconnect',
+    // Wallet Panel
+    walletLoading: 'Loading wallet data...',
+    walletError: 'Error',
+    walletDismiss: 'Dismiss',
+    connectedWallet: 'Connected Wallet',
+    copyAddress: 'Copy Address',
+    copied: 'Copied!',
+    disconnect: 'Disconnect',
+    fuelHolding: '$FUEL Holding',
+    dailyCredit: 'Daily Credit',
+    usedToday: 'Used Today',
+    remaining: 'Remaining',
+    resetsAtMidnight: 'resets at midnight UTC',
+    buyToEarnCredits: 'Buy $FUEL to earn credits →',
+    holdToEarn: 'Hold $FUEL to earn',
+    ofDaily: 'of {amount} daily',
+    loadingBalance: 'Refreshing...',
+    noTokens: 'No $FUEL tokens found',
+    buyToUnlock: 'Buy $FUEL to unlock AI credits.',
+    yourApiKey: 'Your API Key',
+    regenerate: 'Regenerate',
+    apiKeyWarning: 'Keep this key secure. Regenerating will invalidate the current key.',
+    apiKeyRegenNote: 'Click Regenerate to get a new visible key (old key will be invalidated).',
+    generatingKey: 'Generating your API key...',
+    quickStart: 'Quick Start',
+    quickStartDesc: 'Use this API key to access 200+ AI models through our API endpoints.',
+    endpoint: 'Endpoint',
+    exampleCurl: 'Example cURL',
+    copy: 'Copy',
+    refreshBalance: 'Refresh balance',
+
+    // Stats
+    multiplier: 'Multiplier',
+    diamondHand: 'Diamond Hand',
+    neverTransferred: '(never transferred out)',
+
+    // Verification
+    verifyOnSolscan: 'Verify on Solscan',
 
     // Dashboard
     dashConnectWallet: 'Connect Your Wallet',
@@ -218,13 +249,44 @@ export const translations = {
     faq5Q: '我的对话数据安全吗？',
     faq5A: '🔒 绝对隐私！我们不会记录、存储或分析任何对话数据。所有请求直接转发至上游 API，你的隐私由我们全力守护。',
     
-    // Wallet
-    walletSelect: '选择钱包',
-    walletConnect: '连接钱包',
-    walletConnecting: '连接中...',
-    walletCopyAddress: '复制地址',
-    walletChange: '更换钱包',
-    walletDisconnect: '断开连接',
+    // Wallet Panel
+    walletLoading: 'Loading wallet data...',
+    walletError: '错误',
+    walletDismiss: '关闭',
+    connectedWallet: '已连接钱包',
+    copyAddress: '复制地址',
+    copied: '已复制！',
+    disconnect: '断开连接',
+    fuelHolding: '$FUEL 持仓',
+    dailyCredit: '每日额度',
+    usedToday: '今日已用',
+    remaining: '剩余',
+    resetsAtMidnight: 'UTC 00:00 重置',
+    buyToEarnCredits: '购买 $FUEL 获取额度 →',
+    holdToEarn: '持有 $FUEL 获取额度',
+    ofDaily: '每日 {amount}',
+    loadingBalance: '刷新中...',
+    noTokens: '未检测到 $FUEL 代币',
+    buyToUnlock: '购买 $FUEL 解锁 AI 额度。',
+    yourApiKey: '你的 API 密钥',
+    regenerate: '重新生成',
+    apiKeyWarning: '请妥善保管此密钥。重新生成将使当前密钥失效。',
+    apiKeyRegenNote: '点击重新生成获取新密钥（旧密钥将失效）。',
+    generatingKey: '正在生成 API 密钥...',
+    quickStart: '快速开始',
+    quickStartDesc: '使用此 API 密钥访问我们 API 端点中的 200+ AI 模型。',
+    endpoint: '端点',
+    exampleCurl: '示例 cURL',
+    copy: '复制',
+    refreshBalance: '刷新余额',
+
+    // Stats
+    multiplier: '倍数',
+    diamondHand: '钻石手',
+    neverTransferred: '（从未转出）',
+
+    // Verification
+    verifyOnSolscan: '在 Solscan 验证',
 
     // Dashboard
     dashConnectWallet: '连接钱包',
