@@ -2,6 +2,7 @@
 
 import { FC, useState, useEffect } from 'react'
 import { useWallet } from '@solana/wallet-adapter-react'
+import type { WalletName } from '@solana/wallet-adapter-base'
 import { 
   PhantomWalletAdapter, 
   SolflareWalletAdapter, 
@@ -10,9 +11,6 @@ import {
 } from '@solana/wallet-adapter-wallets'
 import { X, Download, QrCode, Check } from 'lucide-react'
 import { useLocale } from '@/lib/LocaleContext'
-
-// 钱包名称类型
-type WalletName = 'Phantom' | 'Solflare' | 'CoinbaseWallet' | 'TrustWallet'
 
 // 钱包列表配置
 const WALLETS = [
