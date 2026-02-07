@@ -232,7 +232,7 @@ export function WalletPanel() {
     return (
       <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 text-center">
         <RefreshCw className="h-8 w-8 text-primary animate-spin mx-auto mb-4" />
-        <p className="text-gray-600">Loading wallet data...</p>
+        <p className="text-gray-600">{t('walletLoading')}</p>
       </div>
     )
   }
@@ -264,10 +264,10 @@ export function WalletPanel() {
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <span className="text-sm text-gray-500">Connected Wallet</span>
+                <span className="text-sm text-gray-500">{t('connectedWallet')}</span>
                 {credits?.isDiamondHands && hasTokens && (
                   <span className="inline-flex items-center gap-1 bg-yellow-100 text-yellow-800 text-xs font-semibold px-2 py-0.5 rounded-full">
-                    <Diamond className="h-3 w-3" /> Diamond Hand
+                    <Diamond className="h-3 w-3" /> {t('diamondHand')}
                   </span>
                 )}
               </div>
@@ -285,7 +285,7 @@ export function WalletPanel() {
             </div>
           </div>
           <button onClick={handleDisconnect} className="inline-flex items-center gap-2 px-4 py-2 border border-gray-200 text-gray-600 rounded-lg hover:bg-gray-50">
-            <LogOut className="h-4 w-4" /> Disconnect
+            <LogOut className="h-4 w-4" /> {t('disconnect')}
           </button>
         </div>
       </div>
@@ -294,42 +294,42 @@ export function WalletPanel() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
           <div className="flex items-center justify-between mb-4">
-            <span className="text-gray-500 text-sm">$FUEL Holding</span>
+            <span className="text-gray-500 text-sm">{t('fuelHolding')}</span>
             <button onClick={refreshBalance} disabled={loadingBalance} className="p-1 hover:bg-gray-100 rounded">
               <RefreshCw className={`h-4 w-4 text-gray-400 ${loadingBalance ? 'animate-spin' : ''}`} />
             </button>
           </div>
           <p className="text-3xl font-bold text-gray-900">{formatNumber(credits?.balance || 0)}</p>
           <p className="text-sm text-gray-500 mt-1">
-            {hasTokens ? <span className="text-yellow-600">💎 {Math.round((credits?.multiplier || 1) * 100)}% multiplier</span> : <a href={`https://raydium.io/swap/?inputMint=sol&outputMint=${TOKEN_CA}`} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">Buy $FUEL to earn credits</a>}
+            {hasTokens ? <span className="text-yellow-600">💎 {Math.round((credits?.multiplier || 1) * 100)}% {t('multiplier')}</span> : <a href={`https://raydium.io/swap/?inputMint=sol&outputMint=${TOKEN_CA}`} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">{t('buyToEarnCredits')}</a>}
           </p>
         </div>
 
         <div className="bg-gradient-to-br from-primary to-primary-dark rounded-2xl p-6 text-white">
           <div className="flex items-center justify-between mb-4">
-            <span className="text-white/80 text-sm">Daily Credit</span>
+            <span className="text-white/80 text-sm">{t('dailyCredit')}</span>
             <Zap className="h-5 w-5" />
           </div>
           <p className="text-3xl font-bold">{formatUSD(credits?.daily || 0)}</p>
-          <p className="text-sm text-white/80 mt-1">{hasTokens ? '💎 Diamond Hand Bonus' : 'Hold $FUEL to earn'}</p>
+          <p className="text-sm text-white/80 mt-1">{hasTokens ? '💎 Diamond Hand Bonus' : t('holdToEarn')}</p>
         </div>
 
         <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
           <div className="flex items-center justify-between mb-4">
-            <span className="text-gray-500 text-sm">Used Today</span>
+            <span className="text-gray-500 text-sm">{t('usedToday')}</span>
             <TrendingUp className="h-5 w-5 text-blue-500" />
           </div>
           <p className="text-3xl font-bold text-gray-900">{formatUSD(credits?.used || 0)}</p>
-          <p className="text-sm text-gray-500 mt-1">of {formatUSD(credits?.daily || 0)} daily</p>
+          <p className="text-sm text-gray-500 mt-1">{t('ofDaily', { amount: formatUSD(credits?.daily || 0) })}</p>
         </div>
 
-        <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray m-100">
+        <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
           <div className="flex items-center justify-between mb-4">
-            <span className="text-gray-500 text-sm">Remaining</span>
+            <span className="text-gray-500 text-sm">{t('remaining')}</span>
             <Clock className="h-5 w-5 text-green-500" />
           </div>
           <p className="text-3xl font-bold text-green-600">{formatUSD(credits?.remaining || 0)}</p>
-          <p className="text-sm text-gray-500 mt-1">Resets at midnight UTC</p>
+          <p className="text-sm text-gray-500 mt-1">{t('resetsAtMidnight')}</p>
         </div>
       </div>
 
@@ -339,11 +339,11 @@ export function WalletPanel() {
           <div className="flex items-center gap-3">
             <Flame className="h-5 w-5 text-blue-600" />
             <div className="flex-grow">
-              <p className="font-semibold text-blue-800">No $FUEL tokens detected</p>
-              <p className="text-sm text-blue-700">Purchase $FUEL to unlock free AI credits</p>
+              <p className="font-semibold text-blue-800">{t('noTokens')}</p>
+              <p className="text-sm text-blue-700">{t('buyToUnlock')}</p>
             </div>
             <a href={`https://raydium.io/swap/?inputMint=sol&outputMint=${TOKEN_CA}`} target="_blank" rel="noopener noreferrer" className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
-              Buy $FUEL
+              {t('buyFuel')}
             </a>
           </div>
         </div>
@@ -357,12 +357,12 @@ export function WalletPanel() {
               <div className="flex items-center gap-3">
                 <Key className="h-6 w-6 text-primary" />
                 <div>
-                  <h2 className="text-xl font-bold text-gray-900">Your API Key</h2>
-                  <p className="text-sm text-gray-500">Base URL: https://api.aifuel.fun/v1</p>
+                  <h2 className="text-xl font-bold text-gray-900">{t('yourApiKey')}</h2>
+                  <p className="text-sm text-gray-500">{t('endpoint')}: https://api.aifuel.fun/v1</p>
                 </div>
               </div>
               <button onClick={generateApiKey} disabled={regenerating} className="inline-flex items-center gap-2 px-4 py-2 border border-gray-200 text-gray-600 rounded-lg hover:bg-gray-50 disabled:opacity-50">
-                <RefreshCw className={`h-4 w-4 ${regenerating ? 'animate-spin' : ''}`} /> Regenerate
+                <RefreshCw className={`h-4 w-4 ${regenerating ? 'animate-spin' : ''}`} /> {t('regenerate')}
               </button>
             </div>
           </div>
@@ -377,7 +377,7 @@ export function WalletPanel() {
                   </button>
                 </div>
                 <div className="bg-amber-50 border border-amber-200 rounded-lg p-3">
-                  <p className="text-sm text-amber-800">⚠️ Keep this key secret! Do not share it publicly.</p>
+                  <p className="text-sm text-amber-800">{t('apiKeyWarning')}</p>
                 </div>
               </div>
             ) : apiKey ? (
@@ -387,13 +387,13 @@ export function WalletPanel() {
                   <span className="text-xs text-gray-500 flex-shrink-0">Created {new Date(apiKey.createdAt).toLocaleDateString()}</span>
                 </div>
                 <div className="bg-amber-50 border border-amber-200 rounded-lg p-3">
-                  <p className="text-sm text-amber-800">⚠️ You need the full API key to use the API.</p>
+                  <p className="text-sm text-amber-800">{t('apiKeyRegenNote')}</p>
                 </div>
               </div>
             ) : (
               <div className="text-center py-8">
                 <RefreshCw className="h-8 w-8 text-gray-300 mx-auto mb-4 animate-spin" />
-                <p className="text-gray-500">Generating your API key...</p>
+                <p className="text-gray-500">{t('generatingKey')}</p>
               </div>
             )}
           </div>
@@ -403,7 +403,7 @@ export function WalletPanel() {
       {/* Quick Start */}
       {(fullApiKey || apiKey) && hasTokens && (
         <div className="mt-8 bg-gray-50 rounded-xl p-6">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Quick Start</h3>
+          <h3 className="text-lg font-semibold text-gray-900 mb-4">{t('quickStart')}</h3>
           <pre className="bg-gray-900 text-green-400 p-4 rounded-lg overflow-x-auto text-sm">
 {`curl https://api.aifuel.fun/v1/chat/completions \\
   -H "Authorization: Bearer ${fullApiKey || 'YOUR_API_KEY'}" \\
