@@ -1,137 +1,27 @@
 'use client'
 
-import { useState, useEffect, useCallback, useRef } from 'react'
+import { useState, useRef } from 'react'
 import { useWallet } from '@solana/wallet-adapter-react'
 import { WalletButton } from '@/components/WalletButton'
-import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import Image from 'next/image'
-import bs58 from 'bs58'
-import { Zap, Shield, Coins, ArrowRight, Code, CheckCircle, Copy, Check, ExternalLink, ChevronDown, Calculator, LinkIcon, RefreshCw, HelpCircle, Star } from 'lucide-react'
-import { MODELS, TOKEN_CA, BUY_LINKS, WALLETS, CIRCULATING_SUPPLY, DAILY_CREDIT_POOL, API_BASE_URL } from '@/lib/constants'
+import { Copy, Check, ExternalLink } from 'lucide-react'
+import { TOKEN_CA } from '@/lib/constants'
 import { useLocale } from '@/lib/LocaleContext'
-import { Countdown, Logo, CountUp } from '@/components'
-
-// Pool open time: 2026/2/6 04:42:00 UTC+8
-const POOL_OPEN_DATE = new Date('2026-02-06T04:42:00+08:00')
-
-// Storage keys
-const TOKEN_KEY = 'aifuel_jwt'
-const API_KEY_STORAGE = 'aifuel_full_api_key'
-const WALLET_KEY = 'aifuel_wallet'
-
-const setToken = (t: string) => typeof window !== 'undefined' && localStorage.setItem(TOKEN_KEY, t)
-const getToken = () => typeof window !== 'undefined' ? localStorage.getItem(TOKEN_KEY) : null
-const clearToken = () => typeof window !== 'undefined' && localStorage.removeItem(TOKEN_KEY)
-
-const setStoredWallet = (w: string) => typeof window !== 'undefined' && localStorage.setItem(WALLET_KEY, w)
-const getStoredWallet = () => typeof window !== 'undefined' ? localStorage.getItem(WALLET_KEY) : null
-
-const clearAllData = () => {
-  if (typeof window === 'undefined') return
-  localStorage.removeItem(TOKEN_KEY)
-  localStorage.removeItem(API_KEY_STORAGE)
-  localStorage.removeItem(WALLET_KEY)
-}
+import { CountUp } from '@/components'
+import { WalletPanel } from '@/components/WalletPanel'
 
 export default function Home() {
-  const { connected, publicKey, signMessage } = useWallet()
-  const router = useRouter()
+  const { connected } = useWallet()
   const { t } = useLocale()
-  const [openFaq, setOpenFaq] = useState<number | null>(null)
-  const [authenticating, setAuthenticating] = useState(false)
-  const [authError, setAuthError] = useState<string | null>(null)
-  const authAttemptedRef = useRef<string | null>(null)
-  
   const [caCopied, setCaCopied] = useState(false)
-  const [fuelAmount, setFuelAmount] = useState<string>('')
-
-  // Authenticate with backend
-  const authenticate = useCallback(async () => {
-    if (!publicKey || !signMessage) return false
-    
-    const wallet = publicKey.toBase58()
-    
-    // Already attempted for this wallet
-    if (authAttemptedRef.current === wallet) return false
-    authAttemptedRef.current = wallet
-    
-    // Check if wallet changed - if so, clear old data
-    const storedWallet = getStoredWallet()
-    if (storedWallet && storedWallet !== wallet) {
-      clearAllData()
-    }
-    
-    // Already have valid token for this wallet
-    if (getToken() && storedWallet === wallet) {
-      router.push('/dashboard')
-      return true
-    }
-    
-    try {
-      setAuthenticating(true)
-      setAuthError(null)
-      
-      // Get nonce
-      const nonceRes = await fetch(`${API_BASE_URL}/v1/auth/nonce`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ wallet }),
-      })
-      const { message } = await nonceRes.json()
-      
-      // Sign message
-      const messageBytes = new TextEncoder().encode(message)
-      const signatureBytes = await signMessage(messageBytes)
-      const signature = bs58.encode(signatureBytes)
-      
-      // Connect
-      const connectRes = await fetch(`${API_BASE_URL}/v1/auth/connect`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ wallet, signature, message }),
-      })
-      const data = await connectRes.json()
-      
-      if (data.token) {
-        setToken(data.token)
-        setStoredWallet(wallet) // Store current wallet
-        router.push('/dashboard')
-        return true
-      } else {
-        throw new Error(data.error?.message || 'Authentication failed')
-      }
-    } catch (err) {
-      setAuthError(err instanceof Error ? err.message : 'Authentication failed')
-      authAttemptedRef.current = null // Allow retry
-      return false
-    } finally {
-      setAuthenticating(false)
-    }
-  }, [publicKey, signMessage, router])
-
-  // Handle enter dashboard button click
-  const handleEnterDashboard = async () => {
-    // Simply navigate to dashboard - wallet state will be handled there
-    router.push('/dashboard')
-  }
-  
-  // Calculate daily credit based on holding
-  const calculateCredit = (amount: number) => {
-    if (amount <= 0) return 0
-    const share = amount / CIRCULATING_SUPPLY
-    const dailyCredit = share * DAILY_CREDIT_POOL * 1.0 // 100% multiplier for diamond hand
-    return dailyCredit
-  }
-  
-  const estimatedCredit = calculateCredit(parseFloat(fuelAmount) || 0)
+  const [openFaq, setOpenFaq] = useState<number | null>(null)
   
   const copyCA = () => {
     navigator.clipboard.writeText(TOKEN_CA)
     setCaCopied(true)
     setTimeout(() => setCaCopied(false), 2000)
   }
-  
+
   const toggleFaq = (index: number) => {
     setOpenFaq(openFaq === index ? null : index)
   }
@@ -140,375 +30,193 @@ export default function Home() {
     <div>
       {/* Hero Section */}
       <section className="relative overflow-hidden bg-hero-gradient text-white py-24 md:py-32">
-        {/* Background decoration */}
         <div className="absolute inset-0 opacity-10">
           <div className="absolute top-20 left-10 w-72 h-72 bg-white rounded-full blur-3xl" />
           <div className="absolute bottom-20 right-10 w-96 h-96 bg-white rounded-full blur-3xl" />
         </div>
         
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-4xl mx-auto">
-            <h1 className="text-4xl md:text-6xl font-bold mb-4 leading-tight">
-              {t('fuelYourAI')}
-            </h1>
-
-            <p className="text-lg md:text-xl mb-6 text-white/90 max-w-2xl mx-auto">
-              {t('heroDesc').split('$FUEL')[0]}
-              <span className="font-bold text-yellow-300">$FUEL</span>
-              {t('heroDesc').split('$FUEL')[1]}
-            </p>
-
-            <div className="flex flex-col sm:flex-row gap-3 justify-center">
-              <a
-                href={BUY_LINKS.raydium}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-gradient-to-r from-yellow-400 to-yellow-500 text-black font-bold rounded-xl hover:from-yellow-500 hover:to-yellow-600 transition shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
-              >
-                <Logo size={24} />
-                {t('buyFuel')}
-                <ExternalLink className="h-4 w-4" />
-              </a>
-              {connected ? (
-                authenticating ? (
-                  <div className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-transparent border-2 border-white text-white font-semibold rounded-lg">
-                    <RefreshCw className="h-5 w-5 animate-spin" />
-                    Signing...
-                  </div>
-                ) : (
-                  <button
-                    onClick={handleEnterDashboard}
-                    className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-transparent border-2 border-white text-white font-semibold rounded-lg hover:bg-white/10 transition"
-                  >
-                    {t('goToDashboard')}
-                    <ArrowRight className="h-5 w-5" />
-                  </button>
-                )
-              ) : (
-                <WalletButton className="!bg-transparent !border-2 !border-white hover:!bg-white/10" />
-              )}
-            </div>
-            
-            {/* Auth Error */}
-            {authError && (
-              <div className="mt-4 bg-red-500/20 border border-red-400 text-red-100 px-4 py-2 rounded-lg inline-block">
-                {authError}
-              </div>
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h1 className="text-4xl md:text-6xl font-bold mb-6">
+            Hold $FUEL, Use AI Free
+          </h1>
+          <p className="text-xl md:text-2xl text-white/90 mb-8 max-w-3xl mx-auto">
+            Access 200+ AI models for free by holding $FUEL tokens on Solana. No subscriptions, no credit cards.
+          </p>
+          
+          {/* CTA Buttons */}
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-8">
+            {connected ? (
+              <>
+                <div className="text-white/80 mb-2 sm:mb-0 sm:mr-4">
+                  Wallet connected ✓
+                </div>
+              </>
+            ) : (
+              <WalletButton className="!bg-transparent !border-2 !border-white hover:!bg-white/10" />
             )}
-            
-            {/* CA Address */}
-            <div className="mt-8 inline-flex flex-col sm:flex-row items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-3 rounded-lg max-w-full">
-              <span className="text-sm text-white/70 shrink-0">CA:</span>
-              <div className="flex items-center gap-2 min-w-0">
-                <code className="text-xs sm:text-sm font-mono text-yellow-300 truncate max-w-[200px] sm:max-w-none">{TOKEN_CA}</code>
-                <button 
-                  onClick={copyCA}
-                  className="shrink-0 p-1.5 hover:bg-white/20 rounded transition"
-                  title="Copy CA"
-                >
-                  {caCopied ? <Check className="h-4 w-4 text-green-400" /> : <Copy className="h-4 w-4" />}
-                </button>
-              </div>
-            </div>
+            <a href={`https://raydium.io/swap/?inputMint=sol&outputMint=${TOKEN_CA}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-yellow-500 hover:bg-yellow-600 text-white font-semibold rounded-lg transition">
+              Buy $FUEL <ExternalLink className="h-4 w-4" />
+            </a>
+          </div>
 
-            {/* Stats */}
-            <div className="grid grid-cols-3 gap-8 mt-12 max-w-2xl mx-auto">
-              <div>
-                <p className="text-4xl font-bold flex items-center justify-center">
-                  <CountUp end={200} duration={2.5} suffix="+" className="tabular-nums" />
-                </p>
-                <p className="text-white/70">{t('aiModels')}</p>
-              </div>
-              <div>
-                <p className="text-4xl font-bold">$0</p>
-                <p className="text-white/70">{t('monthlyFee')}</p>
-              </div>
-              <div>
-                <p className="text-4xl font-bold">24/7</p>
-                <p className="text-white/70">{t('apiAccess')}</p>
-              </div>
+          {/* Show WalletPanel if connected */}
+          {connected && (
+            <div className="mt-8 max-w-4xl mx-auto">
+              <WalletPanel />
+            </div>
+          )}
+
+          {/* CA Address */}
+          <div className="mt-8 inline-flex flex-col sm:flex-row items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-3 rounded-lg max-w-full">
+            <span className="text-sm text-white/70 shrink-0">CA:</span>
+            <div className="flex items-center gap-2 min-w-0">
+              <code className="text-xs sm:text-sm font-mono text-yellow-300 truncate max-w-[200px] sm:max-w-none">{TOKEN_CA}</code>
+              <button 
+                onClick={copyCA}
+                className="shrink-0 p-1.5 hover:bg-white/20 rounded transition"
+                title="Copy CA"
+              >
+                {caCopied ? <Check className="h-4 w-4 text-green-400" /> : <Copy className="h-4 w-4 text-white/60" />}
+              </button>
             </div>
           </div>
         </div>
       </section>
 
       {/* Features Section */}
-      <section id="features" className="py-24 bg-gray-50">
+      <section className="py-24 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold text-gray-900 mb-4">
-              {t('whyAIFuel')}
+              Why AIFuel?
             </h2>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              {t('whyAIFuelDesc')}
+              A new paradigm for AI access. Hold tokens, use AI forever.
             </p>
           </div>
 
           <div className="grid md:grid-cols-3 gap-8">
-            {[
-              { icon: 'Zap', titleKey: 'feature1Title', descKey: 'feature1Desc' },
-              { icon: 'Shield', titleKey: 'feature2Title', descKey: 'feature2Desc' },
-              { icon: 'Coins', titleKey: 'feature3Title', descKey: 'feature3Desc' },
-            ].map((feature, index) => (
-              <div 
-                key={index}
-                className="bg-white p-8 rounded-2xl shadow-sm hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 border border-gray-100 group"
-              >
-                <div className="w-16 h-16 bg-gradient-to-br from-primary/10 to-primary/20 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
-                  {feature.icon === 'Zap' && <Zap className="h-8 w-8 text-primary" />}
-                  {feature.icon === 'Shield' && <Shield className="h-8 w-8 text-primary" />}
-                  {feature.icon === 'Coins' && <Coins className="h-8 w-8 text-primary" />}
-                </div>
-                <h3 className="text-xl font-bold text-gray-900 mb-3 group-hover:text-primary transition-colors">
-                  {t(feature.titleKey as any)}
-                </h3>
-                <p className="text-gray-600">
-                  {t(feature.descKey as any)}
-                </p>
+            <div className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100">
+              <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-4">
+                <Zap className="h-6 w-6 text-primary" />
               </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* How It Works */}
-      <section className="py-24">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">
-              {t('howItWorks')}
-            </h2>
-            <p className="text-xl text-gray-600">
-              {t('threeSteps')}
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-8">
-            {[
-              { step: '1', titleKey: 'step1Title', descKey: 'step1Desc' },
-              { step: '2', titleKey: 'step2Title', descKey: 'step2Desc' },
-              { step: '3', titleKey: 'step3Title', descKey: 'step3Desc' },
-            ].map((item, index) => (
-              <div key={index} className="text-center">
-                <div className="w-16 h-16 bg-primary text-white text-2xl font-bold rounded-full flex items-center justify-center mx-auto mb-6">
-                  {item.step}
-                </div>
-                <h3 className="text-xl font-bold text-gray-900 mb-3">
-                  {t(item.titleKey as any)}
-                </h3>
-                <p className="text-gray-600">
-                  {t(item.descKey as any)}
-                </p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Models Section */}
-      <section className="py-24 bg-dark text-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold mb-4">
-              {t('modelsTitle')}
-            </h2>
-            <p className="text-xl text-gray-400">
-              {t('modelsDesc')}
-            </p>
-          </div>
-
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {MODELS.map((model, index) => (
-              <div 
-                key={index}
-                className="bg-dark-light p-4 rounded-xl border border-gray-800 hover:border-primary/50 transition"
-              >
-                <p className="font-semibold text-white">{model.name}</p>
-                <p className="text-sm text-gray-400">{model.provider}</p>
-              </div>
-            ))}
-          </div>
-
-          <p className="text-center text-gray-400 mt-8">
-            <a href="/models" className="hover:text-primary transition underline">
-              {t('moreModels')}
-            </a>
-          </p>
-        </div>
-      </section>
-
-      {/* Pricing Section */}
-      <section id="pricing" className="py-24">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">
-              {t('simpleCreditSystem')}
-            </h2>
-            <p className="text-xl text-gray-600">
-              {t('moreTokensMoreCredits')}
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto">
-            {[
-              { tokens: '100K', daily: '$0.20', labelKey: 'starter' },
-              { tokens: '1M', daily: '$2.00', labelKey: 'builder', featured: true },
-              { tokens: '10M', daily: '$20.00', labelKey: 'pro' },
-            ].map((tier, index) => (
-              <div 
-                key={index}
-                className={`p-8 rounded-2xl border-2 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl ${
-                  tier.featured 
-                    ? 'border-primary bg-gradient-to-br from-primary/5 to-primary/10 shadow-lg scale-105 hover:scale-105' 
-                    : 'border-gray-200 bg-white hover:border-primary/50'
-                }`}
-              >
-                {tier.featured && (
-                  <span className="inline-block bg-gradient-to-r from-primary to-primary-dark text-white text-xs font-bold px-3 py-1 rounded-full mb-4 shadow-md">
-                    {t('popular')}
-                  </span>
-                )}
-                <p className="text-sm text-gray-500 mb-2">{t(tier.labelKey as any)}</p>
-                <p className="text-3xl font-bold text-gray-900 mb-1">
-                  {tier.tokens} <span className="text-lg font-normal">$FUEL</span>
-                </p>
-                <p className="text-primary text-xl font-semibold mb-6">
-                  {tier.daily}{t('perDay')}
-                </p>
-                <ul className="space-y-3 text-sm text-gray-600">
-                  <li className="flex items-center gap-2">
-                    <CheckCircle className="h-4 w-4 text-green-500" />
-                    {t('allModels')}
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <CheckCircle className="h-4 w-4 text-green-500" />
-                    {t('dailyRefresh')}
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <CheckCircle className="h-4 w-4 text-green-500" />
-                    {t('sdkCompatible')}
-                  </li>
-                </ul>
-              </div>
-            ))}
-          </div>
-
-          <p className="text-center text-gray-500 mt-8">
-            {t('formula')}
-          </p>
-        </div>
-      </section>
-
-      {/* Credit Calculator & On-Chain Proof Section */}
-      <section className="py-24 bg-gray-50">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid md:grid-cols-2 gap-8">
-            
-            {/* Credit Calculator */}
-            <div className="bg-white rounded-2xl p-8 shadow-sm border border-gray-200">
-              <div className="flex items-center gap-3 mb-6">
-                <div className="p-3 bg-primary/10 rounded-xl">
-                  <Calculator className="h-6 w-6 text-primary" />
-                </div>
-                <div>
-                  <h3 className="text-2xl font-bold text-gray-900">{t('creditCalculator')}</h3>
-                  <p className="text-gray-500">{t('creditCalculatorDesc')}</p>
-                </div>
-              </div>
-              
-              <div className="space-y-6">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    {t('yourHolding')}
-                  </label>
-                  <input
-                    type="number"
-                    value={fuelAmount}
-                    onChange={(e) => setFuelAmount(e.target.value)}
-                    placeholder={t('enterAmount')}
-                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary focus:outline-none transition text-lg shadow-sm"
-                  />
-                </div>
-
-                <div className="bg-gradient-to-r from-primary/5 to-primary/10 rounded-2xl p-6 border-2 border-primary/20 shadow-lg">
-                  <div className="text-sm text-gray-600 mb-1">{t('estimatedDaily')}</div>
-                  <div className="text-4xl font-bold text-primary">
-                    ${estimatedCredit.toFixed(2)}
-                    <span className="text-lg text-gray-500 ml-1">{t('perDay')}</span>
-                  </div>
-                  <div className="text-sm text-gray-500 mt-2">
-                    {t('multiplier')}: <span className="text-green-600 font-semibold">💎 100% {t('diamondHand')}</span> {t('neverTransferred')}
-                  </div>
-                </div>
-                
-                <div className="text-xs text-gray-400 bg-gray-50 rounded-lg p-3">
-                  {t('formula')}
-                </div>
-              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-2">200+ AI Models</h3>
+              <p className="text-gray-600">
+                Access GPT-4o, Claude, Gemini, DeepSeek and more through a single API endpoint.
+              </p>
             </div>
             
-            {/* On-Chain Proof */}
-            <div className="bg-white rounded-2xl p-8 shadow-sm border border-gray-200">
-              <div className="flex items-center gap-3 mb-6">
-                <div className="p-3 bg-gradient-to-br from-green-100 to-green-50 rounded-xl">
-                  <Star className="h-6 w-6 text-green-600" />
-                </div>
-                <div>
-                  <h3 className="text-2xl font-bold text-gray-900">{t('onChainProof')}</h3>
-                  <p className="text-gray-500">{t('onChainDesc')}</p>
-                </div>
+            <div className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100">
+              <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-4">
+                <Shield className="h-6 w-6 text-primary" />
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-2">Hold, Don't Pay</h3>
+              <p className="text-gray-600">
+                Your tokens stay in your wallet. No subscriptions, no monthly fees, no credit cards.
+              </p>
+            </div>
+            
+            <div className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100">
+              <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-4">
+                <Coins className="h-6 w-6 text-primary" />
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-2">Transparent Credits</h3>
+              <p className="text-gray-600">
+                Daily credits based on your holdings. Formula is public, treasury is on-chain.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Models Preview Section */}
+      <section className="py-24 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold text-gray-900 mb-4">200+ AI Models</h2>
+            <p className="text-xl text-gray-600">All the models you need, one API endpoint</p>
+          </div>
+          
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            {MODELS.slice(0, 8).map((model) => (
+              <div key={model.id} className="bg-gray-50 rounded-xl p-6 text-center border border-gray-100">
+                <p className="font-semibold text-gray-900">{model.name}</p>
+                <p className="text-sm text-gray-500">{model.provider}</p>
+              </div>
+            ))}
+          </div>
+          
+          <div className="text-center mt-8">
+            <Link href="/models" className="inline-flex items-center gap-2 text-primary hover:text-primary-dark font-medium">
+              View all 200+ models <ExternalLink className="h-4 w-4" />
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* Pricing/How it works */}
+      <section id="pricing" className="py-24 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold text-gray-900 mb-4">How It Works</h2>
+            <p className="text-xl text-gray-600">Three simple steps to free AI</p>
+          </div>
+          
+          <div className="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+            <div className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100 text-center">
+              <div className="w-16 h-16 rounded-full bg-primary text-white text-2xl font-bold flex items-center justify-center mx-auto mb-4">1</div>
+              <h3 className="text-xl font-bold text-gray-900 mb-2">Buy $FUEL</h3>
+              <p className="text-gray-600">Get $FUEL tokens on Raydium or Jupiter. Your tokens stay in your wallet.</p>
+            </div>
+            
+            <div className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100 text-center">
+              <div className="w-16 h-16 rounded-full bg-primary text-white text-2xl font-bold flex items-center justify-center mx-auto mb-4">2</div>
+              <h3 className="text-xl font-bold text-gray-900 mb-2">Connect Wallet</h3>
+              <p className="text-gray-600">Connect your Phantom or Solflare wallet to aifuel.fun and get your API key.</p>
+            </div>
+            
+            <div className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100 text-center">
+              <div className="w-16 h-16 rounded-full bg-primary text-white text-2xl font-bold flex items-center justify-center mx-auto mb-4">3</div>
+              <h3 className="text-xl font-bold text-gray-900 mb-2">Use AI Free</h3>
+              <p className="text-gray-600">Call our API like OpenAI. Daily credits based on your token holdings.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Credit Calculator */}
+      <section className="py-24 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="max-w-2xl mx-auto bg-gray-50 rounded-2xl p-8 border border-gray-100">
+            <h2 className="text-2xl font-bold text-gray-900 mb-4 text-center">Credit Calculator</h2>
+            <p className="text-gray-600 text-center mb-6">See how much daily credit you can earn</p>
+            
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Your $FUEL Holding</label>
+                <input
+                  type="number"
+                  value={fuelAmount}
+                  onChange={(e) => setFuelAmount(e.target.value)}
+                  placeholder="e.g. 1000000"
+                  className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:ring-2 focus:ring-primary focus:border-transparent"
+                />
               </div>
               
-              <div className="space-y-3">
-                {/* Token Contract */}
-                <a
-                  href={`https://solscan.io/token/${TOKEN_CA}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center justify-between p-4 bg-gradient-to-r from-gray-50 to-gray-100 rounded-xl hover:from-green-50 hover:to-green-100 transition group border border-transparent hover:border-green-200"
-                >
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 bg-gradient-to-br from-yellow-400 to-yellow-500 rounded-full flex items-center justify-center text-black text-xs font-bold">
-                      $FUEL
-                    </div>
-                    <div>
-                      <div className="font-medium text-gray-900">{t('tokenContract')}</div>
-                      <div className="text-xs font-mono text-gray-500 truncate max-w-[200px]">{TOKEN_CA}</div>
-                    </div>
-                  </div>
-                  <ExternalLink className="h-4 w-4 text-gray-400 group-hover:text-green-600" />
-                </a>
-                
-                {/* Wallets */}
-                {Object.values(WALLETS).map((wallet) => (
-                  <a
-                    key={wallet.address}
-                    href={`https://solscan.io/account/${wallet.address}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center justify-between p-4 bg-gray-50 rounded-xl hover:bg-primary/5 transition group"
-                  >
-                    <div>
-                      <div className="font-medium text-gray-900">{wallet.name}</div>
-                      <div className="text-xs font-mono text-green-600 font-semibold">
-                        {wallet.amount} $FUEL
-                      </div>
-                    </div>
-                    <ExternalLink className="h-4 w-4 text-gray-400 group-hover:text-primary" />
-                  </a>
-                ))}
-              </div>
+              {fuelAmount && parseFloat(fuelAmount) > 0 && (
+                <div className="bg-primary/10 rounded-lg p-4">
+                  <p className="text-lg font-semibold text-gray-900">
+                    Estimated Daily Credit: <span className="text-primary text-2xl">${formatUSD(calculateCredit(parseFloat(fuelAmount)))}</span>
+                  </p>
+                  <p className="text-sm text-gray-600 mt-1">
+                    Multiplier: 💎 100% Diamond Hand (never transferred out)
+                  </p>
+                </div>
+              )}
               
-              <div className="mt-4 text-center">
-                <a
-                  href={`https://solscan.io/token/${TOKEN_CA}#holders`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-sm text-primary hover:underline inline-flex items-center gap-1 font-medium"
-                >
-                  {t('verifyOnSolscan')} <ExternalLink className="h-3 w-3" />
-                </a>
-              </div>
+              <p className="text-xs text-gray-500">
+                Formula: Daily Credit = (Your Balance / Circulating Supply) × Daily Pool. Hold >30 days +10% (up to 120%).
+              </p>
             </div>
           </div>
         </div>
@@ -517,42 +225,42 @@ export default function Home() {
       {/* FAQ Section */}
       <section className="py-24 bg-gray-50">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">
-              {t('faq')}
-            </h2>
-            <p className="text-xl text-gray-600">
-              {t('faqSubtitle')}
-            </p>
-          </div>
-
+          <h2 className="text-3xl font-bold text-gray-900 mb-8 text-center">FAQ</h2>
+          
           <div className="space-y-4">
             {[
-              { q: t('faq1Q'), a: t('faq1A') },
-              { q: t('faq2Q'), a: t('faq2A') },
-              { q: t('faq3Q'), a: t('faq3A') },
-              { q: t('faq4Q'), a: t('faq4A') },
-              { q: t('faq5Q'), a: t('faq5A') },
-            ].map((faq, index) => (
-              <div 
-                key={index}
-                className="bg-white rounded-xl border border-gray-200 overflow-hidden transition-all duration-300 hover:shadow-md"
-              >
+              {
+                q: 'How does AIFuel work?',
+                a: 'Hold $FUEL tokens in your wallet to earn daily AI credits. The more tokens you hold, the more credits you get. No subscriptions, no recurring payments.'
+              },
+              {
+                q: 'What is the Diamond Hand bonus?',
+                a: 'If you hold your tokens for more than 30 days without transferring, you get a 10% bonus (up to 120% with Diamond Hand status).'
+              },
+              {
+                q: 'Is my wallet safe?',
+                a: 'Absolutely. We only read your wallet balance - your tokens never leave your wallet. No approvals, no transfers, no risks.'
+              },
+              {
+                q: 'Which AI models are available?',
+                a: 'We provide access to 200+ models including GPT-4o, Claude 3.5, Gemini, DeepSeek, Llama, and more. All through a single OpenAI-compatible API.'
+              },
+              {
+                q: 'What happens when I run out of credits?',
+                a: 'Credits reset daily at midnight UTC. You can also increase your $FUEL holding to earn more credits. Diamond Hands get the full amount.'
+              },
+            ].map((faq, idx) => (
+              <div key={idx} className="bg-white rounded-xl border border-gray-100">
                 <button
-                  onClick={() => toggleFaq(index)}
-                  className="w-full px-6 py-4 text-left flex items-center gap-3 hover:bg-gray-50 transition"
+                  onClick={() => toggleFaq(idx)}
+                  className="w-full px-6 py-4 text-left flex items-center justify-between"
                 >
-                  <HelpCircle className="h-5 w-5 text-primary flex-shrink-0" />
                   <span className="font-semibold text-gray-900">{faq.q}</span>
-                  <ChevronDown 
-                    className={`h-5 w-5 text-gray-500 transition-transform ml-auto ${
-                      openFaq === index ? 'rotate-180' : ''
-                    }`}
-                  />
+                  <span className="text-gray-500">{openFaq === idx ? '−' : '+'}</span>
                 </button>
-                {openFaq === index && (
-                  <div className="px-6 pb-4 animate-fade-in">
-                    <p className="text-gray-600 leading-relaxed">{faq.a}</p>
+                {openFaq === idx && (
+                  <div className="px-6 pb-4">
+                    <p className="text-gray-600">{faq.a}</p>
                   </div>
                 )}
               </div>
@@ -561,35 +269,23 @@ export default function Home() {
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="py-24 bg-hero-gradient text-white">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-4xl font-bold mb-6">
-            {t('readyToFuel')}
-          </h2>
-          <p className="text-xl text-white/90 mb-8">
-            {t('joinFuture')}
-          </p>
-          {connected ? (
-            authenticating ? (
-              <div className="inline-flex items-center gap-2 px-8 py-4 bg-white text-primary font-semibold rounded-lg">
-                <RefreshCw className="h-5 w-5 animate-spin" />
-                Signing...
-              </div>
-            ) : (
-              <button
-                onClick={handleEnterDashboard}
-                className="inline-flex items-center gap-2 px-8 py-4 bg-white text-primary font-semibold rounded-lg hover:bg-gray-100 transition shadow-lg"
-              >
-                {t('goToDashboard')}
-                <ArrowRight className="h-5 w-5" />
-              </button>
-            )
-          ) : (
-            <WalletButton className="!bg-white !text-primary hover:!bg-gray-100" />
-          )}
+      {/* Footer */}
+      <footer className="bg-gray-900 text-gray-400 py-12">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+            <div className="flex items-center gap-2">
+              <Logo size={24} />
+              <span className="text-white font-bold">AIFuel</span>
+            </div>
+            <p>© 2026 AIFuel. All rights reserved.</p>
+            <div className="flex items-center gap-4">
+              <Link href="/docs" className="hover:text-white transition">Docs</Link>
+              <a href="https://github.com/aifuelfun/aifuel" target="_blank" rel="noopener noreferrer" className="hover:text-white transition">GitHub</a>
+              <a href={`https://t.me/aifuel_fun`} target="_blank" rel="noopener noreferrer" className="hover:text-white transition">Telegram</a>
+            </div>
+          </div>
         </div>
-      </section>
+      </footer>
     </div>
   )
 }
