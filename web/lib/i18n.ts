@@ -118,14 +118,6 @@ export const translations = {
     copy: 'Copy',
     refreshBalance: 'Refresh balance',
 
-    // Stats
-    multiplier: 'Multiplier',
-    diamondHand: 'Diamond Hand',
-    neverTransferred: '(never transferred out)',
-
-    // Verification
-    verifyOnSolscan: 'Verify on Solscan',
-
     // Dashboard
     dashConnectWallet: 'Connect Your Wallet',
     dashConnectDesc: 'Connect your wallet to access your dashboard',
