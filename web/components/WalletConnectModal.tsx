@@ -1,6 +1,7 @@
 'use client'
 
 import { FC, useState, useEffect } from 'react'
+import { createPortal } from 'react-dom'
 import { useWallet } from '@solana/wallet-adapter-react'
 import type { WalletName } from '@solana/wallet-adapter-base'
 import { 
@@ -69,98 +70,103 @@ export const WalletConnectModal: FC<Props> = ({ open, onClose }) => {
     onClose()
   }
 
-  return (
-    <div className="fixed inset-0 z-[70] flex items-center justify-center p-4 overflow-y-auto">
-      {/* 背景遮罩 */}
-      <div 
-        className="fixed inset-0 bg-black/60 backdrop-blur-sm z-10"
-        onClick={onClose}
-      />
-      
-      {/* 弹窗内容 - 居中对齐 */}
-      <div className="relative bg-white rounded-2xl shadow-xl w-full max-w-2xl max-h-[90vh] overflow-hidden mx-auto my-auto z-20">
-        {/* 头部 */}
-        <div className="bg-gradient-to-r from-primary to-primary-dark p-6 text-white">
-          <button 
-            onClick={onClose}
-            className="absolute top-3 right-3 p-1.5 hover:bg-white/20 rounded-full transition"
-          >
-            <X className="w-5 h-5" />
-          </button>
-          
-          <div className="text-center">
-            <h2 className="text-2xl font-bold mb-1.5">{t('walletConnect')}</h2>
-            <p className="text-white/90 text-sm">{t('walletConnectDesc')}</p>
-          </div>
+  const modalContent = (
+    <div className="relative bg-white rounded-2xl shadow-xl w-full max-w-2xl max-h-[90vh] overflow-hidden">
+      {/* 头部 */}
+      <div className="bg-gradient-to-r from-primary to-primary-dark p-6 text-white">
+        <button 
+          onClick={onClose}
+          className="absolute top-3 right-3 p-1.5 hover:bg-white/20 rounded-full transition"
+        >
+          <X className="w-5 h-5" />
+        </button>
+        
+        <div className="text-center">
+          <h2 className="text-2xl font-bold mb-1.5">{t('walletConnect')}</h2>
+          <p className="text-white/90 text-sm">{t('walletConnectDesc')}</p>
+        </div>
+      </div>
+
+      {/* 钱包列表 */}
+      <div className="p-6 overflow-y-auto max-h-[50vh]">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+          {WALLETS.map((wallet) => {
+            const isDetected = detectedWallets.has(wallet.name)
+            
+            return (
+              <button
+                key={wallet.name}
+                onClick={() => handleSelect(wallet.name)}
+                className={`relative flex flex-col items-center gap-3 p-5 rounded-xl border-2 transition-all hover:shadow-lg ${
+                  isDetected 
+                    ? 'border-primary bg-primary/5 hover:border-primary-dark' 
+                    : 'border-gray-200 hover:border-primary'
+                }`}
+              >
+                {/* 钱包图标 */}
+                <div className="w-16 h-16 rounded-xl flex items-center justify-center bg-white shadow-md p-2">
+                  <img src={wallet.icon} alt={wallet.name} className="w-full h-full object-contain" />
+                </div>
+                
+                {/* 钱包名称 */}
+                <div className="text-center">
+                  <h3 className="font-bold text-base text-gray-900">{wallet.name}</h3>
+                  {isDetected && (
+                    <span className="inline-flex items-center gap-1 mt-1 px-2.5 py-0.5 bg-green-100 text-green-700 text-xs font-medium rounded-full">
+                      <Check className="w-3 h-3" /> {t('installed')}
+                    </span>
+                  )}
+                </div>
+
+                {/* 未安装时的下载提示 */}
+                {!isDetected && (
+                  <div className="absolute bottom-1.5 right-1.5">
+                    <a
+                      href={wallet.downloadUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={(e) => e.stopPropagation()}
+                      className="p-1.5 hover:bg-gray-100 rounded-full transition"
+                      title={t('downloadWallet')}
+                    >
+                      <Download className="w-4 h-4 text-gray-500" />
+                    </a>
+                  </div>
+                )}
+              </button>
+            )
+          })}
         </div>
 
-        {/* 钱包列表 */}
-        <div className="p-6 overflow-y-auto max-h-[50vh]">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-            {WALLETS.map((wallet) => {
-              const isDetected = detectedWallets.has(wallet.name)
-              
-              return (
-                <button
-                  key={wallet.name}
-                  onClick={() => handleSelect(wallet.name)}
-                  className={`relative flex flex-col items-center gap-3 p-5 rounded-xl border-2 transition-all hover:shadow-lg ${
-                    isDetected 
-                      ? 'border-primary bg-primary/5 hover:border-primary-dark' 
-                      : 'border-gray-200 hover:border-primary'
-                  }`}
-                >
-                  {/* 钱包图标 */}
-                  <div className="w-16 h-16 rounded-xl flex items-center justify-center bg-white shadow-md p-2">
-                    <img src={wallet.icon} alt={wallet.name} className="w-full h-full object-contain" />
-                  </div>
-                  
-                  {/* 钱包名称 */}
-                  <div className="text-center">
-                    <h3 className="font-bold text-base text-gray-900">{wallet.name}</h3>
-                    {isDetected && (
-                      <span className="inline-flex items-center gap-1 mt-1 px-2.5 py-0.5 bg-green-100 text-green-700 text-xs font-medium rounded-full">
-                        <Check className="w-3 h-3" /> {t('installed')}
-                      </span>
-                    )}
-                  </div>
-
-                  {/* 未安装时的下载提示 */}
-                  {!isDetected && (
-                    <div className="absolute bottom-1.5 right-1.5">
-                      <a
-                        href={wallet.downloadUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        onClick={(e) => e.stopPropagation()}
-                        className="p-1.5 hover:bg-gray-100 rounded-full transition"
-                        title={t('downloadWallet')}
-                      >
-                        <Download className="w-4 h-4 text-gray-500" />
-                      </a>
-                    </div>
-                  )}
-                </button>
-              )
-            })}
-          </div>
-
-          {/* 移动端钱包提示 */}
-          <div className="mt-6 p-3 bg-gray-50 rounded-lg">
-            <div className="flex items-center gap-2.5">
-              <QrCode className="w-5 h-5 text-primary" />
-              <div className="text-xs text-gray-600">
-                {t('mobileWalletHint')}
-              </div>
+        {/* 移动端钱包提示 */}
+        <div className="mt-6 p-3 bg-gray-50 rounded-lg">
+          <div className="flex items-center gap-2.5">
+            <QrCode className="w-5 h-5 text-primary" />
+            <div className="text-xs text-gray-600">
+              {t('mobileWalletHint')}
             </div>
           </div>
         </div>
+      </div>
 
-        {/* 底部提示 */}
-        <div className="bg-gray-50 px-6 py-3 text-center text-xs text-gray-500">
-          {t('connectAgreement')}
-        </div>
+      {/* 底部提示 */}
+      <div className="bg-gray-50 px-6 py-3 text-center text-xs text-gray-500">
+        {t('connectAgreement')}
       </div>
     </div>
+  )
+
+  return createPortal(
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 overflow-y-auto">
+      {/* 背景遮罩 */}
+      <div 
+        className="fixed inset-0 bg-black/60 backdrop-blur-sm"
+        onClick={onClose}
+      />
+      
+      {/* 弹窗内容 - 使用 Portal 挂载到 body */}
+      {modalContent}
+    </div>,
+    document.body
   )
 }
