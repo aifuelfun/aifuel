@@ -78,25 +78,25 @@ export const WalletConnectModal: FC<Props> = ({ open, onClose }) => {
       />
       
       {/* 弹窗内容 */}
-      <div className="relative bg-white rounded-3xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-hidden">
+      <div className="relative bg-white rounded-2xl shadow-xl w-full max-w-lg max-h-[85vh] overflow-hidden">
         {/* 头部 */}
-        <div className="bg-gradient-to-r from-primary to-primary-dark p-8 text-white">
+        <div className="bg-gradient-to-r from-primary to-primary-dark p-6 text-white">
           <button 
             onClick={onClose}
-            className="absolute top-4 right-4 p-2 hover:bg-white/20 rounded-full transition"
+            className="absolute top-3 right-3 p-1.5 hover:bg-white/20 rounded-full transition"
           >
-            <X className="w-6 h-6" />
+            <X className="w-5 h-5" />
           </button>
           
           <div className="text-center">
-            <h2 className="text-3xl font-bold mb-2">选择钱包</h2>
-            <p className="text-white/90">连接您的 Solana 钱包以使用 AIFuel</p>
+            <h2 className="text-2xl font-bold mb-1.5">选择钱包</h2>
+            <p className="text-white/90 text-sm">连接您的 Solana 钱包以使用 AIFuel</p>
           </div>
         </div>
 
         {/* 钱包列表 */}
-        <div className="p-8 overflow-y-auto max-h-[60vh]">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="p-6 overflow-y-auto max-h-[50vh]">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             {WALLETS.map((wallet) => {
               const isDetected = detectedWallets.has(wallet.name)
               
@@ -104,7 +104,7 @@ export const WalletConnectModal: FC<Props> = ({ open, onClose }) => {
                 <button
                   key={wallet.name}
                   onClick={() => handleSelect(wallet.name)}
-                  className={`relative flex flex-col items-center gap-4 p-6 rounded-2xl border-2 transition-all hover:shadow-lg ${
+                  className={`relative flex flex-col items-center gap-3 p-5 rounded-xl border-2 transition-all hover:shadow-lg ${
                     isDetected 
                       ? 'border-primary bg-primary/5 hover:border-primary-dark' 
                       : 'border-gray-200 hover:border-primary'
@@ -112,7 +112,7 @@ export const WalletConnectModal: FC<Props> = ({ open, onClose }) => {
                 >
                   {/* 钱包图标 */}
                   <div 
-                    className="w-20 h-20 rounded-2xl flex items-center justify-center text-white text-2xl font-bold shadow-lg"
+                    className="w-16 h-16 rounded-xl flex items-center justify-center text-white text-xl font-bold shadow-md"
                     style={{ backgroundColor: wallet.color }}
                   >
                     {wallet.name.charAt(0)}
@@ -120,9 +120,9 @@ export const WalletConnectModal: FC<Props> = ({ open, onClose }) => {
                   
                   {/* 钱包名称 */}
                   <div className="text-center">
-                    <h3 className="font-bold text-lg text-gray-900">{wallet.name}</h3>
+                    <h3 className="font-bold text-base text-gray-900">{wallet.name}</h3>
                     {isDetected && (
-                      <span className="inline-flex items-center gap-1 mt-1 px-3 py-1 bg-green-100 text-green-700 text-xs font-medium rounded-full">
+                      <span className="inline-flex items-center gap-1 mt-1 px-2.5 py-0.5 bg-green-100 text-green-700 text-xs font-medium rounded-full">
                         <Check className="w-3 h-3" /> 已安装
                       </span>
                     )}
@@ -130,16 +130,16 @@ export const WalletConnectModal: FC<Props> = ({ open, onClose }) => {
 
                   {/* 未安装时的下载提示 */}
                   {!isDetected && (
-                    <div className="absolute bottom-2 right-2">
+                    <div className="absolute bottom-1.5 right-1.5">
                       <a
                         href={wallet.downloadUrl}
                         target="_blank"
                         rel="noopener noreferrer"
                         onClick={(e) => e.stopPropagation()}
-                        className="p-2 hover:bg-gray-100 rounded-full transition"
+                        className="p-1.5 hover:bg-gray-100 rounded-full transition"
                         title="下载钱包"
                       >
-                        <Download className="w-5 h-5 text-gray-500" />
+                        <Download className="w-4 h-4 text-gray-500" />
                       </a>
                     </div>
                   )}
@@ -149,10 +149,10 @@ export const WalletConnectModal: FC<Props> = ({ open, onClose }) => {
           </div>
 
           {/* 移动端钱包提示 */}
-          <div className="mt-8 p-4 bg-gray-50 rounded-xl">
-            <div className="flex items-center gap-3">
-              <QrCode className="w-6 h-6 text-primary" />
-              <div className="text-sm text-gray-600">
+          <div className="mt-6 p-3 bg-gray-50 rounded-lg">
+            <div className="flex items-center gap-2.5">
+              <QrCode className="w-5 h-5 text-primary" />
+              <div className="text-xs text-gray-600">
                 在手机上使用？扫描二维码或访问钱包官网
               </div>
             </div>
@@ -160,7 +160,7 @@ export const WalletConnectModal: FC<Props> = ({ open, onClose }) => {
         </div>
 
         {/* 底部提示 */}
-        <div className="bg-gray-50 px-8 py-4 text-center text-sm text-gray-500">
+        <div className="bg-gray-50 px-6 py-3 text-center text-xs text-gray-500">
           连接即表示您同意我们的服务条款
         </div>
       </div>
