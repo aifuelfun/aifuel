@@ -29,7 +29,7 @@ export const WalletProvider: FC<Props> = ({ children }) => {
 
   return (
     <ConnectionProvider endpoint={SOLANA_RPC_URL}>
-      <SolanaWalletProvider wallets={wallets} autoConnect>
+      <SolanaWalletProvider wallets={wallets} autoConnect storage={localStorage}>
         {children}
       </SolanaWalletProvider>
     </ConnectionProvider>
