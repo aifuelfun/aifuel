@@ -1,4 +1,11 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
-  <rect width="100" height="100" rx="20" fill="#3375BB"/>
-  <text x="50" y="68" font-family="Arial, sans-serif" font-size="50" font-weight="bold" fill="white" text-anchor="middle">T</text>
+  <defs>
+    <linearGradient id="trust-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#41A69E"/>
+      <stop offset="100%" style="stop-color:#2D8B83"/>
+    </linearGradient>
+  </defs>
+  <rect width="100" height="100" rx="20" fill="url(#trust-grad)"/>
+  <polygon points="50,30 65,70 35,70" fill="white"/>
+  <rect x="45" y="55" width="10" height="15" fill="#41A69E"/>
 </svg>

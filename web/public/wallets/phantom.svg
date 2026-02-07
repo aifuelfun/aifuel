@@ -1,4 +1,10 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
-  <rect width="100" height="100" rx="20" fill="#4A90E2"/>
-  <text x="50" y="68" font-family="Arial, sans-serif" font-size="50" font-weight="bold" fill="white" text-anchor="middle">P</text>
+  <defs>
+    <linearGradient id="phantom-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#4A90E2"/>
+      <stop offset="100%" style="stop-color:#2C5AA0"/>
+    </linearGradient>
+  </defs>
+  <rect width="100" height="100" rx="20" fill="url(#phantom-grad)"/>
+  <path d="M50 25 C35 25 25 35 25 50 C25 65 35 75 50 75 C65 75 75 65 75 50 C75 35 65 25 50 25 Z M50 45 C55 45 58 48 58 52 C58 56 55 58 52 58 C50 58 48 56 48 52 C48 48 50 45 50 45 Z" fill="white"/>
 </svg>
