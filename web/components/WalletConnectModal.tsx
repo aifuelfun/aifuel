@@ -7,6 +7,12 @@ import type { WalletName } from '@solana/wallet-adapter-base'
 import { X, Check } from 'lucide-react'
 import { useLocale } from '@/lib/LocaleContext'
 
+// Trust Wallet 官方 SVG viewBox 是 1920x1080 宽屏，图标只占中间一小块，导致显示很小
+// 用裁剪过的本地版本替换
+const ICON_OVERRIDES: Record<string, string> = {
+  'Trust': '/wallets/trust.svg?v=5',
+}
+
 interface Props {
   open: boolean
   onClose: () => void
@@ -53,10 +59,10 @@ export const WalletConnectModal: FC<Props> = ({ open, onClose }) => {
                     : 'border-gray-200 hover:border-primary'
                 }`}
               >
-                {/* 钱包图标 - 统一尺寸，无内边距让图标填满 */}
+                {/* 钱包图标 - 统一尺寸 */}
                 <div className="w-12 h-12 rounded-lg flex items-center justify-center bg-white shadow-sm overflow-hidden">
                   <img 
-                    src={wallet.adapter.icon} 
+                    src={ICON_OVERRIDES[wallet.adapter.name] || wallet.adapter.icon} 
                     alt={wallet.adapter.name} 
                     className="w-10 h-10 object-contain" 
                   />
