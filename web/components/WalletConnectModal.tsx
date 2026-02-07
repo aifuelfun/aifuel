@@ -4,42 +4,8 @@ import { FC, useState, useEffect } from 'react'
 import { createPortal } from 'react-dom'
 import { useWallet } from '@solana/wallet-adapter-react'
 import type { WalletName } from '@solana/wallet-adapter-base'
-import { 
-  PhantomWalletAdapter, 
-  SolflareWalletAdapter, 
-  CoinbaseWalletAdapter, 
-  TrustWalletAdapter 
-} from '@solana/wallet-adapter-wallets'
 import { X, Download, QrCode, Check } from 'lucide-react'
 import { useLocale } from '@/lib/LocaleContext'
-
-// 钱包列表配置
-const WALLETS = [
-  {
-    name: 'Phantom' as WalletName,
-    adapter: PhantomWalletAdapter,
-    icon: '/wallets/phantom.svg?v=3',
-    downloadUrl: 'https://phantom.app/'
-  },
-  {
-    name: 'Solflare' as WalletName,
-    adapter: SolflareWalletAdapter,
-    icon: '/wallets/solflare.svg?v=3',
-    downloadUrl: 'https://solflare.com/'
-  },
-  {
-    name: 'CoinbaseWallet' as WalletName,
-    adapter: CoinbaseWalletAdapter,
-    icon: '/wallets/coinbase.svg?v=3',
-    downloadUrl: 'https://www.coinbase.com/wallet'
-  },
-  {
-    name: 'TrustWallet' as WalletName,
-    adapter: TrustWalletAdapter,
-    icon: '/wallets/trust.svg?v=3',
-    downloadUrl: 'https://trustwallet.com/'
-  },
-]
 
 interface Props {
   open: boolean
@@ -49,19 +15,6 @@ interface Props {
 export const WalletConnectModal: FC<Props> = ({ open, onClose }) => {
   const { wallets, select } = useWallet()
   const { t } = useLocale()
-  const [detectedWallets, setDetectedWallets] = useState<Set<string>>(new Set())
-  const [selectedWallet, setSelectedWallet] = useState<string | null>(null)
-
-  // 检测已安装的钱包
-  useEffect(() => {
-    const detected = new Set<string>()
-    wallets.forEach(w => {
-      if (w.readyState === 'Installed') {
-        detected.add(w.adapter.name)
-      }
-    })
-    setDetectedWallets(detected)
-  }, [wallets])
 
   const handleSelect = (walletName: WalletName) => {
     select(walletName)
@@ -87,52 +40,36 @@ export const WalletConnectModal: FC<Props> = ({ open, onClose }) => {
         </div>
       </div>
 
-      {/* 钱包列表 */}
+      {/* 钱包列表 - 直接用 wallet adapter 提供的官方图标 */}
       <div className="p-6 overflow-y-auto max-h-[50vh]">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-          {WALLETS.map((wallet) => {
-            const isDetected = detectedWallets.has(wallet.name)
+          {wallets.map((wallet) => {
+            const isDetected = wallet.readyState === 'Installed'
             
             return (
               <button
-                key={wallet.name}
-                onClick={() => handleSelect(wallet.name)}
+                key={wallet.adapter.name}
+                onClick={() => handleSelect(wallet.adapter.name as WalletName)}
                 className={`relative flex flex-col items-center gap-3 p-5 rounded-xl border-2 transition-all hover:shadow-lg ${
                   isDetected 
                     ? 'border-primary bg-primary/5 hover:border-primary-dark' 
                     : 'border-gray-200 hover:border-primary'
                 }`}
               >
-                {/* 钱包图标 */}
+                {/* 钱包图标 - 直接用 adapter 自带的官方图标 */}
                 <div className="w-16 h-16 rounded-xl flex items-center justify-center bg-white shadow-md p-2">
-                  <img src={wallet.icon} alt={wallet.name} className="w-full h-full object-contain" />
+                  <img src={wallet.adapter.icon} alt={wallet.adapter.name} className="w-full h-full object-contain" />
                 </div>
                 
                 {/* 钱包名称 */}
                 <div className="text-center">
-                  <h3 className="font-bold text-base text-gray-900">{wallet.name}</h3>
+                  <h3 className="font-bold text-base text-gray-900">{wallet.adapter.name}</h3>
                   {isDetected && (
                     <span className="inline-flex items-center gap-1 mt-1 px-2.5 py-0.5 bg-green-100 text-green-700 text-xs font-medium rounded-full">
                       <Check className="w-3 h-3" /> {t('installed')}
                     </span>
                   )}
                 </div>
-
-                {/* 未安装时的下载提示 */}
-                {!isDetected && (
-                  <div className="absolute bottom-1.5 right-1.5">
-                    <a
-                      href={wallet.downloadUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      onClick={(e) => e.stopPropagation()}
-                      className="p-1.5 hover:bg-gray-100 rounded-full transition"
-                      title={t('downloadWallet')}
-                    >
-                      <Download className="w-4 h-4 text-gray-500" />
-                    </a>
-                  </div>
-                )}
               </button>
             )
           })}
@@ -163,8 +100,6 @@ export const WalletConnectModal: FC<Props> = ({ open, onClose }) => {
         className="fixed inset-0 bg-black/60 backdrop-blur-sm"
         onClick={onClose}
       />
-      
-      {/* 弹窗内容 - 使用 Portal 挂载到 body */}
       {modalContent}
     </div>,
     document.body
