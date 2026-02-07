@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { useWallet } from '@solana/wallet-adapter-react'
-import { Copy, Check, RefreshCw, LogOut, Key, Flame, Zap, TrendingUp, Clock, Diamond } from 'lucide-react'
+import { Copy, Check, RefreshCw, LogOut, Key, Flame, Zap, TrendingUp, Clock, Diamond, ExternalLink } from 'lucide-react'
 import { useLocale } from '@/lib/LocaleContext'
 import { API_BASE_URL, CIRCULATING_SUPPLY, DAILY_CREDIT_POOL, TOKEN_CA } from '@/lib/constants'
 import { shortenAddress, formatUSD, formatNumber } from '@/lib/utils'
