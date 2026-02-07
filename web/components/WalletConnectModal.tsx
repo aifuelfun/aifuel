@@ -73,12 +73,12 @@ export const WalletConnectModal: FC<Props> = ({ open, onClose }) => {
     <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 overflow-y-auto">
       {/* 背景遮罩 */}
       <div 
-        className="fixed inset-0 bg-black/60 backdrop-blur-sm"
+        className="fixed inset-0 bg-black/60 backdrop-blur-sm transition-opacity duration-300"
         onClick={onClose}
       />
       
-      {/* 弹窗内容 */}
-      <div className="relative bg-white rounded-2xl shadow-xl w-full max-w-lg max-h-[85vh] overflow-hidden">
+      {/* 弹窗内容 - 添加滑入动画 */}
+      <div className="relative bg-white rounded-2xl shadow-xl w-full max-w-lg max-h-[85vh] overflow-hidden transform transition-transform duration-300 ease-out animate-in slide-in-from-bottom-8">
         {/* 头部 */}
         <div className="bg-gradient-to-r from-primary to-primary-dark p-6 text-white">
           <button 
