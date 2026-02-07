@@ -76,7 +76,7 @@ export const WalletButton: FC<Props> = ({ className }) => {
     <div ref={ref} className="relative">
       <button
         onClick={() => setMenuOpen(!menuOpen)}
-        className={`inline-flex items-center gap-2 px-4 py-2 bg-gray-100 text-gray-900 font-medium rounded-lg hover:bg-gray-200 transition text-sm ${className || ''}`}
+        className={`inline-flex items-center gap-2 px-6 py-3 border-2 border-white hover:border-white/50 bg-white/10 text-white font-medium rounded-lg hover:bg-white/20 transition text-sm ${className || ''}`}
       >
         {wallet?.adapter.icon && (
           <img src={wallet.adapter.icon} alt="" className="h-4 w-4" />
