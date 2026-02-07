@@ -17,25 +17,25 @@ const WALLETS = [
   {
     name: 'Phantom' as WalletName,
     adapter: PhantomWalletAdapter,
-    color: '#4A90E2',
+    icon: '/wallets/phantom.svg',
     downloadUrl: 'https://phantom.app/'
   },
   {
     name: 'Solflare' as WalletName,
     adapter: SolflareWalletAdapter,
-    color: '#E81C4F',
+    icon: '/wallets/solflare.svg',
     downloadUrl: 'https://solflare.com/'
   },
   {
     name: 'CoinbaseWallet' as WalletName,
     adapter: CoinbaseWalletAdapter,
-    color: '#0052FF',
+    icon: '/wallets/coinbase.svg',
     downloadUrl: 'https://www.coinbase.com/wallet'
   },
   {
     name: 'TrustWallet' as WalletName,
     adapter: TrustWalletAdapter,
-    color: '#3375BB',
+    icon: '/wallets/trust.svg',
     downloadUrl: 'https://trustwallet.com/'
   },
 ]
@@ -111,11 +111,8 @@ export const WalletConnectModal: FC<Props> = ({ open, onClose }) => {
                   }`}
                 >
                   {/* 钱包图标 */}
-                  <div 
-                    className="w-16 h-16 rounded-xl flex items-center justify-center text-white text-xl font-bold shadow-md"
-                    style={{ backgroundColor: wallet.color }}
-                  >
-                    {wallet.name.charAt(0)}
+                  <div className="w-16 h-16 rounded-xl flex items-center justify-center bg-white shadow-md p-2">
+                    <img src={wallet.icon} alt={wallet.name} className="w-full h-full object-contain" />
                   </div>
                   
                   {/* 钱包名称 */}
