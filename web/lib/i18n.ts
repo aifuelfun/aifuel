@@ -24,6 +24,13 @@ export const translations = {
     walletChange: 'Change Wallet',
     walletDisconnect: 'Disconnect',
 
+    // Wallet Modal
+    walletConnectDesc: 'Connect your Solana wallet to use AIFuel',
+    installed: 'Installed',
+    downloadWallet: 'Download Wallet',
+    mobileWalletHint: 'On mobile? Scan QR code or visit wallet website',
+    connectAgreement: 'By connecting, you agree to our Terms of Service',
+
     // Stats
     aiModels: 'AI Models',
     monthlyFee: 'Monthly Fee',
@@ -188,14 +195,7 @@ export const translations = {
     walletCopyAddress: '复制地址',
     walletChange: '切换钱包',
     walletDisconnect: '断开连接',
-    
-    // Wallet Modal
-    walletConnectDesc: '连接您的 Solana 钱包以使用 AIFuel',
-    installed: '已安装',
-    downloadWallet: '下载钱包',
-    mobileWalletHint: '在手机上使用？扫描二维码或访问钱包官网',
-    connectAgreement: '连接即表示您同意我们的服务条款',
-    
+
     // Wallet Modal
     walletConnectDesc: '连接您的 Solana 钱包以使用 AIFuel',
     installed: '已安装',
