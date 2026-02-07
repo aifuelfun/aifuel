@@ -70,7 +70,7 @@ export const WalletConnectModal: FC<Props> = ({ open, onClose }) => {
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-start justify-center pt-[10vh] overflow-y-auto">
+    <div className="fixed inset-0 z-[60] flex items-start justify-center pt-[10vh] overflow-y-auto">
       {/* 背景遮罩 */}
       <div 
         className="fixed inset-0 bg-black/60 backdrop-blur-sm"
