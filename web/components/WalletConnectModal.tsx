@@ -1,6 +1,6 @@
 'use client'
 
-import { FC, useState, useEffect } from 'react'
+import { FC, useState, useEffect, useRef } from 'react'
 import { useWallet } from '@solana/wallet-adapter-react'
 import type { WalletName } from '@solana/wallet-adapter-base'
 import { 
@@ -11,6 +11,7 @@ import {
 } from '@solana/wallet-adapter-wallets'
 import { X, Download, QrCode, Check } from 'lucide-react'
 import { useLocale } from '@/lib/LocaleContext'
+import { AnimatePresence, motion } from 'framer-motion'
 
 // 钱包列表配置
 const WALLETS = [
@@ -48,6 +49,23 @@ interface Props {
 export const WalletConnectModal: FC<Props> = ({ open, onClose }) => {
   const { wallets, select } = useWallet()
   const { t } = useLocale()
+  const [isVisible, setIsVisible] = useState(open)
+  const [animateOut, setAnimateOut] = useState(false)
+  const modalRef = useRef<HTMLDivElement>(null)
+  
+  // Handle animate in/out
+  useEffect(() => {
+    if (open) {
+      setIsVisible(true)
+      setAnimateOut(false)
+    } else if (isVisible) {
+      setAnimateOut(true)
+      const timer = setTimeout(() => {
+        setIsVisible(false)
+      }, 300) // match animation duration
+      return () => clearTimeout(timer)
+    }
+  }, [open])
   const [detectedWallets, setDetectedWallets] = useState<Set<string>>(new Set())
   const [selectedWallet, setSelectedWallet] = useState<string | null>(null)
 
@@ -73,12 +91,12 @@ export const WalletConnectModal: FC<Props> = ({ open, onClose }) => {
     <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 overflow-y-auto">
       {/* 背景遮罩 */}
       <div 
-        className="fixed inset-0 bg-black/60 backdrop-blur-sm transition-opacity duration-300"
+        className="fixed inset-0 bg-black/60 backdrop-blur-sm"
         onClick={onClose}
       />
       
-      {/* 弹窗内容 - 添加滑入动画 */}
-      <div className="relative bg-white rounded-2xl shadow-xl w-full max-w-lg max-h-[85vh] overflow-hidden transform transition-transform duration-300 ease-out animate-in slide-in-from-bottom-8">
+      {/* 弹窗内容 */}
+      <div className="relative bg-white rounded-2xl shadow-xl w-full max-w-lg max-h-[85vh] overflow-hidden">
         {/* 头部 */}
         <div className="bg-gradient-to-r from-primary to-primary-dark p-6 text-white">
           <button 
