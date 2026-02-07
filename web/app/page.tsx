@@ -7,7 +7,7 @@ import Link from 'next/link'
 import { Copy, Check, ExternalLink, Zap, Shield, Coins } from 'lucide-react'
 import { TOKEN_CA, MODELS } from '@/lib/constants'
 import { useLocale } from '@/lib/LocaleContext'
-import { CountUp } from '@/components'
+import { CountUp, Logo } from '@/components'
 import { WalletPanel } from '@/components/WalletPanel'
 import { formatUSD } from '@/lib/utils'
 
