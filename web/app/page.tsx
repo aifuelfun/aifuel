@@ -185,44 +185,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Credit Calculator */}
-      <section className="py-24 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="max-w-2xl mx-auto bg-gray-50 rounded-2xl p-8 border border-gray-100">
-            <h2 className="text-2xl font-bold text-gray-900 mb-4 text-center">Credit Calculator</h2>
-            <p className="text-gray-600 text-center mb-6">See how much daily credit you can earn</p>
-            
-            <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Your $FUEL Holding</label>
-                <input
-                  type="number"
-                  value={fuelAmount}
-                  onChange={(e) => setFuelAmount(e.target.value)}
-                  placeholder="e.g. 1000000"
-                  className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:ring-2 focus:ring-primary focus:border-transparent"
-                />
-              </div>
-              
-              {fuelAmount && parseFloat(fuelAmount) > 0 && (
-                <div className="bg-primary/10 rounded-lg p-4">
-                  <p className="text-lg font-semibold text-gray-900">
-                    Estimated Daily Credit: <span className="text-primary text-2xl">${formatUSD(calculateCredit(parseFloat(fuelAmount)))}</span>
-                  </p>
-                  <p className="text-sm text-gray-600 mt-1">
-                    Multiplier: 💎 100% Diamond Hand (never transferred out)
-                  </p>
-                </div>
-              )}
-              
-              <p className="text-xs text-gray-500">
-                Formula: Daily Credit = (Your Balance / Circulating Supply) × Daily Pool. Hold >30 days +10% (up to 120%).
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* FAQ Section */}
       <section className="py-24 bg-gray-50">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
