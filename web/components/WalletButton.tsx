@@ -58,10 +58,10 @@ export const WalletButton: FC<Props> = ({ className }) => {
       <>
         <button
           onClick={() => setShowConnectModal(true)}
-          className={`inline-flex items-center gap-2 px-4 py-2 bg-primary text-white font-medium rounded-lg hover:bg-primary/90 transition text-sm ${className || ''}`}
+          className={`inline-flex items-center gap-2 px-6 py-3 bg-primary text-white font-medium rounded-lg hover:bg-primary/90 transition text-sm ${className || ''}`}
         >
           <Wallet className="h-4 w-4" />
-          {t('walletSelect') || '选择钱包'}
+          {t('walletConnect') || '连接钱包'}
         </button>
         <WalletConnectModal 
           open={showConnectModal} 

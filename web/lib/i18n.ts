@@ -19,7 +19,7 @@ export const translations = {
     copyCa: 'Copy CA',
 
     // Wallet Button
-    walletSelect: 'Select Wallet',
+    walletConnect: 'Connect Wallet',
     walletCopyAddress: 'Copy Address',
     walletChange: 'Change Wallet',
     walletDisconnect: 'Disconnect',
@@ -184,7 +184,7 @@ export const translations = {
     copyCa: '复制合约地址',
 
     // Wallet Button
-    walletSelect: '选择钱包',
+    walletConnect: '连接钱包',
     walletCopyAddress: '复制地址',
     walletChange: '切换钱包',
     walletDisconnect: '断开连接',
