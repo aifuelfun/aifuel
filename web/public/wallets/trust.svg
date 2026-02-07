@@ -1,1 +1,8 @@
-404: Not Found
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <!-- Trust: Green rounded rect with shield-like shape -->
+  <rect x="8" y="12" width="84" height="76" rx="18" fill="#41A69E"/>
+  <g fill="white">
+    <path d="M50 40 L60 58 L50 65 L40 58 Z"/>
+    <rect x="46" y="58" width="8" height="12" fill="#41A69E"/>
+  </g>
+</svg>
