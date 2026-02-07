@@ -63,15 +63,15 @@ export const WalletConnectModal: FC<Props> = ({ open, onClose }) => {
     setDetectedWallets(detected)
   }, [wallets])
 
-  if (!open) return null
-
   const handleSelect = (walletName: WalletName) => {
     select(walletName)
     onClose()
   }
 
+  if (!open) return null
+
   const modalContent = (
-    <div className="relative bg-white rounded-2xl shadow-xl w-full max-w-2xl max-h-[90vh] overflow-hidden">
+    <div className="relative bg-white rounded-2xl shadow-xl w-full max-w-2xl max-h-[90vh] overflow-hidden animate-in slide-in-from-bottom-8">
       {/* 头部 */}
       <div className="bg-gradient-to-r from-primary to-primary-dark p-6 text-white">
         <button 
