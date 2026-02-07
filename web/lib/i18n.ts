@@ -9,6 +9,7 @@ export const translations = {
     // Hero
     nowOnSolana: 'Now on Solana',
     fuelYourAI: 'Fuel Your AI',
+    heroTitle: 'Hold $FUEL, Use AI Free',
     heroDesc: 'Hold $FUEL tokens, get free access to 200+ AI models. No subscriptions. No credit cards.',
     buyFuel: 'Buy $FUEL',
     goToDashboard: 'Go to Dashboard',
@@ -16,6 +17,12 @@ export const translations = {
     walletConnected: 'Wallet connected ✓',
     caAddress: 'CA:',
     copyCa: 'Copy CA',
+
+    // Wallet Button
+    walletSelect: 'Select Wallet',
+    walletCopyAddress: 'Copy Address',
+    walletChange: 'Change Wallet',
+    walletDisconnect: 'Disconnect',
 
     // Stats
     aiModels: 'AI Models',
@@ -167,6 +174,7 @@ export const translations = {
     // Hero
     nowOnSolana: '现已上线 Solana',
     fuelYourAI: '为你的 AI 加油',
+    heroTitle: 'Hold $FUEL, Use AI Free',
     heroDesc: '持有 $FUEL 代币，免费使用 200+ AI 模型。无需订阅，无需信用卡。',
     buyFuel: '购买 $FUEL',
     goToDashboard: '进入控制台',
@@ -174,6 +182,12 @@ export const translations = {
     walletConnected: '钱包已连接 ✓',
     caAddress: '合约地址：',
     copyCa: '复制合约地址',
+
+    // Wallet Button
+    walletSelect: '选择钱包',
+    walletCopyAddress: '复制地址',
+    walletChange: '切换钱包',
+    walletDisconnect: '断开连接',
 
     // Stats
     aiModels: 'AI 模型',
