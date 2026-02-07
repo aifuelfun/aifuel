@@ -5,10 +5,11 @@ import { useWallet } from '@solana/wallet-adapter-react'
 import { WalletButton } from '@/components/WalletButton'
 import Link from 'next/link'
 import { Copy, Check, ExternalLink, Zap, Shield, Coins } from 'lucide-react'
-import { TOKEN_CA } from '@/lib/constants'
+import { TOKEN_CA, MODELS } from '@/lib/constants'
 import { useLocale } from '@/lib/LocaleContext'
 import { CountUp } from '@/components'
 import { WalletPanel } from '@/components/WalletPanel'
+import { formatUSD } from '@/lib/utils'
 
 export default function Home() {
   const { connected } = useWallet()
