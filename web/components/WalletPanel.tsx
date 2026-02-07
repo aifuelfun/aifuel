@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { useWallet } from '@solana/wallet-adapter-react'
 import { Copy, Check, RefreshCw, LogOut, Key, Flame, Zap, TrendingUp, Clock } from 'lucide-react'
 import { useLocale } from '@/lib/LocaleContext'
