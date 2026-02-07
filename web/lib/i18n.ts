@@ -46,7 +46,8 @@ export const translations = {
     modelsTitle: '200+ AI Models',
     modelsDesc: 'All the models you need, one API endpoint',
     moreModels: '+ 190 more models via OpenRouter',
-    
+    viewAllModels: 'View all 200+ models',
+
     // Pricing
     simpleCreditSystem: 'Simple Credit System',
     moreTokensMoreCredits: 'More tokens = More daily credits',
@@ -121,50 +122,6 @@ export const translations = {
     copy: 'Copy',
     refreshBalance: 'Refresh balance',
 
-    // Homepage - Features Section
-    feature1Title: '200+ AI Models',
-    feature1Desc: 'Access GPT-4o, Claude, Gemini, DeepSeek and more through a single API endpoint.',
-    feature2Title: "Hold, Don't Pay",
-    feature2Desc: 'Your tokens stay in your wallet. No subscriptions, no monthly fees, no credit cards.',
-    feature3Title: 'Transparent Credits',
-    feature3Desc: 'Daily credits based on your holdings. Formula is public, treasury is on-chain.',
-
-    // Homepage - Models Section
-    modelsTitle: '200+ AI Models',
-    modelsDesc: 'All the models you need, one API endpoint',
-    viewAllModels: 'View all 200+ models',
-
-    // Homepage - How It Works
-    howItWorks: 'How It Works',
-    threeSteps: 'Three simple steps to free AI',
-    step1Title: 'Buy $FUEL',
-    step1Desc: 'Get $FUEL tokens on Raydium or Jupiter. Your tokens stay in your wallet.',
-    step2Title: 'Connect Wallet',
-    step2Desc: 'Connect your Phantom or Solflare wallet to aifuel.fun and get your API key.',
-    step3Title: 'Use AI Free',
-    step3Desc: 'Call our API like OpenAI. Daily credits based on your token holdings.',
-
-    // Homepage - FAQ
-    faq: 'FAQ',
-    faqSubtitle: 'Everything you need to know',
-    faq1Q: 'How does AIFuel work?',
-    faq1A: 'Hold $FUEL tokens in your wallet to earn daily AI credits. The more tokens you hold, the more credits you get. No subscriptions, no recurring payments.',
-    faq2Q: 'What is the Diamond Hand bonus?',
-    faq2A: 'If you hold your tokens for more than 30 days without transferring, you get a 10% bonus (up to 120% with Diamond Hand status).',
-    faq3Q: 'Is my wallet safe?',
-    faq3A: 'Absolutely. We only read your wallet balance - your tokens never leave your wallet. No approvals, no transfers, no risks.',
-    faq4Q: 'Which AI models are available?',
-    faq4A: 'We provide access to 200+ models including GPT-4o, Claude 3.5, Gemini, DeepSeek, Llama, and more. All through a single OpenAI-compatible API.',
-    faq5Q: 'What happens when I run out of credits?',
-    faq5A: 'Credits reset daily at midnight UTC. You can also increase your $FUEL holding to earn more credits. Diamond Hands get the full amount.',
-
-    // Homepage - Footer
-    footerPoweredBy: 'Powered by',
-    allRightsReserved: 'All rights reserved.',
-    docs: 'Docs',
-    github: 'GitHub',
-    telegram: 'Telegram',
-
     // Dashboard
     dashConnectWallet: 'Connect Your Wallet',
     dashConnectDesc: 'Connect your wallet to access your dashboard',
@@ -214,7 +171,10 @@ export const translations = {
     buyFuel: '购买 $FUEL',
     goToDashboard: '进入控制台',
     poolOpenAt: '池子开放时间',
-    
+    walletConnected: '钱包已连接 ✓',
+    caAddress: '合约地址：',
+    copyCa: '复制合约地址',
+
     // Stats
     aiModels: 'AI 模型',
     monthlyFee: '月费',
@@ -244,7 +204,8 @@ export const translations = {
     modelsTitle: '200+ AI 模型',
     modelsDesc: '你需要的所有模型，一个 API 端点',
     moreModels: '+ 190 更多模型通过 OpenRouter',
-    
+    viewAllModels: '查看全部 200+ 模型',
+
     // Pricing
     simpleCreditSystem: '简单的额度系统',
     moreTokensMoreCredits: '持有越多 = 每日额度越多',
@@ -318,70 +279,6 @@ export const translations = {
     exampleCurl: '示例 cURL',
     copy: '复制',
     refreshBalance: '刷新余额',
-
-    // Homepage - Additional (ZH)
-    heroDesc: '持有 $FUEL 代币，免费使用 200+ AI 模型。无需订阅，无需信用卡。',
-    walletConnected: '钱包已连接 ✓',
-    caAddress: '合约地址：',
-    copyCa: '复制合约地址',
-    buyFuel: '购买 $FUEL',
-    whyAIFuel: '为什么选择 AIFuel？',
-    whyAIFuelDesc: 'AI 访问的新范式。持有代币，永久使用 AI。',
-    viewAllModels: '查看全部 200+ 模型',
-
-    // Homepage - Additional (EN)
-    heroDesc: 'Hold $FUEL tokens, get free access to 200+ AI models. No subscriptions. No credit cards.',
-    walletConnected: 'Wallet connected ✓',
-    caAddress: 'CA:',
-    copyCa: 'Copy CA',
-    buyFuel: 'Buy $FUEL',
-    whyAIFuel: 'Why AIFuel?',
-    whyAIFuelDesc: 'A new paradigm for AI access. Hold tokens, use AI forever.',
-    viewAllModels: 'View all 200+ models',
-
-    // Homepage - Features Section
-    feature1Title: '200+ AI 模型',
-    feature1Desc: '通过单一 API 端点访问 GPT-4o、Claude、Gemini、DeepSeek 等。',
-    feature2Title: '持有即用，无需付费',
-    feature2Desc: '代币留在你的钱包里。无需订阅、无月费、无信用卡。',
-    feature3Title: '透明额度',
-    feature3Desc: '每日额度基于持仓量。公式公开，国库链上可查。',
-
-    // Homepage - Models Section
-    modelsTitle: '200+ AI 模型',
-    modelsDesc: '你需要的所有模型，一个 API 端点',
-    viewAllModels: '查看全部 200+ 模型',
-
-    // Homepage - How It Works
-    howItWorks: '如何使用',
-    threeSteps: '三步免费使用 AI',
-    step1Title: '购买 $FUEL',
-    step1Desc: '在 Raydium 或 Jupiter 上获取 $FUEL 代币。代币留在你的钱包。',
-    step2Title: '连接钱包',
-    step2Desc: '将 Phantom 或 Solflare 钱包连接到 aifuel.fun，获取 API 密钥。',
-    step3Title: '免费使用 AI',
-    step3Desc: '像调用 OpenAI 一样调用我们的 API。每日额度基于持仓量。',
-
-    // Homepage - FAQ
-    faq: '常见问题',
-    faqSubtitle: '你想知道的一切',
-    faq1Q: 'AIFuel 是如何工作的？',
-    faq1A: '持有 $FUEL 代币赚取每日 AI 额度。持仓越多，额度越多。无需订阅，无重复支付。',
-    faq2Q: '钻石手加成是什么？',
-    faq2A: '持有 30 天以上不转出，可获得 10% 加成（钻石手状态最高可达 120%）。',
-    faq3Q: '我的钱包安全吗？',
-    faq3A: '绝对安全。我们只读取钱包余额 - 代币始终在你的钱包中。无需授权，无需转账，零风险。',
-    faq4Q: '有哪些可用的 AI 模型？',
-    faq4A: '我们提供 200+ 模型包括 GPT-4o、Claude 3.5、Gemini、DeepSeek、Llama 等。全部通过单一 OpenAI 兼容 API。',
-    faq5Q: '额度用完了怎么办？',
-    faq5A: '额度在每日 UTC 00:00 重置。你也可以增加 $FUEL 持仓获得更多额度。钻石手获得全额额度。',
-
-    // Homepage - Footer
-    footerPoweredBy: '由',
-    allRightsReserved: '保留所有权利。',
-    docs: '文档',
-    github: 'GitHub',
-    telegram: 'Telegram',
 
     // Dashboard
     dashConnectWallet: '连接钱包',
