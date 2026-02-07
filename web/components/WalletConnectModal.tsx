@@ -1,6 +1,6 @@
 'use client'
 
-import { FC, useState, useEffect, useRef } from 'react'
+import { FC, useState, useEffect } from 'react'
 import { useWallet } from '@solana/wallet-adapter-react'
 import type { WalletName } from '@solana/wallet-adapter-base'
 import { 
@@ -11,7 +11,6 @@ import {
 } from '@solana/wallet-adapter-wallets'
 import { X, Download, QrCode, Check } from 'lucide-react'
 import { useLocale } from '@/lib/LocaleContext'
-import { AnimatePresence, motion } from 'framer-motion'
 
 // 钱包列表配置
 const WALLETS = [
@@ -49,23 +48,6 @@ interface Props {
 export const WalletConnectModal: FC<Props> = ({ open, onClose }) => {
   const { wallets, select } = useWallet()
   const { t } = useLocale()
-  const [isVisible, setIsVisible] = useState(open)
-  const [animateOut, setAnimateOut] = useState(false)
-  const modalRef = useRef<HTMLDivElement>(null)
-  
-  // Handle animate in/out
-  useEffect(() => {
-    if (open) {
-      setIsVisible(true)
-      setAnimateOut(false)
-    } else if (isVisible) {
-      setAnimateOut(true)
-      const timer = setTimeout(() => {
-        setIsVisible(false)
-      }, 300) // match animation duration
-      return () => clearTimeout(timer)
-    }
-  }, [open])
   const [detectedWallets, setDetectedWallets] = useState<Set<string>>(new Set())
   const [selectedWallet, setSelectedWallet] = useState<string | null>(null)
 
@@ -107,8 +89,8 @@ export const WalletConnectModal: FC<Props> = ({ open, onClose }) => {
           </button>
           
           <div className="text-center">
-            <h2 className="text-2xl font-bold mb-1.5">选择钱包</h2>
-            <p className="text-white/90 text-sm">连接您的 Solana 钱包以使用 AIFuel</p>
+            <h2 className="text-2xl font-bold mb-1.5">{t('walletConnect')}</h2>
+            <p className="text-white/90 text-sm">{t('walletConnectDesc')}</p>
           </div>
         </div>
 
@@ -138,7 +120,7 @@ export const WalletConnectModal: FC<Props> = ({ open, onClose }) => {
                     <h3 className="font-bold text-base text-gray-900">{wallet.name}</h3>
                     {isDetected && (
                       <span className="inline-flex items-center gap-1 mt-1 px-2.5 py-0.5 bg-green-100 text-green-700 text-xs font-medium rounded-full">
-                        <Check className="w-3 h-3" /> 已安装
+                        <Check className="w-3 h-3" /> {t('installed')}
                       </span>
                     )}
                   </div>
@@ -152,7 +134,7 @@ export const WalletConnectModal: FC<Props> = ({ open, onClose }) => {
                         rel="noopener noreferrer"
                         onClick={(e) => e.stopPropagation()}
                         className="p-1.5 hover:bg-gray-100 rounded-full transition"
-                        title="下载钱包"
+                        title={t('downloadWallet')}
                       >
                         <Download className="w-4 h-4 text-gray-500" />
                       </a>
@@ -168,7 +150,7 @@ export const WalletConnectModal: FC<Props> = ({ open, onClose }) => {
             <div className="flex items-center gap-2.5">
               <QrCode className="w-5 h-5 text-primary" />
               <div className="text-xs text-gray-600">
-                在手机上使用？扫描二维码或访问钱包官网
+                {t('mobileWalletHint')}
               </div>
             </div>
           </div>
@@ -176,7 +158,7 @@ export const WalletConnectModal: FC<Props> = ({ open, onClose }) => {
 
         {/* 底部提示 */}
         <div className="bg-gray-50 px-6 py-3 text-center text-xs text-gray-500">
-          连接即表示您同意我们的服务条款
+          {t('connectAgreement')}
         </div>
       </div>
     </div>

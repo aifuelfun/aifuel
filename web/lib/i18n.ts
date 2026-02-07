@@ -188,6 +188,20 @@ export const translations = {
     walletCopyAddress: '复制地址',
     walletChange: '切换钱包',
     walletDisconnect: '断开连接',
+    
+    // Wallet Modal
+    walletConnectDesc: '连接您的 Solana 钱包以使用 AIFuel',
+    installed: '已安装',
+    downloadWallet: '下载钱包',
+    mobileWalletHint: '在手机上使用？扫描二维码或访问钱包官网',
+    connectAgreement: '连接即表示您同意我们的服务条款',
+    
+    // Wallet Modal
+    walletConnectDesc: '连接您的 Solana 钱包以使用 AIFuel',
+    installed: '已安装',
+    downloadWallet: '下载钱包',
+    mobileWalletHint: '在手机上使用？扫描二维码或访问钱包官网',
+    connectAgreement: '连接即表示您同意我们的服务条款',
 
     // Stats
     aiModels: 'AI 模型',
