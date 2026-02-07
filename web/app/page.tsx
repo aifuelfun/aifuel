@@ -112,19 +112,8 @@ export default function Home() {
 
   // Handle enter dashboard button click
   const handleEnterDashboard = async () => {
-    if (!connected || !publicKey || !signMessage) return
-    
-    const wallet = publicKey.toBase58()
-    const storedWallet = getStoredWallet()
-    
-    // If same wallet and has token, go directly
-    if (storedWallet === wallet && getToken()) {
-      router.push('/dashboard')
-      return
-    }
-    
-    // Otherwise authenticate
-    await authenticate()
+    // Simply navigate to dashboard - wallet state will be handled there
+    router.push('/dashboard')
   }
   
   // Calculate daily credit based on holding
