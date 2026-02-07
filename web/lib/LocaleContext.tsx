@@ -26,8 +26,14 @@ export function LocaleProvider({ children }: { children: ReactNode }) {
     localStorage.setItem('locale', newLocale)
   }, [])
 
-  const t = useCallback((key: any): string => {
-    return translations[locale]?.[key as TranslationKey] || translations.en[key as TranslationKey] || key
+  const t = useCallback((key: any, params?: Record<string, any>): string => {
+    let text = translations[locale]?.[key as TranslationKey] || translations.en[key as TranslationKey] || key
+    if (params) {
+      Object.entries(params).forEach(([k, v]) => {
+        text = text.replace(new RegExp(`{${k}}`, 'g'), String(v))
+      })
+    }
+    return text
   }, [locale])
 
   return (
@@ -55,8 +61,14 @@ export function useLocale() {
       localStorage.setItem('locale', newLocale)
     }, [])
 
-    const t = useCallback((key: any): string => {
-      return translations[locale]?.[key as TranslationKey] || translations.en[key as TranslationKey] || key
+    const t = useCallback((key: any, params?: Record<string, any>): string => {
+      let text = translations[locale]?.[key as TranslationKey] || translations.en[key as TranslationKey] || key
+      if (params) {
+        Object.entries(params).forEach(([k, v]) => {
+          text = text.replace(new RegExp(`{${k}}`, 'g'), String(v))
+        })
+      }
+      return text
     }, [locale])
 
     return { locale, setLocale, t }
