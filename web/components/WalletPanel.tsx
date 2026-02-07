@@ -311,7 +311,7 @@ export function WalletPanel() {
             <Zap className="h-5 w-5" />
           </div>
           <p className="text-3xl font-bold">{formatUSD(credits?.daily || 0)}</p>
-          <p className="text-sm text-white/80 mt-1">{hasTokens ? '💎 Diamond Hand Bonus' : t('holdToEarn')}</p>
+          <p className="text-sm text-white/80 mt-1">{hasTokens ? `💎 ${t('diamondHand')}` : t('holdToEarn')}</p>
         </div>
 
         <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
