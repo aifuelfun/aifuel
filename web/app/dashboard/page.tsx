@@ -243,10 +243,16 @@ export default function Dashboard() {
     init()
   }, [connected, publicKey, signMessage, authenticate, loadCredits, loadApiKey, generateApiKey])
 
-  // Redirect if not connected
+  // Redirect if not connected (with delay to allow autoConnect)
   useEffect(() => {
     if (!connected && !loading) {
-      router.push('/')
+      // Give autoConnect a moment to restore connection
+      const timer = setTimeout(() => {
+        if (!connected) {
+          router.push('/')
+        }
+      }, 1000) // 1 second delay
+      return () => clearTimeout(timer)
     }
   }, [connected, loading, router])
 
