@@ -272,14 +272,6 @@ export const translations = {
     copy: '复制',
     refreshBalance: '刷新余额',
 
-    // Stats
-    multiplier: '倍数',
-    diamondHand: '钻石手',
-    neverTransferred: '（从未转出）',
-
-    // Verification
-    verifyOnSolscan: '在 Solscan 验证',
-
     // Dashboard
     dashConnectWallet: '连接钱包',
     dashConnectDesc: '连接钱包以访问控制台',
