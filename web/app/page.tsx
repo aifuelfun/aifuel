@@ -56,7 +56,7 @@ export default function Home() {
             ) : (
               <WalletButton className="!bg-transparent !border-2 !border-white hover:!bg-white/10" />
             )}
-            <a href={`https://raydium.io/swap/?inputMint=sol&outputMint=${TOKEN_CA}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-yellow-500 hover:bg-yellow-600 text-white font-semibold rounded-lg transition">
+            <a href={`https://raydium.io/swap/?inputMint=sol&outputMint=${TOKEN_CA}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center gap-2 px-6 py-3 border-2 border-white hover:border-white/50 bg-white/10 text-white font-semibold rounded-lg transition hover:bg-white/20">
               {t('buyFuel')} <ExternalLink className="h-4 w-4" />
             </a>
           </div>
