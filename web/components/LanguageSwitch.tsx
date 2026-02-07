@@ -10,28 +10,11 @@ interface Props {
 
 export const LanguageSwitch: FC<Props> = ({ locale, setLocale }) => {
   return (
-    <div className="flex items-center gap-1 text-sm">
-      <button
-        onClick={() => setLocale('en')}
-        className={`px-2 py-1 rounded transition ${
-          locale === 'en' 
-            ? 'bg-primary text-white' 
-            : 'text-gray-600 hover:text-primary'
-        }`}
-      >
-        EN
-      </button>
-      <span className="text-gray-300">|</span>
-      <button
-        onClick={() => setLocale('zh')}
-        className={`px-2 py-1 rounded transition ${
-          locale === 'zh' 
-            ? 'bg-primary text-white' 
-            : 'text-gray-600 hover:text-primary'
-        }`}
-      >
-        中
-      </button>
-    </div>
+    <button
+      onClick={() => setLocale(locale === 'en' ? 'zh' : 'en')}
+      className="px-2 py-1 text-sm rounded text-gray-600 hover:text-primary transition"
+    >
+      {locale === 'en' ? '中' : 'EN'}
+    </button>
   )
 }

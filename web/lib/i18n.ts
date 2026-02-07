@@ -55,7 +55,7 @@ export const translations = {
     allModels: 'All 200+ models',
     dailyRefresh: 'Daily credit refresh',
     sdkCompatible: 'OpenAI SDK compatible',
-    formula: 'Formula: Daily Credit = (Your Balance / Circulating Supply) × Daily Pool',
+    formula: 'Formula: Daily Credit = (Your Balance / Circulating Supply) × Daily Pool. Hold >30 days +10% (up to 120%).',
     
     // Credit Calculator
     creditCalculator: 'Credit Calculator',
@@ -87,6 +87,37 @@ export const translations = {
     faq5Q: 'Is my conversation data safe?',
     faq5A: '🔒 Absolutely private! We don\'t log, store, or analyze any conversation data. All requests are forwarded directly to upstream APIs. Your privacy is our priority.',
     
+    // Wallet
+    walletSelect: 'Select Wallet',
+    walletConnect: 'Connect Wallet',
+    walletConnecting: 'Connecting...',
+    walletCopyAddress: 'Copy Address',
+    walletChange: 'Change Wallet',
+    walletDisconnect: 'Disconnect',
+
+    // Dashboard
+    dashConnectWallet: 'Connect Your Wallet',
+    dashConnectDesc: 'Connect your wallet to access your dashboard',
+    dashLoading: 'Loading...',
+    dashConnectedWallet: 'Connected Wallet',
+    dashDisconnect: 'Disconnect',
+    dashFuelHolding: '$FUEL Holding',
+    dashBuyToGetCredits: 'Buy $FUEL to get credits →',
+    dashDailyCredit: 'Daily Credit',
+    dashHoldToEarn: 'Hold $FUEL to earn',
+    dashUsedToday: 'Used Today',
+    dashOfDaily: 'of {amount} daily',
+    dashRemaining: 'Remaining',
+    dashResetsAtMidnight: 'resets at midnight UTC',
+    dashNoTokens: 'No $FUEL tokens found',
+    dashBuyToUnlock: 'Buy $FUEL to unlock AI credits.',
+    dashApiKey: 'Your API Key',
+    dashRegenerate: 'Regenerate',
+    dashKeyWarning: 'Keep this key secure. Regenerating will invalidate the current key.',
+    dashKeyRegenNote: 'Click Regenerate to get a new visible key (old key will be invalidated).',
+    dashGeneratingKey: 'Generating your API key...',
+    dashQuickStart: 'Quick Start',
+
     // CTA
     readyToFuel: 'Ready to Fuel Your AI?',
     joinFuture: 'Join the future of AI access. No subscriptions, just tokens.',
@@ -155,7 +186,7 @@ export const translations = {
     allModels: '全部 200+ 模型',
     dailyRefresh: '每日额度刷新',
     sdkCompatible: 'OpenAI SDK 兼容',
-    formula: '公式：每日额度 = (你的余额 / 流通量) × 每日池',
+    formula: '公式：每日额度 = (你的余额 / 流通量) × 每日池。连续持有 >30 天 +10%（上限 120%）。',
     
     // Credit Calculator
     creditCalculator: '额度计算器',
@@ -187,6 +218,37 @@ export const translations = {
     faq5Q: '我的对话数据安全吗？',
     faq5A: '🔒 绝对隐私！我们不会记录、存储或分析任何对话数据。所有请求直接转发至上游 API，你的隐私由我们全力守护。',
     
+    // Wallet
+    walletSelect: '选择钱包',
+    walletConnect: '连接钱包',
+    walletConnecting: '连接中...',
+    walletCopyAddress: '复制地址',
+    walletChange: '更换钱包',
+    walletDisconnect: '断开连接',
+
+    // Dashboard
+    dashConnectWallet: '连接钱包',
+    dashConnectDesc: '连接钱包以访问控制台',
+    dashLoading: '加载中...',
+    dashConnectedWallet: '已连接钱包',
+    dashDisconnect: '断开连接',
+    dashFuelHolding: '$FUEL 持仓',
+    dashBuyToGetCredits: '购买 $FUEL 获取额度 →',
+    dashDailyCredit: '每日额度',
+    dashHoldToEarn: '持有 $FUEL 获取额度',
+    dashUsedToday: '今日已用',
+    dashOfDaily: '每日 {amount}',
+    dashRemaining: '剩余',
+    dashResetsAtMidnight: 'UTC 00:00 重置',
+    dashNoTokens: '未检测到 $FUEL 代币',
+    dashBuyToUnlock: '购买 $FUEL 解锁 AI 额度。',
+    dashApiKey: '你的 API 密钥',
+    dashRegenerate: '重新生成',
+    dashKeyWarning: '请妥善保管此密钥。重新生成将使当前密钥失效。',
+    dashKeyRegenNote: '点击重新生成获取新密钥（旧密钥将失效）。',
+    dashGeneratingKey: '正在生成 API 密钥...',
+    dashQuickStart: '快速开始',
+
     // CTA
     readyToFuel: '准备好为你的 AI 加油了吗？',
     joinFuture: '加入 AI 访问的未来。无需订阅，只需代币。',

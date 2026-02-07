@@ -2,15 +2,15 @@
 
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { useWallet } from '@solana/wallet-adapter-react'
-import { WalletMultiButton } from '@solana/wallet-adapter-react-ui'
+import { WalletButton } from '@/components/WalletButton'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
 import bs58 from 'bs58'
-import { Zap, Shield, Coins, ArrowRight, Code, CheckCircle, Copy, Check, ExternalLink, ChevronDown, Calculator, LinkIcon, RefreshCw } from 'lucide-react'
+import { Zap, Shield, Coins, ArrowRight, Code, CheckCircle, Copy, Check, ExternalLink, ChevronDown, Calculator, LinkIcon, RefreshCw, HelpCircle, Star } from 'lucide-react'
 import { MODELS, TOKEN_CA, BUY_LINKS, WALLETS, CIRCULATING_SUPPLY, DAILY_CREDIT_POOL, API_BASE_URL } from '@/lib/constants'
 import { useLocale } from '@/lib/LocaleContext'
-import { Countdown, Logo } from '@/components'
+import { Countdown, Logo, CountUp } from '@/components'
 
 // Pool open time: 2026/2/6 04:42:00 UTC+8
 const POOL_OPEN_DATE = new Date('2026-02-06T04:42:00+08:00')
@@ -46,7 +46,7 @@ export default function Home() {
   const [caCopied, setCaCopied] = useState(false)
   const [fuelAmount, setFuelAmount] = useState<string>('')
 
-  // Auto authenticate when wallet connects
+  // Authenticate with backend
   const authenticate = useCallback(async () => {
     if (!publicKey || !signMessage) return false
     
@@ -110,12 +110,22 @@ export default function Home() {
     }
   }, [publicKey, signMessage, router])
 
-  // Trigger auth when wallet connects
-  useEffect(() => {
-    if (connected && publicKey && signMessage && !authenticating) {
-      authenticate()
+  // Handle enter dashboard button click
+  const handleEnterDashboard = async () => {
+    if (!connected || !publicKey || !signMessage) return
+    
+    const wallet = publicKey.toBase58()
+    const storedWallet = getStoredWallet()
+    
+    // If same wallet and has token, go directly
+    if (storedWallet === wallet && getToken()) {
+      router.push('/dashboard')
+      return
     }
-  }, [connected, publicKey, signMessage, authenticate, authenticating])
+    
+    // Otherwise authenticate
+    await authenticate()
+  }
   
   // Calculate daily credit based on holding
   const calculateCredit = (amount: number) => {
@@ -149,39 +159,44 @@ export default function Home() {
         
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-4xl mx-auto">
-            <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full mb-6">
-              <Logo size={20} />
-              <span className="text-sm font-medium">{t('nowOnSolana')}</span>
-            </div>
-            
-            <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight">
+            <h1 className="text-4xl md:text-6xl font-bold mb-4 leading-tight">
               {t('fuelYourAI')}
             </h1>
-            
-            <p className="text-xl md:text-2xl mb-8 text-white/90 max-w-2xl mx-auto">
+
+            <p className="text-lg md:text-xl mb-6 text-white/90 max-w-2xl mx-auto">
               {t('heroDesc').split('$FUEL')[0]}
               <span className="font-bold text-yellow-300">$FUEL</span>
               {t('heroDesc').split('$FUEL')[1]}
             </p>
-            
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+
+            <div className="flex flex-col sm:flex-row gap-3 justify-center">
               <a
                 href={BUY_LINKS.raydium}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-white text-primary font-semibold rounded-lg hover:bg-gray-100 transition shadow-lg"
+                className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-gradient-to-r from-yellow-400 to-yellow-500 text-black font-bold rounded-xl hover:from-yellow-500 hover:to-yellow-600 transition shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
               >
-                <Logo size={20} />
+                <Logo size={24} />
                 {t('buyFuel')}
                 <ExternalLink className="h-4 w-4" />
               </a>
-              {authenticating ? (
-                <div className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-transparent border-2 border-white text-white font-semibold rounded-lg">
-                  <RefreshCw className="h-5 w-5 animate-spin" />
-                  Signing...
-                </div>
+              {connected ? (
+                authenticating ? (
+                  <div className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-transparent border-2 border-white text-white font-semibold rounded-lg">
+                    <RefreshCw className="h-5 w-5 animate-spin" />
+                    Signing...
+                  </div>
+                ) : (
+                  <button
+                    onClick={handleEnterDashboard}
+                    className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-transparent border-2 border-white text-white font-semibold rounded-lg hover:bg-white/10 transition"
+                  >
+                    {t('goToDashboard')}
+                    <ArrowRight className="h-5 w-5" />
+                  </button>
+                )
               ) : (
-                <WalletMultiButton className="!bg-transparent !border-2 !border-white hover:!bg-white/10" />
+                <WalletButton className="!bg-transparent !border-2 !border-white hover:!bg-white/10" />
               )}
             </div>
             
@@ -207,13 +222,12 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Countdown */}
-            <Countdown targetDate={POOL_OPEN_DATE} label={t('poolOpenAt')} />
-
             {/* Stats */}
             <div className="grid grid-cols-3 gap-8 mt-12 max-w-2xl mx-auto">
               <div>
-                <p className="text-4xl font-bold">200+</p>
+                <p className="text-4xl font-bold flex items-center justify-center">
+                  <CountUp end={200} duration={2.5} suffix="+" className="tabular-nums" />
+                </p>
                 <p className="text-white/70">{t('aiModels')}</p>
               </div>
               <div>
@@ -249,14 +263,14 @@ export default function Home() {
             ].map((feature, index) => (
               <div 
                 key={index}
-                className="bg-white p-8 rounded-2xl shadow-sm hover:shadow-lg transition card-hover border border-gray-100"
+                className="bg-white p-8 rounded-2xl shadow-sm hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 border border-gray-100 group"
               >
-                <div className="w-14 h-14 bg-primary/10 rounded-xl flex items-center justify-center mb-6">
-                  {feature.icon === 'Zap' && <Zap className="h-7 w-7 text-primary" />}
-                  {feature.icon === 'Shield' && <Shield className="h-7 w-7 text-primary" />}
-                  {feature.icon === 'Coins' && <Coins className="h-7 w-7 text-primary" />}
+                <div className="w-16 h-16 bg-gradient-to-br from-primary/10 to-primary/20 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                  {feature.icon === 'Zap' && <Zap className="h-8 w-8 text-primary" />}
+                  {feature.icon === 'Shield' && <Shield className="h-8 w-8 text-primary" />}
+                  {feature.icon === 'Coins' && <Coins className="h-8 w-8 text-primary" />}
                 </div>
-                <h3 className="text-xl font-bold text-gray-900 mb-3">
+                <h3 className="text-xl font-bold text-gray-900 mb-3 group-hover:text-primary transition-colors">
                   {t(feature.titleKey as any)}
                 </h3>
                 <p className="text-gray-600">
@@ -354,14 +368,14 @@ export default function Home() {
             ].map((tier, index) => (
               <div 
                 key={index}
-                className={`p-8 rounded-2xl border-2 ${
+                className={`p-8 rounded-2xl border-2 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl ${
                   tier.featured 
-                    ? 'border-primary bg-primary/5 scale-105' 
-                    : 'border-gray-200 bg-white'
+                    ? 'border-primary bg-gradient-to-br from-primary/5 to-primary/10 shadow-lg scale-105 hover:scale-105' 
+                    : 'border-gray-200 bg-white hover:border-primary/50'
                 }`}
               >
                 {tier.featured && (
-                  <span className="inline-block bg-primary text-white text-xs font-bold px-3 py-1 rounded-full mb-4">
+                  <span className="inline-block bg-gradient-to-r from-primary to-primary-dark text-white text-xs font-bold px-3 py-1 rounded-full mb-4 shadow-md">
                     {t('popular')}
                   </span>
                 )}
@@ -423,17 +437,18 @@ export default function Home() {
                     value={fuelAmount}
                     onChange={(e) => setFuelAmount(e.target.value)}
                     placeholder={t('enterAmount')}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent text-lg"
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary focus:outline-none transition text-lg shadow-sm"
                   />
                 </div>
-                
-                <div className="bg-gradient-to-r from-primary/5 to-primary/10 rounded-xl p-6">
+
+                <div className="bg-gradient-to-r from-primary/5 to-primary/10 rounded-2xl p-6 border-2 border-primary/20 shadow-lg">
                   <div className="text-sm text-gray-600 mb-1">{t('estimatedDaily')}</div>
                   <div className="text-4xl font-bold text-primary">
                     ${estimatedCredit.toFixed(2)}
+                    <span className="text-lg text-gray-500 ml-1">{t('perDay')}</span>
                   </div>
                   <div className="text-sm text-gray-500 mt-2">
-                    {t('multiplier')}: <span className="text-green-600 font-semibold">100% {t('diamondHand')}</span> {t('neverTransferred')}
+                    {t('multiplier')}: <span className="text-green-600 font-semibold">💎 100% {t('diamondHand')}</span> {t('neverTransferred')}
                   </div>
                 </div>
                 
@@ -446,8 +461,8 @@ export default function Home() {
             {/* On-Chain Proof */}
             <div className="bg-white rounded-2xl p-8 shadow-sm border border-gray-200">
               <div className="flex items-center gap-3 mb-6">
-                <div className="p-3 bg-green-100 rounded-xl">
-                  <LinkIcon className="h-6 w-6 text-green-600" />
+                <div className="p-3 bg-gradient-to-br from-green-100 to-green-50 rounded-xl">
+                  <Star className="h-6 w-6 text-green-600" />
                 </div>
                 <div>
                   <h3 className="text-2xl font-bold text-gray-900">{t('onChainProof')}</h3>
@@ -461,13 +476,18 @@ export default function Home() {
                   href={`https://solscan.io/token/${TOKEN_CA}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition group"
+                  className="flex items-center justify-between p-4 bg-gradient-to-r from-gray-50 to-gray-100 rounded-xl hover:from-green-50 hover:to-green-100 transition group border border-transparent hover:border-green-200"
                 >
-                  <div>
-                    <div className="font-medium text-gray-900">{t('tokenContract')}</div>
-                    <div className="text-xs font-mono text-gray-500 truncate max-w-[200px]">{TOKEN_CA}</div>
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 bg-gradient-to-br from-yellow-400 to-yellow-500 rounded-full flex items-center justify-center text-black text-xs font-bold">
+                      $FUEL
+                    </div>
+                    <div>
+                      <div className="font-medium text-gray-900">{t('tokenContract')}</div>
+                      <div className="text-xs font-mono text-gray-500 truncate max-w-[200px]">{TOKEN_CA}</div>
+                    </div>
                   </div>
-                  <ExternalLink className="h-4 w-4 text-gray-400 group-hover:text-primary" />
+                  <ExternalLink className="h-4 w-4 text-gray-400 group-hover:text-green-600" />
                 </a>
                 
                 {/* Wallets */}
@@ -477,11 +497,13 @@ export default function Home() {
                     href={`https://solscan.io/account/${wallet.address}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition group"
+                    className="flex items-center justify-between p-4 bg-gray-50 rounded-xl hover:bg-primary/5 transition group"
                   >
                     <div>
                       <div className="font-medium text-gray-900">{wallet.name}</div>
-                      <div className="text-xs text-gray-500">{wallet.amount}</div>
+                      <div className="text-xs font-mono text-green-600 font-semibold">
+                        {wallet.amount} $FUEL
+                      </div>
                     </div>
                     <ExternalLink className="h-4 w-4 text-gray-400 group-hover:text-primary" />
                   </a>
@@ -493,7 +515,7 @@ export default function Home() {
                   href={`https://solscan.io/token/${TOKEN_CA}#holders`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-sm text-primary hover:underline inline-flex items-center gap-1"
+                  className="text-sm text-primary hover:underline inline-flex items-center gap-1 font-medium"
                 >
                   {t('verifyOnSolscan')} <ExternalLink className="h-3 w-3" />
                 </a>
@@ -525,22 +547,23 @@ export default function Home() {
             ].map((faq, index) => (
               <div 
                 key={index}
-                className="bg-white rounded-xl border border-gray-200 overflow-hidden"
+                className="bg-white rounded-xl border border-gray-200 overflow-hidden transition-all duration-300 hover:shadow-md"
               >
                 <button
                   onClick={() => toggleFaq(index)}
-                  className="w-full px-6 py-4 text-left flex items-center justify-between hover:bg-gray-50 transition"
+                  className="w-full px-6 py-4 text-left flex items-center gap-3 hover:bg-gray-50 transition"
                 >
+                  <HelpCircle className="h-5 w-5 text-primary flex-shrink-0" />
                   <span className="font-semibold text-gray-900">{faq.q}</span>
                   <ChevronDown 
-                    className={`h-5 w-5 text-gray-500 transition-transform ${
+                    className={`h-5 w-5 text-gray-500 transition-transform ml-auto ${
                       openFaq === index ? 'rotate-180' : ''
                     }`}
                   />
                 </button>
                 {openFaq === index && (
-                  <div className="px-6 pb-4">
-                    <p className="text-gray-600">{faq.a}</p>
+                  <div className="px-6 pb-4 animate-fade-in">
+                    <p className="text-gray-600 leading-relaxed">{faq.a}</p>
                   </div>
                 )}
               </div>
@@ -558,13 +581,23 @@ export default function Home() {
           <p className="text-xl text-white/90 mb-8">
             {t('joinFuture')}
           </p>
-          {authenticating ? (
-            <div className="inline-flex items-center gap-2 px-8 py-4 bg-white text-primary font-semibold rounded-lg">
-              <RefreshCw className="h-5 w-5 animate-spin" />
-              Signing...
-            </div>
+          {connected ? (
+            authenticating ? (
+              <div className="inline-flex items-center gap-2 px-8 py-4 bg-white text-primary font-semibold rounded-lg">
+                <RefreshCw className="h-5 w-5 animate-spin" />
+                Signing...
+              </div>
+            ) : (
+              <button
+                onClick={handleEnterDashboard}
+                className="inline-flex items-center gap-2 px-8 py-4 bg-white text-primary font-semibold rounded-lg hover:bg-gray-100 transition shadow-lg"
+              >
+                {t('goToDashboard')}
+                <ArrowRight className="h-5 w-5" />
+              </button>
+            )
           ) : (
-            <WalletMultiButton className="!bg-white !text-primary hover:!bg-gray-100" />
+            <WalletButton className="!bg-white !text-primary hover:!bg-gray-100" />
           )}
         </div>
       </section>

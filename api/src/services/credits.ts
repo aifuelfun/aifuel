@@ -56,28 +56,25 @@ async function getDailyPool(): Promise<number> {
 
 /**
  * Get holding multiplier (diamond hands mechanism)
+ * Diamond hands (never sold) = 100% immediately
+ * Non-diamond hands = 80% max
  */
 async function getHoldingMultiplier(userId: number): Promise<number> {
   const user = await prisma.user.findUnique({ where: { id: userId } });
   if (!user) return 0;
   
-  const hoursSinceFirstSeen = (Date.now() - user.firstSeenAt.getTime()) / 3600000;
-  
   // Check if ever sold
   if (user.lastSoldAt) {
-    // Max 80% for non-diamond hands
-    const multiplier = Math.min(0.8, 0.1 + (hoursSinceFirstSeen * 0.04));
-    
     // Check cooldown (30 min after sell)
     const hoursSinceSold = (Date.now() - user.lastSoldAt.getTime()) / 3600000;
     if (hoursSinceSold < 0.5) return 0;
     
-    return multiplier;
+    // Non-diamond hands get 80% max
+    return 0.8;
   }
   
-  // Diamond hands: up to 100%
-  if (hoursSinceFirstSeen < 0.083) return 0; // First 5 min warmup
-  return Math.min(1.0, 0.1 + ((hoursSinceFirstSeen - 0.083) * 0.04));
+  // Diamond hands: 100% immediately (no warmup needed)
+  return 1.0;
 }
 
 /**

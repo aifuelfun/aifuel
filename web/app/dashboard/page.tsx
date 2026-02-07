@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useCallback, useRef } from 'react'
 import { useWallet, useConnection } from '@solana/wallet-adapter-react'
-import { WalletMultiButton } from '@solana/wallet-adapter-react-ui'
+import { WalletButton } from '@/components/WalletButton'
 import { useRouter } from 'next/navigation'
 import { PublicKey } from '@solana/web3.js'
 import bs58 from 'bs58'
@@ -13,6 +13,7 @@ import {
 } from 'lucide-react'
 import { shortenAddress, formatUSD, formatNumber } from '@/lib/utils'
 import { TOKEN_CA, CIRCULATING_SUPPLY, DAILY_CREDIT_POOL, API_BASE_URL } from '@/lib/constants'
+import { useLocale } from '@/lib/LocaleContext'
 
 interface ApiKeyData {
   id: string
@@ -57,6 +58,7 @@ export default function Dashboard() {
   const { connected, publicKey, signMessage, disconnect } = useWallet()
   const { connection } = useConnection()
   const router = useRouter()
+  const { t } = useLocale()
   
   const [credits, setCredits] = useState<CreditsData | null>(null)
   const [apiKey, setApiKey] = useState<ApiKeyData | null>(null)
@@ -198,7 +200,9 @@ export default function Dashboard() {
         const creditsOk = await loadCredits()
         if (creditsOk) {
           const existingKey = await loadApiKey()
-          if (!existingKey) {
+          const storedKey = getStoredApiKey()
+          // Generate new key if none exists OR if we don't have the full key stored
+          if (!existingKey || !storedKey) {
             await generateApiKey()
           }
           setLoading(false)
@@ -227,8 +231,9 @@ export default function Dashboard() {
       await loadCredits()
       const existingKey = await loadApiKey()
       
-      // Auto-generate key if none exists
-      if (!existingKey) {
+      // Auto-generate key if none exists OR if we don't have the full key stored locally
+      const storedKey = getStoredApiKey()
+      if (!existingKey || !storedKey) {
         await generateApiKey()
       }
       
@@ -262,7 +267,12 @@ export default function Dashboard() {
 
   const refreshBalance = async () => {
     if (getToken()) {
-      await loadCredits()
+      setLoadingBalance(true)
+      try {
+        await loadCredits()
+      } finally {
+        setLoadingBalance(false)
+      }
     }
   }
 
@@ -277,9 +287,9 @@ export default function Dashboard() {
     return (
       <div className="min-h-[80vh] flex flex-col items-center justify-center">
         <Flame className="h-16 w-16 text-primary mb-6" />
-        <h1 className="text-2xl font-bold text-gray-900 mb-4">Connect Your Wallet</h1>
-        <p className="text-gray-600 mb-6">Connect your wallet to access your dashboard</p>
-        <WalletMultiButton />
+        <h1 className="text-2xl font-bold text-gray-900 mb-4">{t('dashConnectWallet')}</h1>
+        <p className="text-gray-600 mb-6">{t('dashConnectDesc')}</p>
+        <WalletButton />
       </div>
     )
   }
@@ -288,7 +298,7 @@ export default function Dashboard() {
     return (
       <div className="min-h-[80vh] flex flex-col items-center justify-center">
         <RefreshCw className="h-8 w-8 text-primary animate-spin mb-4" />
-        <p className="text-gray-600">{status || 'Loading...'}</p>
+        <p className="text-gray-600">{status || t('dashLoading')}</p>
       </div>
     )
   }
@@ -325,10 +335,10 @@ export default function Dashboard() {
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <span className="text-sm text-gray-500">Connected Wallet</span>
+                <span className="text-sm text-gray-500">{t('dashConnectedWallet')}</span>
                 {credits?.isDiamondHands && credits.balance > 0 && (
                   <span className="inline-flex items-center gap-1 bg-yellow-100 text-yellow-800 text-xs font-semibold px-2 py-0.5 rounded-full">
-                    <Diamond className="h-3 w-3" /> Diamond Hands
+                    <Diamond className="h-3 w-3" /> {t('diamondHand')}
                   </span>
                 )}
               </div>
@@ -346,7 +356,7 @@ export default function Dashboard() {
             </div>
           </div>
           <button onClick={handleDisconnect} className="inline-flex items-center gap-2 px-4 py-2 border border-gray-200 text-gray-600 rounded-lg hover:bg-gray-50">
-            <LogOut className="h-4 w-4" /> Disconnect
+            <LogOut className="h-4 w-4" /> {t('dashDisconnect')}
           </button>
         </div>
       </div>
@@ -355,7 +365,7 @@ export default function Dashboard() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
           <div className="flex items-center justify-between mb-4">
-            <span className="text-gray-500 text-sm">$FUEL Holding</span>
+            <span className="text-gray-500 text-sm">{t('dashFuelHolding')}</span>
             <button onClick={refreshBalance} disabled={loadingBalance} className="p-1 hover:bg-gray-100 rounded">
               <RefreshCw className={`h-4 w-4 text-gray-400 ${loadingBalance ? 'animate-spin' : ''}`} />
             </button>
@@ -364,37 +374,37 @@ export default function Dashboard() {
           <p className="text-sm text-gray-500 mt-1">
             {credits?.balance === 0 ? (
               <a href={`https://raydium.io/swap/?inputMint=sol&outputMint=${TOKEN_CA}`} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
-                Buy $FUEL to get credits →
+                {t('dashBuyToGetCredits')}
               </a>
-            ) : <span className="text-yellow-600">💎 {(credits?.multiplier || 1) * 100}% multiplier</span>}
+            ) : <span className="text-yellow-600">💎 {Math.round((credits?.multiplier || 1) * 100)}% {t('multiplier').toLowerCase()}</span>}
           </p>
         </div>
 
         <div className="bg-gradient-to-br from-primary to-primary-dark rounded-2xl p-6 text-white">
           <div className="flex items-center justify-between mb-4">
-            <span className="text-white/80 text-sm">Daily Credit</span>
+            <span className="text-white/80 text-sm">{t('dashDailyCredit')}</span>
             <Zap className="h-5 w-5" />
           </div>
           <p className="text-3xl font-bold">{formatUSD(credits?.daily || 0)}</p>
-          <p className="text-sm text-white/80 mt-1">{credits?.balance && credits.balance > 0 ? '💎 Diamond Hands' : 'Hold $FUEL to earn'}</p>
+          <p className="text-sm text-white/80 mt-1">{credits?.balance && credits.balance > 0 ? `💎 ${t('diamondHand')}` : t('dashHoldToEarn')}</p>
         </div>
 
         <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
           <div className="flex items-center justify-between mb-4">
-            <span className="text-gray-500 text-sm">Used Today</span>
+            <span className="text-gray-500 text-sm">{t('dashUsedToday')}</span>
             <TrendingUp className="h-5 w-5 text-blue-500" />
           </div>
           <p className="text-3xl font-bold text-gray-900">{formatUSD(credits?.used || 0)}</p>
-          <p className="text-sm text-gray-500 mt-1">of {formatUSD(credits?.daily || 0)} daily</p>
+          <p className="text-sm text-gray-500 mt-1">{t('dashOfDaily').replace('{amount}', formatUSD(credits?.daily || 0))}</p>
         </div>
 
         <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
           <div className="flex items-center justify-between mb-4">
-            <span className="text-gray-500 text-sm">Remaining</span>
+            <span className="text-gray-500 text-sm">{t('dashRemaining')}</span>
             <Clock className="h-5 w-5 text-green-500" />
           </div>
           <p className="text-3xl font-bold text-green-600">{formatUSD(credits?.remaining || 0)}</p>
-          <p className="text-sm text-gray-500 mt-1">resets at midnight UTC</p>
+          <p className="text-sm text-gray-500 mt-1">{t('dashResetsAtMidnight')}</p>
         </div>
       </div>
 
@@ -404,11 +414,11 @@ export default function Dashboard() {
           <div className="flex items-center gap-3">
             <Flame className="h-5 w-5 text-blue-600" />
             <div className="flex-grow">
-              <p className="font-semibold text-blue-800">No $FUEL tokens found</p>
-              <p className="text-sm text-blue-700">Buy $FUEL to unlock AI credits.</p>
+              <p className="font-semibold text-blue-800">{t('dashNoTokens')}</p>
+              <p className="text-sm text-blue-700">{t('dashBuyToUnlock')}</p>
             </div>
             <a href={`https://raydium.io/swap/?inputMint=sol&outputMint=${TOKEN_CA}`} target="_blank" rel="noopener noreferrer" className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
-              Buy $FUEL
+              {t('buyFuel')}
             </a>
           </div>
         </div>
@@ -422,12 +432,12 @@ export default function Dashboard() {
               <div className="flex items-center gap-3">
                 <Key className="h-6 w-6 text-primary" />
                 <div>
-                  <h2 className="text-xl font-bold text-gray-900">🔑 Your API Key</h2>
+                  <h2 className="text-xl font-bold text-gray-900">🔑 {t('dashApiKey')}</h2>
                   <p className="text-sm text-gray-500">Base URL: https://api.aifuel.fun/v1</p>
                 </div>
               </div>
               <button onClick={handleRegenerateKey} disabled={regenerating} className="inline-flex items-center gap-2 px-4 py-2 border border-gray-200 text-gray-600 rounded-lg hover:bg-gray-50 disabled:opacity-50">
-                <RefreshCw className={`h-4 w-4 ${regenerating ? 'animate-spin' : ''}`} /> Regenerate
+                <RefreshCw className={`h-4 w-4 ${regenerating ? 'animate-spin' : ''}`} /> {t('dashRegenerate')}
               </button>
             </div>
           </div>
@@ -442,7 +452,7 @@ export default function Dashboard() {
                   </button>
                 </div>
                 <div className="bg-amber-50 border border-amber-200 rounded-lg p-3">
-                  <p className="text-sm text-amber-800">⚠️ Keep this key secure. Regenerating will invalidate the current key.</p>
+                  <p className="text-sm text-amber-800">⚠️ {t('dashKeyWarning')}</p>
                 </div>
               </div>
             ) : apiKey ? (
@@ -452,13 +462,13 @@ export default function Dashboard() {
                   <span className="text-xs text-gray-500 flex-shrink-0">Created {new Date(apiKey.createdAt).toLocaleDateString()}</span>
                 </div>
                 <div className="bg-amber-50 border border-amber-200 rounded-lg p-3">
-                  <p className="text-sm text-amber-800">⚠️ Click Regenerate to get a new visible key (old key will be invalidated).</p>
+                  <p className="text-sm text-amber-800">⚠️ {t('dashKeyRegenNote')}</p>
                 </div>
               </div>
             ) : (
               <div className="text-center py-8">
                 <RefreshCw className="h-8 w-8 text-gray-300 mx-auto mb-4 animate-spin" />
-                <p className="text-gray-500">Generating your API key...</p>
+                <p className="text-gray-500">{t('dashGeneratingKey')}</p>
               </div>
             )}
           </div>
@@ -468,7 +478,7 @@ export default function Dashboard() {
       {/* Quick Start */}
       {(fullApiKey || apiKey) && (
         <div className="mt-8 bg-gray-50 rounded-xl p-6">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Quick Start</h3>
+          <h3 className="text-lg font-semibold text-gray-900 mb-4">{t('dashQuickStart')}</h3>
           <pre className="bg-gray-900 text-green-400 p-4 rounded-lg overflow-x-auto text-sm">
 {`curl https://api.aifuel.fun/v1/chat/completions \\
   -H "Authorization: Bearer ${fullApiKey || 'YOUR_API_KEY'}" \\
