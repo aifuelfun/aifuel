@@ -1,11 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
-  <defs>
-    <linearGradient id="solflare-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#FF6B6B"/>
-      <stop offset="100%" style="stop-color:#EE5A5A"/>
-    </linearGradient>
-  </defs>
-  <rect width="100" height="100" rx="20" fill="url(#solflare-grad)"/>
-  <circle cx="50" cy="50" r="25" fill="none" stroke="white" stroke-width="6"/>
-  <circle cx="50" cy="50" r="12" fill="white"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <path fill="#FF5C5C" d="M0 0h512v512H0z"/>
+  <path fill="#fff" d="M256 128c-70.7 0-128 57.2-128 128s57.2 128 128 128 128-57.2 128-128-57.2-128-128-128zm0 192c-44.2 0-80-35.8-80-80s35.8-80 80-80 80 35.8 80 80-35.8 80-80 80z"/>
+  <circle cx="256" cy="272" r="40" fill="#FF5C5C"/>
 </svg>
