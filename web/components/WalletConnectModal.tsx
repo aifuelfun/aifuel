@@ -70,15 +70,15 @@ export const WalletConnectModal: FC<Props> = ({ open, onClose }) => {
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-50 flex items-start justify-center pt-[10vh] overflow-y-auto">
       {/* 背景遮罩 */}
       <div 
-        className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+        className="fixed inset-0 bg-black/60 backdrop-blur-sm"
         onClick={onClose}
       />
       
       {/* 弹窗内容 */}
-      <div className="relative bg-white rounded-2xl shadow-xl w-full max-w-lg max-h-[85vh] overflow-hidden">
+      <div className="relative bg-white rounded-2xl shadow-xl w-full max-w-lg max-h-[80vh] overflow-hidden">
         {/* 头部 */}
         <div className="bg-gradient-to-r from-primary to-primary-dark p-6 text-white">
           <button 
