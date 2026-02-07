@@ -18,25 +18,25 @@ const WALLETS = [
   {
     name: 'Phantom' as WalletName,
     adapter: PhantomWalletAdapter,
-    icon: '/wallets/phantom.svg',
+    icon: '/wallets/phantom.svg?v=3',
     downloadUrl: 'https://phantom.app/'
   },
   {
     name: 'Solflare' as WalletName,
     adapter: SolflareWalletAdapter,
-    icon: '/wallets/solflare.svg',
+    icon: '/wallets/solflare.svg?v=3',
     downloadUrl: 'https://solflare.com/'
   },
   {
     name: 'CoinbaseWallet' as WalletName,
     adapter: CoinbaseWalletAdapter,
-    icon: '/wallets/coinbase.svg',
+    icon: '/wallets/coinbase.svg?v=3',
     downloadUrl: 'https://www.coinbase.com/wallet'
   },
   {
     name: 'TrustWallet' as WalletName,
     adapter: TrustWalletAdapter,
-    icon: '/wallets/trust.svg',
+    icon: '/wallets/trust.svg?v=3',
     downloadUrl: 'https://trustwallet.com/'
   },
 ]
