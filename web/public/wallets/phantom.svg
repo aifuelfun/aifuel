@@ -1,11 +1,12 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-  <!-- Phantom official: blue gradient circle with ghost-like shape -->
   <defs>
-    <linearGradient id="p-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+    <linearGradient id="phantom-grad" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" stop-color="#4A90E2"/>
       <stop offset="100%" stop-color="#2C5AA0"/>
     </linearGradient>
   </defs>
-  <circle cx="256" cy="256" r="256" fill="url(#p-grad)"/>
-  <path fill="white" d="M256 180c-79.5 0-144 64.5-144 144s64.5 144 144 144 144-64.5 144-144-64.5-144-144-144zm0 240c-66.3 0-120-53.7-120-120s53.7-120 120-120 120 53.7 120 120-53.7 120-120 120z" transform="translate(0, -40)"/>
+  <circle cx="256" cy="256" r="256" fill="url(#phantom-grad)"/>
+  <g fill="white">
+    <path d="M256 160c-70.7 0-128 57.2-128 128s57.2 128 128 128 128-57.2 128-128-57.2-128-128-128zm0 240c-66.3 0-120-53.7-120-120s53.7-120 120-120 120 53.7 120 120-53.7 120-120 120z" transform="translate(0,-50)"/>
+  </g>
 </svg>
