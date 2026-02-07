@@ -6,6 +6,7 @@ import { Copy, Check, RefreshCw, LogOut, Key, Flame, Zap, TrendingUp, Clock } fr
 import { useLocale } from '@/lib/LocaleContext'
 import { API_BASE_URL, CIRCULATING_SUPPLY, DAILY_CREDIT_POOL, TOKEN_CA } from '@/lib/constants'
 import { shortenAddress, formatUSD, formatNumber } from '@/lib/utils'
+import bs58 from 'bs58'
 
 // Storage keys
 const TOKEN_KEY = 'aifuel_jwt'
