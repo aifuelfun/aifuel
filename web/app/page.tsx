@@ -42,7 +42,7 @@ export default function Home() {
             Hold $FUEL, Use AI Free
           </h1>
           <p className="text-xl md:text-2xl text-white/90 mb-8 max-w-3xl mx-auto">
-            Access 200+ AI models for free by holding $FUEL tokens on Solana. No subscriptions, no credit cards.
+            {t('heroDesc')}
           </p>
           
           {/* CTA Buttons */}
@@ -50,14 +50,14 @@ export default function Home() {
             {connected ? (
               <>
                 <div className="text-white/80 mb-2 sm:mb-0 sm:mr-4">
-                  Wallet connected ✓
+                  {t('walletConnected')}
                 </div>
               </>
             ) : (
               <WalletButton className="!bg-transparent !border-2 !border-white hover:!bg-white/10" />
             )}
             <a href={`https://raydium.io/swap/?inputMint=sol&outputMint=${TOKEN_CA}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-yellow-500 hover:bg-yellow-600 text-white font-semibold rounded-lg transition">
-              Buy $FUEL <ExternalLink className="h-4 w-4" />
+              {t('buyFuel')} <ExternalLink className="h-4 w-4" />
             </a>
           </div>
 
@@ -70,13 +70,13 @@ export default function Home() {
 
           {/* CA Address */}
           <div className="mt-8 inline-flex flex-col sm:flex-row items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-3 rounded-lg max-w-full">
-            <span className="text-sm text-white/70 shrink-0">CA:</span>
+            <span className="text-sm text-white/70 shrink-0">{t('caAddress')}</span>
             <div className="flex items-center gap-2 min-w-0">
               <code className="text-xs sm:text-sm font-mono text-yellow-300 truncate max-w-[200px] sm:max-w-none">{TOKEN_CA}</code>
               <button 
                 onClick={copyCA}
                 className="shrink-0 p-1.5 hover:bg-white/20 rounded transition"
-                title="Copy CA"
+                title={t('copyCa')}
               >
                 {caCopied ? <Check className="h-4 w-4 text-green-400" /> : <Copy className="h-4 w-4 text-white/60" />}
               </button>
@@ -90,10 +90,10 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold text-gray-900 mb-4">
-              Why AIFuel?
+              {t('whyAIFuel')}
             </h2>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              A new paradigm for AI access. Hold tokens, use AI forever.
+              {t('whyAIFuelDesc')}
             </p>
           </div>
 
@@ -102,9 +102,9 @@ export default function Home() {
               <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-4">
                 <Zap className="h-6 w-6 text-primary" />
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-2">200+ AI Models</h3>
+              <h3 className="text-xl font-bold text-gray-900 mb-2">{t('feature1Title')}</h3>
               <p className="text-gray-600">
-                Access GPT-4o, Claude, Gemini, DeepSeek and more through a single API endpoint.
+                {t('feature1Desc')}
               </p>
             </div>
             
@@ -112,9 +112,9 @@ export default function Home() {
               <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-4">
                 <Shield className="h-6 w-6 text-primary" />
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-2">Hold, Don't Pay</h3>
+              <h3 className="text-xl font-bold text-gray-900 mb-2">{t('feature2Title')}</h3>
               <p className="text-gray-600">
-                Your tokens stay in your wallet. No subscriptions, no monthly fees, no credit cards.
+                {t('feature2Desc')}
               </p>
             </div>
             
@@ -122,9 +122,9 @@ export default function Home() {
               <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-4">
                 <Coins className="h-6 w-6 text-primary" />
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-2">Transparent Credits</h3>
+              <h3 className="text-xl font-bold text-gray-900 mb-2">{t('feature3Title')}</h3>
               <p className="text-gray-600">
-                Daily credits based on your holdings. Formula is public, treasury is on-chain.
+                {t('feature3Desc')}
               </p>
             </div>
           </div>
@@ -135,8 +135,8 @@ export default function Home() {
       <section className="py-24 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">200+ AI Models</h2>
-            <p className="text-xl text-gray-600">All the models you need, one API endpoint</p>
+            <h2 className="text-4xl font-bold text-gray-900 mb-4">{t('modelsTitle')}</h2>
+            <p className="text-xl text-gray-600">{t('modelsDesc')}</p>
           </div>
           
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
@@ -150,7 +150,7 @@ export default function Home() {
           
           <div className="text-center mt-8">
             <Link href="/models" className="inline-flex items-center gap-2 text-primary hover:text-primary-dark font-medium">
-              View all 200+ models <ExternalLink className="h-4 w-4" />
+              {t('viewAllModels')} <ExternalLink className="h-4 w-4" />
             </Link>
           </div>
         </div>
@@ -160,27 +160,27 @@ export default function Home() {
       <section id="pricing" className="py-24 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">How It Works</h2>
-            <p className="text-xl text-gray-600">Three simple steps to free AI</p>
+            <h2 className="text-4xl font-bold text-gray-900 mb-4">{t('howItWorks')}</h2>
+            <p className="text-xl text-gray-600">{t('threeSteps')}</p>
           </div>
           
           <div className="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto">
             <div className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100 text-center">
               <div className="w-16 h-16 rounded-full bg-primary text-white text-2xl font-bold flex items-center justify-center mx-auto mb-4">1</div>
-              <h3 className="text-xl font-bold text-gray-900 mb-2">Buy $FUEL</h3>
-              <p className="text-gray-600">Get $FUEL tokens on Raydium or Jupiter. Your tokens stay in your wallet.</p>
+              <h3 className="text-xl font-bold text-gray-900 mb-2">{t('step1Title')}</h3>
+              <p className="text-gray-600">{t('step1Desc')}</p>
             </div>
             
             <div className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100 text-center">
               <div className="w-16 h-16 rounded-full bg-primary text-white text-2xl font-bold flex items-center justify-center mx-auto mb-4">2</div>
-              <h3 className="text-xl font-bold text-gray-900 mb-2">Connect Wallet</h3>
-              <p className="text-gray-600">Connect your Phantom or Solflare wallet to aifuel.fun and get your API key.</p>
+              <h3 className="text-xl font-bold text-gray-900 mb-2">{t('step2Title')}</h3>
+              <p className="text-gray-600">{t('step2Desc')}</p>
             </div>
             
             <div className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100 text-center">
               <div className="w-16 h-16 rounded-full bg-primary text-white text-2xl font-bold flex items-center justify-center mx-auto mb-4">3</div>
-              <h3 className="text-xl font-bold text-gray-900 mb-2">Use AI Free</h3>
-              <p className="text-gray-600">Call our API like OpenAI. Daily credits based on your token holdings.</p>
+              <h3 className="text-xl font-bold text-gray-900 mb-2">{t('step3Title')}</h3>
+              <p className="text-gray-600">{t('step3Desc')}</p>
             </div>
           </div>
         </div>
@@ -189,29 +189,29 @@ export default function Home() {
       {/* FAQ Section */}
       <section className="py-24 bg-gray-50">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold text-gray-900 mb-8 text-center">FAQ</h2>
+          <h2 className="text-3xl font-bold text-gray-900 mb-8 text-center">{t('faq')}</h2>
           
           <div className="space-y-4">
             {[
               {
-                q: 'How does AIFuel work?',
-                a: 'Hold $FUEL tokens in your wallet to earn daily AI credits. The more tokens you hold, the more credits you get. No subscriptions, no recurring payments.'
+                q: t('faq1Q'),
+                a: t('faq1A'),
               },
               {
-                q: 'What is the Diamond Hand bonus?',
-                a: 'If you hold your tokens for more than 30 days without transferring, you get a 10% bonus (up to 120% with Diamond Hand status).'
+                q: t('faq2Q'),
+                a: t('faq2A'),
               },
               {
-                q: 'Is my wallet safe?',
-                a: 'Absolutely. We only read your wallet balance - your tokens never leave your wallet. No approvals, no transfers, no risks.'
+                q: t('faq3Q'),
+                a: t('faq3A'),
               },
               {
-                q: 'Which AI models are available?',
-                a: 'We provide access to 200+ models including GPT-4o, Claude 3.5, Gemini, DeepSeek, Llama, and more. All through a single OpenAI-compatible API.'
+                q: t('faq4Q'),
+                a: t('faq4A'),
               },
               {
-                q: 'What happens when I run out of credits?',
-                a: 'Credits reset daily at midnight UTC. You can also increase your $FUEL holding to earn more credits. Diamond Hands get the full amount.'
+                q: t('faq5Q'),
+                a: t('faq5A'),
               },
             ].map((faq, idx) => (
               <div key={idx} className="bg-white rounded-xl border border-gray-100">
@@ -241,11 +241,11 @@ export default function Home() {
               <Logo size={24} />
               <span className="text-white font-bold">AIFuel</span>
             </div>
-            <p>© 2026 AIFuel. All rights reserved.</p>
+            <p>© 2026 AIFuel. {t('allRightsReserved')}</p>
             <div className="flex items-center gap-4">
-              <Link href="/docs" className="hover:text-white transition">Docs</Link>
-              <a href="https://github.com/aifuelfun/aifuel" target="_blank" rel="noopener noreferrer" className="hover:text-white transition">GitHub</a>
-              <a href={`https://t.me/aifuel_fun`} target="_blank" rel="noopener noreferrer" className="hover:text-white transition">Telegram</a>
+              <Link href="/docs" className="hover:text-white transition">{t('docs')}</Link>
+              <a href="https://github.com/aifuelfun/aifuel" target="_blank" rel="noopener noreferrer" className="hover:text-white transition">{t('github')}</a>
+              <a href={`https://t.me/aifuel_fun`} target="_blank" rel="noopener noreferrer" className="hover:text-white transition">{t('telegram')}</a>
             </div>
           </div>
         </div>
