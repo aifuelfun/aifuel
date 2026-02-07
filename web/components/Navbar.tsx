@@ -75,11 +75,6 @@ export const Navbar: FC<Props> = ({ locale, setLocale, t }) => {
             <Link href="/models" className="text-gray-600 hover:text-primary transition">
               Models
             </Link>
-            {connected && (
-              <Link href="/dashboard" className="text-gray-600 hover:text-primary transition">
-                {t('dashboard')}
-              </Link>
-            )}
           </div>
 
           {/* Social, Language Switch & Wallet Button */}
@@ -125,11 +120,6 @@ export const Navbar: FC<Props> = ({ locale, setLocale, t }) => {
               <Link href="/models" className="text-gray-600 hover:text-primary transition">
                 Models
               </Link>
-              {connected && (
-                <Link href="/dashboard" className="text-gray-600 hover:text-primary transition">
-                  {t('dashboard')}
-                </Link>
-              )}
               <div className="pt-2 flex items-center gap-4">
                 <a href={SOCIAL_LINKS.twitter} target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:text-primary transition">
                   <XIcon className="h-4 w-4" />
