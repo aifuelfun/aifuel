@@ -39,36 +39,36 @@ export const Footer: FC<Props> = ({ t }) => {
             </p>
           </div>
 
-          {/* Quick Links */}
+          {/* Docs + X Icon */}
           <div>
-            <h3 className="font-semibold mb-4">{t('product')}</h3>
-            <ul className="space-y-2">
-              <li>
-                <Link href="/docs" className="text-gray-400 hover:text-white transition">
-                  {t('documentation')}
-                </Link>
-              </li>
-              <li>
-                <Link href="/models" className="text-gray-400 hover:text-white transition">
-                  {t('models')}
-                </Link>
-              </li>
-            </ul>
-          </div>
-
-          {/* Resources - icons only */}
-          <div>
-            <h3 className="font-semibold mb-4">{t('resources')}</h3>
-            <div className="flex flex-col items-start gap-3">
+            <div className="flex items-center gap-2 mb-4">
+              <div>
+                <h3 className="font-semibold">{t('documentation')}</h3>
+              </div>
               <a href={SOCIAL_LINKS.twitter} target="_blank" rel="noopener noreferrer"
-                 className="text-gray-400 hover:text-primary transition">
+                 className="text-gray-400 hover:text-primary transition p-1">
                 <XIcon className="h-4 w-4" />
               </a>
+            </div>
+            <Link href="/docs" className="text-gray-400 hover:text-white transition text-sm">
+              {t('docs')}
+            </Link>
+          </div>
+
+          {/* Models + Discord Icon */}
+          <div>
+            <div className="flex items-center gap-2 mb-4">
+              <div>
+                <h3 className="font-semibold">{t('models')}</h3>
+              </div>
               <a href={SOCIAL_LINKS.discord} target="_blank" rel="noopener noreferrer"
-                 className="text-gray-400 hover:text-primary transition">
+                 className="text-gray-400 hover:text-primary transition p-1">
                 <DiscordIcon className="h-4 w-4" />
               </a>
             </div>
+            <Link href="/models" className="text-gray-400 hover:text-white transition text-sm">
+              {t('viewAllModels')}
+            </Link>
           </div>
         </div>
 
