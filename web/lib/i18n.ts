@@ -4,6 +4,7 @@ export const translations = {
     features: 'Features',
     pricing: 'Pricing',
     docs: 'Docs',
+    models: 'Models',
     dashboard: 'Dashboard',
     
     // Hero
@@ -176,6 +177,7 @@ export const translations = {
     features: '特性',
     pricing: '价格',
     docs: '文档',
+    models: '模型',
     dashboard: '控制台',
     
     // Hero

@@ -50,7 +50,7 @@ export const Footer: FC<Props> = ({ t }) => {
               </li>
               <li>
                 <Link href="/models" className="text-gray-400 hover:text-white transition">
-                  Models
+                  {t('models')}
                 </Link>
               </li>
             </ul>

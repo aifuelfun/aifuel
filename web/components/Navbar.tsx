@@ -73,7 +73,7 @@ export const Navbar: FC<Props> = ({ locale, setLocale, t }) => {
               {t('docs')}
             </Link>
             <Link href="/models" className="text-gray-600 hover:text-primary transition">
-              Models
+              {t('models')}
             </Link>
           </div>
 
@@ -118,7 +118,7 @@ export const Navbar: FC<Props> = ({ locale, setLocale, t }) => {
                 {t('docs')}
               </Link>
               <Link href="/models" className="text-gray-600 hover:text-primary transition">
-                Models
+                {t('models')}
               </Link>
               <div className="pt-2 flex items-center gap-4">
                 <a href={SOCIAL_LINKS.twitter} target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:text-primary transition">
