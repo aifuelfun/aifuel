@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useMemo } from 'react'
-import { Search, Filter, Zap, Brain, Image, Mic, Video, ChevronDown, ExternalLink, Copy, Check } from 'lucide-react'
+import { Search, ChevronDown, ExternalLink } from 'lucide-react'
 import { Logo } from '@/components'
 import { useLocale } from '@/lib/LocaleContext'
 
@@ -9,88 +9,51 @@ interface Model {
   id: string
   name: string
   description: string
-  context_length: number
-  architecture: {
-    modality: string
-    input_modalities: string[]
-    output_modalities: string[]
-  }
   pricing: {
     prompt: string
     completion: string
   }
-  top_provider: {
-    context_length: number
-    max_completion_tokens: number | null
-    is_moderated: boolean
-  }
 }
 
-const PROVIDERS = [
-  'All', 'OpenAI', 'Anthropic', 'Google', 'Meta', 'Mistral', 'DeepSeek', 
-  'Qwen', 'Cohere', 'xAI', 'MiniMax', 'ByteDance', 'NVIDIA', 'Other'
-]
-
-const MODALITIES = [
-  { id: 'all', label: 'All', icon: null },
-  { id: 'text', label: 'Text', icon: Brain },
-  { id: 'image', label: 'Vision', icon: Image },
-  { id: 'audio', label: 'Audio', icon: Mic },
-  { id: 'video', label: 'Video', icon: Video },
-]
+const PROVIDER_COLORS: { [key: string]: string } = {
+  'OpenAI': 'bg-green-50 border-green-200',
+  'Anthropic': 'bg-blue-50 border-blue-200',
+  'Google': 'bg-orange-50 border-orange-200',
+  'Meta': 'bg-purple-50 border-purple-200',
+  'Mistral': 'bg-yellow-50 border-yellow-200',
+  'DeepSeek': 'bg-red-50 border-red-200',
+  'xAI': 'bg-indigo-50 border-indigo-200',
+}
 
 export default function ModelsPage() {
   const { locale } = useLocale()
   const [models, setModels] = useState<Model[]>([])
   const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState('')
-  const [provider, setProvider] = useState('All')
-  const [modality, setModality] = useState('all')
-  const [sortBy, setSortBy] = useState<'name' | 'price' | 'context'>('name')
-  const [showFreeOnly, setShowFreeOnly] = useState(false)
-  const [copiedId, setCopiedId] = useState<string | null>(null)
-  
-  // i18n texts
+  const [expandedProvider, setExpandedProvider] = useState<string | null>(null)
+
   const texts = {
     en: {
       title: 'AI Models',
-      subtitle: 'Access {total}+ AI models through a single API. Including {free} free models and {vision} vision models.',
-      totalModels: 'Total Models',
-      freeModels: 'Free Models',
-      visionModels: 'Vision Models',
-      searchPlaceholder: 'Search models...',
-      freeOnly: 'Free only',
-      sortName: 'Sort: Name',
-      sortPrice: 'Sort: Price',
-      sortContext: 'Sort: Context',
-      showing: 'Showing {count} of {total} models',
+      subtitle: 'Premium models accessible via AIFuel API',
+      search: 'Search models...',
       loading: 'Loading models...',
-      noResults: 'No models found matching your criteria',
-      input: 'Input',
-      output: 'Output',
-      context: 'Context',
-      quickStart: 'Quick Start',
-      apiNote: 'Use the model ID from the list above. All models are accessible via a single, unified API endpoint.',
+      noResults: 'No models found',
+      paidModels: 'Paid Models Only',
+      viewAll: 'View All',
+      hide: 'Hide',
+      models: 'models',
     },
     zh: {
       title: 'AI 模型',
-      subtitle: '通过单一 API 访问 {total}+ AI 模型。包含 {free} 个免费模型和 {vision} 个视觉模型。',
-      totalModels: '总模型数',
-      freeModels: '免费模型',
-      visionModels: '视觉模型',
-      searchPlaceholder: '搜索模型...',
-      freeOnly: '仅免费',
-      sortName: '排序：名称',
-      sortPrice: '排序：价格',
-      sortContext: '排序：上下文',
-      showing: '显示 {count} / {total} 个模型',
+      subtitle: '通过 AIFuel API 访问的高级模型',
+      search: '搜索模型...',
       loading: '加载模型中...',
-      noResults: '没有找到符合条件的模型',
-      input: '输入',
-      output: '输出',
-      context: '上下文',
-      quickStart: '快速开始',
-      apiNote: '使用上面列表中的模型 ID。所有模型都可以通过统一的 API 端点访问。',
+      noResults: '未找到模型',
+      paidModels: '仅限付费模型',
+      viewAll: '查看全部',
+      hide: '隐藏',
+      models: '个模型',
     }
   }
   const t = texts[locale] || texts.en
@@ -99,326 +62,148 @@ export default function ModelsPage() {
     fetch('https://api.aifuel.fun/v1/models')
       .then(res => res.json())
       .then(data => {
-        setModels(data.data || [])
+        // Filter: only paid models (exclude free models)
+        const paidModels = data.data?.filter((m: Model) => {
+          const prompt = parseFloat(m.pricing?.prompt || '0')
+          const completion = parseFloat(m.pricing?.completion || '0')
+          return prompt > 0 || completion > 0
+        }) || []
+        setModels(paidModels)
         setLoading(false)
       })
-      .catch(err => {
-        console.error('Failed to fetch models:', err)
-        setLoading(false)
-      })
+      .catch(() => setLoading(false))
   }, [])
 
-  const getProvider = (id: string): string => {
-    const parts = id.split('/')
-    if (parts.length < 2) return 'Other'
-    const p = parts[0].toLowerCase()
-    if (p.includes('openai')) return 'OpenAI'
-    if (p.includes('anthropic')) return 'Anthropic'
-    if (p.includes('google')) return 'Google'
-    if (p.includes('meta') || p.includes('llama')) return 'Meta'
-    if (p.includes('mistral')) return 'Mistral'
-    if (p.includes('deepseek')) return 'DeepSeek'
-    if (p.includes('qwen')) return 'Qwen'
-    if (p.includes('cohere')) return 'Cohere'
-    if (p.includes('xai') || p.includes('grok')) return 'xAI'
-    if (p.includes('minimax')) return 'MiniMax'
-    if (p.includes('bytedance')) return 'ByteDance'
-    if (p.includes('nvidia')) return 'NVIDIA'
-    return 'Other'
-  }
-
-  const formatPrice = (price: string): string => {
-    const num = parseFloat(price)
-    if (num === 0) return 'FREE'
-    if (num < 0.0000001) return '<$0.01'
-    return `$${(num * 1000000).toFixed(2)}`
-  }
-
-  const formatContext = (ctx: number): string => {
-    if (ctx >= 1000000) return `${(ctx / 1000000).toFixed(1)}M`
-    if (ctx >= 1000) return `${(ctx / 1000).toFixed(0)}K`
-    return ctx.toString()
-  }
-
-  const isFree = (model: Model): boolean => {
-    return parseFloat(model.pricing.prompt) === 0 && parseFloat(model.pricing.completion) === 0
-  }
-
-  const hasModality = (model: Model, mod: string): boolean => {
-    if (mod === 'all') return true
-    return model.architecture.input_modalities.includes(mod)
-  }
-
-  const copyModelId = (id: string) => {
-    navigator.clipboard.writeText(id)
-    setCopiedId(id)
-    setTimeout(() => setCopiedId(null), 2000)
-  }
-
-  const filteredModels = useMemo(() => {
-    return models
-      .filter(m => {
-        // Search
-        if (search && !m.name.toLowerCase().includes(search.toLowerCase()) && 
-            !m.id.toLowerCase().includes(search.toLowerCase())) {
-          return false
-        }
-        // Provider
-        if (provider !== 'All' && getProvider(m.id) !== provider) {
-          return false
-        }
-        // Modality
-        if (!hasModality(m, modality)) {
-          return false
-        }
-        // Free only
-        if (showFreeOnly && !isFree(m)) {
-          return false
-        }
-        return true
-      })
-      .sort((a, b) => {
-        if (sortBy === 'price') {
-          return parseFloat(a.pricing.prompt) - parseFloat(b.pricing.prompt)
-        }
-        if (sortBy === 'context') {
-          return b.context_length - a.context_length
-        }
-        return a.name.localeCompare(b.name)
-      })
-  }, [models, search, provider, modality, showFreeOnly, sortBy])
-
-  const stats = useMemo(() => {
-    const total = models.length
-    const free = models.filter(isFree).length
-    const vision = models.filter(m => hasModality(m, 'image')).length
-    return { total, free, vision }
+  // Group by provider
+  const modelsByProvider = useMemo(() => {
+    const grouped: { [key: string]: Model[] } = {}
+    models.forEach(model => {
+      const provider = model.id.split('/')[0] || 'Other'
+      if (!grouped[provider]) {
+        grouped[provider] = []
+      }
+      grouped[provider].push(model)
+    })
+    return grouped
   }, [models])
 
+  // Filter by search
+  const filteredByProvider = useMemo(() => {
+    if (!search) return modelsByProvider
+    
+    const searchLower = search.toLowerCase()
+    const filtered: { [key: string]: Model[] } = {}
+    
+    Object.entries(modelsByProvider).forEach(([provider, providerModels]) => {
+      const matched = providerModels.filter(m =>
+        m.name.toLowerCase().includes(searchLower) ||
+        m.id.toLowerCase().includes(searchLower)
+      )
+      if (matched.length > 0) {
+        filtered[provider] = matched
+      }
+    })
+    return filtered
+  }, [modelsByProvider, search])
+
+  const totalModels = models.length
+  const displayedModels = Object.values(filteredByProvider).reduce((sum, arr) => sum + arr.length, 0)
+
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-white">
       {/* Header */}
-      <div className="bg-hero-gradient text-white py-16">
+      <div className="bg-gradient-to-r from-primary to-primary-dark text-white py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center gap-3 mb-4">
             <Logo size={40} />
-            <h1 className="text-4xl font-bold">{t.title}</h1>
+            <span className="text-3xl font-bold">{t('title')}</span>
           </div>
-          <p className="text-xl text-white/80 max-w-2xl">
-            {t.subtitle.replace('{total}', String(stats.total)).replace('{free}', String(stats.free)).replace('{vision}', String(stats.vision))}
-          </p>
-          
-          {/* Stats */}
-          <div className="flex gap-8 mt-8">
-            <div className="bg-white/10 backdrop-blur-sm px-6 py-3 rounded-xl">
-              <p className="text-3xl font-bold">{stats.total}+</p>
-              <p className="text-sm text-white/70">{t.totalModels}</p>
-            </div>
-            <div className="bg-white/10 backdrop-blur-sm px-6 py-3 rounded-xl">
-              <p className="text-3xl font-bold">{stats.free}</p>
-              <p className="text-sm text-white/70">{t.freeModels}</p>
-            </div>
-            <div className="bg-white/10 backdrop-blur-sm px-6 py-3 rounded-xl">
-              <p className="text-3xl font-bold">{stats.vision}</p>
-              <p className="text-sm text-white/70">{t.visionModels}</p>
-            </div>
-          </div>
+          <p className="text-lg text-white/90">{t('subtitle')}</p>
+          <p className="text-sm text-white/70 mt-2">{t('paidModels')}</p>
         </div>
       </div>
 
-      {/* Filters */}
-      <div className="sticky top-16 z-40 bg-white border-b shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex flex-wrap gap-4 items-center">
-            {/* Search */}
-            <div className="relative flex-1 min-w-[200px]">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
-              <input
-                type="text"
-                placeholder={t.searchPlaceholder}
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
-              />
-            </div>
-
-            {/* Provider */}
-            <select
-              value={provider}
-              onChange={(e) => setProvider(e.target.value)}
-              className="px-4 py-2 border rounded-lg bg-white focus:ring-2 focus:ring-primary"
-            >
-              {PROVIDERS.map(p => (
-                <option key={p} value={p}>{p}</option>
-              ))}
-            </select>
-
-            {/* Modality */}
-            <div className="flex gap-1 bg-gray-100 p-1 rounded-lg">
-              {MODALITIES.map(m => (
-                <button
-                  key={m.id}
-                  onClick={() => setModality(m.id)}
-                  className={`px-3 py-1.5 rounded-md text-sm font-medium transition ${
-                    modality === m.id 
-                      ? 'bg-primary text-white' 
-                      : 'text-gray-600 hover:bg-gray-200'
-                  }`}
-                >
-                  {m.label}
-                </button>
-              ))}
-            </div>
-
-            {/* Free Only */}
-            <label className="flex items-center gap-2 cursor-pointer">
-              <input
-                type="checkbox"
-                checked={showFreeOnly}
-                onChange={(e) => setShowFreeOnly(e.target.checked)}
-                className="w-4 h-4 text-primary rounded focus:ring-primary"
-              />
-              <span className="text-sm text-gray-600">{t.freeOnly}</span>
-            </label>
-
-            {/* Sort */}
-            <select
-              value={sortBy}
-              onChange={(e) => setSortBy(e.target.value as any)}
-              className="px-4 py-2 border rounded-lg bg-white focus:ring-2 focus:ring-primary"
-            >
-              <option value="name">{t.sortName}</option>
-              <option value="price">{t.sortPrice}</option>
-              <option value="context">{t.sortContext}</option>
-            </select>
-          </div>
-        </div>
-      </div>
-
-      {/* Models Grid */}
+      {/* Search */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="relative">
+          <Search className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
+          <input
+            type="text"
+            placeholder={t('search')}
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+          />
+        </div>
+        <p className="text-sm text-gray-600 mt-3">
+          {displayedModels} {t('models')} {totalModels > 0 && `(${totalModels} ${t('models')})`}
+        </p>
+      </div>
+
+      {/* Models by Provider */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
         {loading ? (
-          <div className="text-center py-20">
-            <div className="animate-spin h-12 w-12 border-4 border-primary border-t-transparent rounded-full mx-auto mb-4" />
-            <p className="text-gray-500">{t.loading}</p>
-          </div>
+          <div className="text-center py-12 text-gray-600">{t('loading')}</div>
+        ) : Object.keys(filteredByProvider).length === 0 ? (
+          <div className="text-center py-12 text-gray-600">{t('noResults')}</div>
         ) : (
-          <>
-            <p className="text-sm text-gray-500 mb-4">
-              {t.showing.replace('{count}', String(filteredModels.length)).replace('{total}', String(models.length))}
-            </p>
-            
-            <div className="grid gap-4">
-              {filteredModels.map(model => (
-                <div 
-                  key={model.id}
-                  className="bg-white rounded-xl border hover:shadow-lg transition p-6"
+          <div className="space-y-6">
+            {Object.entries(filteredByProvider).map(([provider, providerModels]) => (
+              <div key={provider} className={`rounded-lg border-2 overflow-hidden ${PROVIDER_COLORS[provider] || 'bg-gray-50 border-gray-200'}`}>
+                {/* Provider Header */}
+                <button
+                  onClick={() => setExpandedProvider(expandedProvider === provider ? null : provider)}
+                  className="w-full flex items-center justify-between p-4 hover:opacity-75 transition"
                 >
-                  <div className="flex flex-col md:flex-row md:items-start gap-4">
-                    {/* Model Info */}
-                    <div className="flex-1">
-                      <div className="flex items-start gap-3">
-                        <div>
-                          <h3 className="font-semibold text-lg text-gray-900">
-                            {model.name}
-                          </h3>
-                          <div className="flex items-center gap-2 mt-1">
-                            <code className="text-xs bg-gray-100 px-2 py-1 rounded text-gray-600">
-                              {model.id}
-                            </code>
-                            <button
-                              onClick={() => copyModelId(model.id)}
-                              className="p-1 hover:bg-gray-100 rounded transition"
-                              title="Copy model ID"
-                            >
-                              {copiedId === model.id ? (
-                                <Check className="h-4 w-4 text-green-500" />
-                              ) : (
-                                <Copy className="h-4 w-4 text-gray-400" />
-                              )}
-                            </button>
+                  <div className="flex items-center gap-3">
+                    <h3 className="text-lg font-bold text-gray-900">{provider}</h3>
+                    <span className="px-3 py-1 bg-white bg-opacity-70 rounded-full text-sm font-medium text-gray-700">
+                      {providerModels.length}
+                    </span>
+                  </div>
+                  <ChevronDown
+                    className={`h-5 w-5 transition ${expandedProvider === provider ? 'rotate-180' : ''}`}
+                  />
+                </button>
+
+                {/* Models List */}
+                {expandedProvider === provider && (
+                  <div className="border-t-2 border-current border-opacity-10 divide-y divide-opacity-20">
+                    {providerModels.map((model) => (
+                      <div key={model.id} className="p-4 hover:bg-white hover:bg-opacity-50 transition">
+                        <div className="flex items-start justify-between gap-4">
+                          <div className="flex-1 min-w-0">
+                            <h4 className="font-semibold text-gray-900 break-words">{model.name}</h4>
+                            <p className="text-xs text-gray-600 font-mono mt-1 break-all">{model.id}</p>
+                            {model.description && (
+                              <p className="text-sm text-gray-700 mt-2">{model.description}</p>
+                            )}
+                            {(model.pricing?.prompt || model.pricing?.completion) && (
+                              <p className="text-xs text-gray-600 mt-2">
+                                {locale === 'zh' ? '价格：' : 'Price: '}
+                                {model.pricing?.prompt && `$${model.pricing.prompt}/1k input`}
+                                {model.pricing?.prompt && model.pricing?.completion && ' | '}
+                                {model.pricing?.completion && `$${model.pricing.completion}/1k output`}
+                              </p>
+                            )}
                           </div>
+                          <a
+                            href={`https://api.aifuel.fun/v1/models`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex-shrink-0 p-2 hover:bg-white hover:bg-opacity-50 rounded transition"
+                          >
+                            <ExternalLink className="h-4 w-4 text-gray-600" />
+                          </a>
                         </div>
                       </div>
-                      
-                      <p className="text-sm text-gray-600 mt-3 line-clamp-2">
-                        {model.description}
-                      </p>
-
-                      {/* Tags */}
-                      <div className="flex flex-wrap gap-2 mt-3">
-                        {model.architecture.input_modalities.map(mod => (
-                          <span 
-                            key={mod}
-                            className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full"
-                          >
-                            {mod}
-                          </span>
-                        ))}
-                        {isFree(model) && (
-                          <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full font-medium">
-                            FREE
-                          </span>
-                        )}
-                      </div>
-                    </div>
-
-                    {/* Pricing & Stats */}
-                    <div className="flex flex-row md:flex-col gap-4 md:gap-2 md:text-right md:min-w-[150px]">
-                      <div>
-                        <p className="text-xs text-gray-500">{t.input}</p>
-                        <p className={`font-semibold ${isFree(model) ? 'text-green-600' : 'text-gray-900'}`}>
-                          {formatPrice(model.pricing.prompt)}
-                          {!isFree(model) && <span className="text-xs font-normal text-gray-500">/M</span>}
-                        </p>
-                      </div>
-                      <div>
-                        <p className="text-xs text-gray-500">{t.output}</p>
-                        <p className={`font-semibold ${isFree(model) ? 'text-green-600' : 'text-gray-900'}`}>
-                          {formatPrice(model.pricing.completion)}
-                          {!isFree(model) && <span className="text-xs font-normal text-gray-500">/M</span>}
-                        </p>
-                      </div>
-                      <div>
-                        <p className="text-xs text-gray-500">{t.context}</p>
-                        <p className="font-semibold text-gray-900">
-                          {formatContext(model.context_length)}
-                        </p>
-                      </div>
-                    </div>
+                    ))}
                   </div>
-                </div>
-              ))}
-            </div>
-
-            {filteredModels.length === 0 && (
-              <div className="text-center py-20">
-                <p className="text-gray-500">{t.noResults}</p>
+                )}
               </div>
-            )}
-          </>
-        )}
-      </div>
-
-      {/* API Info */}
-      <div className="bg-dark text-white py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-2xl font-bold mb-6">{t.quickStart}</h2>
-          <div className="bg-dark-light rounded-xl p-6 overflow-x-auto">
-            <pre className="text-sm text-gray-300">
-{`curl https://api.aifuel.fun/v1/chat/completions \\
-  -H "Authorization: Bearer YOUR_API_KEY" \\
-  -H "Content-Type: application/json" \\
-  -d '{
-    "model": "openai/gpt-4o",
-    "messages": [{"role": "user", "content": "Hello!"}]
-  }'`}
-            </pre>
+            ))}
           </div>
-          <p className="text-gray-400 mt-4">
-            {t.apiNote}
-          </p>
-        </div>
+        )}
       </div>
     </div>
   )
