@@ -1,47 +1,47 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Search, X, Check, Copy } from 'lucide-react'
+import { Search, Copy, Check } from 'lucide-react'
 import { useLocale } from '@/lib/LocaleContext'
 
-// Provider info with logos
 const PROVIDERS: any = {
-  'openai': { label: 'OpenAI', color: '#10A37F', logo: '🟢' },
-  'anthropic': { label: 'Anthropic', color: '#D97706', logo: '🟠' },
-  'google': { label: 'Google', color: '#4285F4', logo: '🔵' },
-  'meta-llama': { label: 'Meta', color: '#0668E1', logo: '🟣' },
-  'mistralai': { label: 'Mistral', color: '#F59E0B', logo: '🟡' },
-  'deepseek': { label: 'DeepSeek', color: '#EF4444', logo: '🔴' },
-  'x-ai': { label: 'xAI', color: '#6B7280', logo: '⚫' },
-  'qwen': { label: 'Qwen', color: '#7C3AED', logo: '🟣' },
-  'cohere': { label: 'Cohere', color: '#14B8A6', logo: '🩵' },
-  'nvidia': { label: 'NVIDIA', color: '#76B900', logo: '🟩' },
-  'amazon': { label: 'Amazon', color: '#FF9900', logo: '🟧' },
-  'microsoft': { label: 'Microsoft', color: '#00BCF2', logo: '🔷' },
-  'perplexity': { label: 'Perplexity', color: '#1FB8CD', logo: '🔮' },
-  'minimax': { label: 'MiniMax', color: '#FF6B6B', logo: '🩷' },
-  'bytedance-research': { label: 'ByteDance', color: '#00F2EA', logo: '🎵' },
+  'openai': { label: 'OpenAI', logo: '🟢' },
+  'anthropic': { label: 'Anthropic', logo: '🟠' },
+  'google': { label: 'Google', logo: '🔵' },
+  'meta-llama': { label: 'Meta', logo: '🟣' },
+  'mistralai': { label: 'Mistral', logo: '🟡' },
+  'deepseek': { label: 'DeepSeek', logo: '🔴' },
+  'x-ai': { label: 'xAI', logo: '⚫' },
+  'qwen': { label: 'Qwen', logo: '🟣' },
+  'cohere': { label: 'Cohere', logo: '🩵' },
+  'nvidia': { label: 'NVIDIA', logo: '🟩' },
+  'amazon': { label: 'Amazon', logo: '🟧' },
+  'microsoft': { label: 'Microsoft', logo: '🔷' },
+  'perplexity': { label: 'Perplexity', logo: '🔮' },
+  'minimax': { label: 'MiniMax', logo: '🩷' },
+  'bytedance-research': { label: 'ByteDance', logo: '🎵' },
 }
 
-function getProviderInfo(slug: string) {
-  return PROVIDERS[slug] || { label: slug, color: '#9CA3AF', logo: '⬜' }
+function getInfo(slug: string) {
+  return PROVIDERS[slug] || { label: slug, logo: '⬜' }
 }
 
-function formatPrice(raw: string) {
-  const val = parseFloat(raw || '0')
-  if (val === 0) return '-'
-  const perMillion = val * 1000000
-  if (perMillion >= 100) return `$${perMillion.toFixed(0)}`
-  if (perMillion >= 1) return `$${perMillion.toFixed(2)}`
-  return `$${perMillion.toFixed(4)}`
+function fmtPrice(raw: string) {
+  const v = parseFloat(raw || '0')
+  if (v === 0) return 'Free'
+  const p = v * 1000000
+  if (p >= 100) return `$${p.toFixed(0)}`
+  if (p >= 1) return `$${p.toFixed(2)}`
+  if (p >= 0.01) return `$${p.toFixed(3)}`
+  return `$${p.toFixed(4)}`
 }
 
-function formatCtx(model: any) {
-  const ctx = model.context_length || model.top_provider?.context_length
-  if (!ctx) return '-'
-  if (ctx >= 1000000) return `${(ctx / 1000000).toFixed(1)}M`
-  if (ctx >= 1000) return `${Math.round(ctx / 1000)}k`
-  return String(ctx)
+function fmtCtx(m: any) {
+  const c = m.context_length || m.top_provider?.context_length
+  if (!c) return '-'
+  if (c >= 1000000) return `${(c / 1000000).toFixed(1)}M`
+  if (c >= 1000) return `${Math.round(c / 1000)}K`
+  return String(c)
 }
 
 export default function ModelsPage() {
@@ -49,9 +49,8 @@ export default function ModelsPage() {
   const isZh = locale === 'zh'
   const [models, setModels] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
-  const [selectedProvider, setSelectedProvider] = useState<string | null>(null)
-  const [selectedModel, setSelectedModel] = useState<any>(null)
   const [search, setSearch] = useState('')
+  const [filter, setFilter] = useState('all')
   const [copiedId, setCopiedId] = useState<string | null>(null)
 
   useEffect(() => {
@@ -70,220 +69,123 @@ export default function ModelsPage() {
       .catch(() => setLoading(false))
   }, [])
 
-  // Group by provider
-  const grouped: any = {}
-  models.forEach(m => {
-    const slug = m.id.split('/')[0] || 'other'
-    if (!grouped[slug]) grouped[slug] = []
-    grouped[slug].push(m)
-  })
-  const providerSlugs = Object.keys(grouped).sort((a, b) => {
-    const la = getProviderInfo(a).label
-    const lb = getProviderInfo(b).label
-    return la.localeCompare(lb)
-  })
+  // Get unique providers
+  const providerSlugs = Array.from(new Set(models.map(m => m.id.split('/')[0]))).sort((a, b) => getInfo(a).label.localeCompare(getInfo(b).label))
 
-  // Auto-select first provider
-  useEffect(() => {
-    if (!selectedProvider && providerSlugs.length > 0) {
-      setSelectedProvider(providerSlugs[0])
+  // Filter
+  const filtered = models.filter(m => {
+    const slug = m.id.split('/')[0]
+    if (filter !== 'all' && slug !== filter) return false
+    if (search) {
+      const s = search.toLowerCase()
+      return m.name.toLowerCase().includes(s) || m.id.toLowerCase().includes(s)
     }
-  }, [providerSlugs, selectedProvider])
+    return true
+  })
 
-  // Current provider models
-  const currentModels = selectedProvider ? (grouped[selectedProvider] || []) : []
-  const filteredModels = search
-    ? currentModels.filter((m: any) => m.name.toLowerCase().includes(search.toLowerCase()) || m.id.toLowerCase().includes(search.toLowerCase()))
-    : currentModels
-
-  const copyToClipboard = (text: string, id: string) => {
+  const copy = (text: string) => {
     navigator.clipboard.writeText(text)
-    setCopiedId(id)
+    setCopiedId(text)
     setTimeout(() => setCopiedId(null), 2000)
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        <div className="flex flex-col md:flex-row gap-6 md:gap-8 min-h-[70vh]">
+    <div className="min-h-screen bg-white">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
 
-          {/* Left: Provider List */}
-          <div className="w-full md:w-72 flex-shrink-0">
-            <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3 px-2">
-              {isZh ? '提供商' : 'Providers'}
-            </h2>
-            <div className="bg-white rounded-xl border border-gray-200 p-2 shadow-sm">
-              {loading ? (
-                <div className="p-4 text-center text-gray-500 text-sm">{isZh ? '加载中...' : 'Loading...'}</div>
-              ) : (
-                <div className="grid grid-cols-2 gap-2">
-                  {providerSlugs.map(slug => {
-                    const info = getProviderInfo(slug)
-                    const count = grouped[slug].length
-                    const isActive = selectedProvider === slug
-                    return (
-                      <button
-                        key={slug}
-                        onClick={() => { setSelectedProvider(slug); setSelectedModel(null); setSearch('') }}
-                        className={`w-full flex items-center gap-2.5 px-3 py-2.5 rounded-lg transition text-left ${isActive ? 'bg-primary text-white shadow-sm' : 'bg-gray-50 hover:bg-gray-100 text-gray-700'}`}
-                      >
-                        <span className="text-lg" role="img" aria-label={info.label}>{info.logo}</span>
-                        <div className="flex-1 min-w-0">
-                          <p className={`text-sm font-medium truncate ${isActive ? 'text-white' : 'text-gray-900'}`}>{info.label}</p>
-                        </div>
-                        <span className={`text-xs ${isActive ? 'bg-white/20 text-white' : 'bg-gray-200 text-gray-600'} px-1.5 py-0.5 rounded-full`}>
-                          {count}
-                        </span>
-                      </button>
-                    )
-                  })}
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* Right: Models List */}
-          <div className="flex-1 min-w-0">
-            {selectedProvider && (
-              <>
-                {/* Provider Header + Search */}
-                <div className="flex items-center justify-between mb-4">
-                  <div className="flex items-center gap-3">
-                    <span className="text-2xl" role="img">{getProviderInfo(selectedProvider).logo}</span>
-                    <div>
-                      <h2 className="text-xl font-bold text-gray-900">{getProviderInfo(selectedProvider).label}</h2>
-                      <p className="text-sm text-gray-500">{filteredModels.length} {isZh ? '个模型' : 'models'}</p>
-                    </div>
-                  </div>
-                  <div className="relative w-48 md:w-64">
-                    <Search className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
-                    <input
-                      type="text"
-                      placeholder={isZh ? '搜索...' : 'Search...'}
-                      value={search}
-                      onChange={(e) => setSearch(e.target.value)}
-                      className="w-full pl-9 pr-4 py-2 border border-gray-200 rounded-lg bg-white text-sm focus:outline-none focus:ring-2 focus:ring-primary"
-                    />
-                  </div>
-                </div>
-
-                {/* Models Grid */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                  {filteredModels.map((model: any) => (
-                    <div key={model.id} className="relative">
-                      <button
-                        onClick={() => setSelectedModel(model)}
-                        className="w-full text-left bg-white rounded-xl border border-gray-200 p-4 hover:border-primary hover:shadow-md transition group h-full"
-                      >
-                        <p className="font-semibold text-gray-900 text-sm group-hover:text-primary transition truncate">{model.name}</p>
-                        <p className="text-xs text-gray-400 font-mono mt-1 pr-8 truncate">{model.id.split('/').slice(1).join('/')}</p>
-                        <div className="flex items-center gap-3 mt-3 text-xs text-gray-500">
-                          <span>{isZh ? '输入' : 'In'}: <span className="font-mono text-gray-700">{formatPrice(model.pricing?.prompt)}</span></span>
-                          <span>{isZh ? '输出' : 'Out'}: <span className="font-mono text-gray-700">{formatPrice(model.pricing?.completion)}</span></span>
-                        </div>
-                      </button>
-                      <button 
-                        onClick={() => copyToClipboard(model.id, model.id)}
-                        title={isZh ? '复制模型 ID' : 'Copy Model ID'}
-                        className="absolute top-3 right-3 p-1.5 text-gray-400 hover:text-primary hover:bg-gray-100 rounded-md transition"
-                      >
-                        {copiedId === model.id ? <Check className="h-4 w-4 text-green-600" /> : <Copy className="h-4 w-4" />}
-                      </button>
-                    </div>
-                  ))}
-                </div>
-
-                {filteredModels.length === 0 && (
-                  <div className="text-center py-12 text-gray-500">{isZh ? '未找到模型' : 'No models found'}</div>
-                )}
-              </>
-            )}
-          </div>
+        {/* Search */}
+        <div className="relative mb-6">
+          <Search className="absolute left-4 top-3.5 h-5 w-5 text-gray-400" />
+          <input
+            type="text"
+            placeholder={isZh ? '搜索模型...' : 'Search models...'}
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+            className="w-full pl-12 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:bg-white transition"
+          />
         </div>
-      </div>
 
-      {/* Model Detail Modal */}
-      {selectedModel && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50" onClick={() => setSelectedModel(null)}>
-          <div className="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl max-h-[80vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
-            {/* Header */}
-            <div className="flex items-start justify-between mb-4">
-              <div>
-                <h3 className="text-xl font-bold text-gray-900">{selectedModel.name}</h3>
-                <p className="text-sm text-gray-400 font-mono mt-1 break-all">{selectedModel.id}</p>
-              </div>
-              <button onClick={() => setSelectedModel(null)} className="p-1 hover:bg-gray-100 rounded-lg">
-                <X className="h-5 w-5 text-gray-500" />
+        {/* Provider Filter Buttons */}
+        <div className="flex flex-wrap gap-2 mb-6">
+          <button
+            onClick={() => setFilter('all')}
+            className={`px-4 py-2 rounded-full text-sm font-medium transition border ${filter === 'all' ? 'bg-gray-900 text-white border-gray-900' : 'bg-white text-gray-600 border-gray-200 hover:border-gray-400'}`}
+          >
+            {isZh ? '全部' : 'All'}
+          </button>
+          {providerSlugs.map(slug => {
+            const info = getInfo(slug)
+            return (
+              <button
+                key={slug}
+                onClick={() => setFilter(filter === slug ? 'all' : slug)}
+                className={`px-4 py-2 rounded-full text-sm font-medium transition border flex items-center gap-1.5 ${filter === slug ? 'bg-gray-900 text-white border-gray-900' : 'bg-white text-gray-600 border-gray-200 hover:border-gray-400'}`}
+              >
+                <span className="text-sm">{info.logo}</span>
+                {info.label}
               </button>
-            </div>
-
-            {/* Description */}
-            {selectedModel.description && (
-              <p className="text-sm text-gray-700 mb-4">{selectedModel.description}</p>
-            )}
-
-            {/* Details Grid */}
-            <div className="grid grid-cols-2 gap-3 mb-4">
-              <div className="bg-gray-50 rounded-lg p-3">
-                <p className="text-xs text-gray-500 mb-1">{isZh ? '输入价格' : 'Input Price'}</p>
-                <p className="text-lg font-bold font-mono text-gray-900">{formatPrice(selectedModel.pricing?.prompt)}</p>
-                <p className="text-xs text-gray-400">{isZh ? '每百万 tokens' : 'per 1M tokens'}</p>
-              </div>
-              <div className="bg-gray-50 rounded-lg p-3">
-                <p className="text-xs text-gray-500 mb-1">{isZh ? '输出价格' : 'Output Price'}</p>
-                <p className="text-lg font-bold font-mono text-gray-900">{formatPrice(selectedModel.pricing?.completion)}</p>
-                <p className="text-xs text-gray-400">{isZh ? '每百万 tokens' : 'per 1M tokens'}</p>
-              </div>
-              <div className="bg-gray-50 rounded-lg p-3">
-                <p className="text-xs text-gray-500 mb-1">{isZh ? '上下文长度' : 'Context Length'}</p>
-                <p className="text-lg font-bold text-gray-900">{formatCtx(selectedModel)}</p>
-                <p className="text-xs text-gray-400">tokens</p>
-              </div>
-              <div className="bg-gray-50 rounded-lg p-3">
-                <p className="text-xs text-gray-500 mb-1">{isZh ? '最大输出' : 'Max Output'}</p>
-                <p className="text-lg font-bold text-gray-900">
-                  {selectedModel.top_provider?.max_completion_tokens 
-                    ? (selectedModel.top_provider.max_completion_tokens >= 1000 
-                        ? `${Math.round(selectedModel.top_provider.max_completion_tokens / 1000)}k` 
-                        : selectedModel.top_provider.max_completion_tokens)
-                    : '-'}
-                </p>
-                <p className="text-xs text-gray-400">tokens</p>
-              </div>
-            </div>
-
-            {/* Modality */}
-            {selectedModel.architecture && (
-              <div className="mb-4">
-                <p className="text-xs text-gray-500 mb-2">{isZh ? '支持模态' : 'Modality'}</p>
-                <div className="flex flex-wrap gap-2">
-                  {(selectedModel.architecture.input_modalities || []).map((m: string) => (
-                    <span key={`in-${m}`} className="px-2 py-1 bg-blue-50 text-blue-700 text-xs rounded-full">
-                      {isZh ? '输入' : 'Input'}: {m}
-                    </span>
-                  ))}
-                  {(selectedModel.architecture.output_modalities || []).map((m: string) => (
-                    <span key={`out-${m}`} className="px-2 py-1 bg-green-50 text-green-700 text-xs rounded-full">
-                      {isZh ? '输出' : 'Output'}: {m}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* API Usage */}
-            <div className="bg-gray-900 rounded-lg p-4 overflow-x-auto">
-              <p className="text-xs text-gray-400 mb-2">{isZh ? '使用示例' : 'Usage Example'}</p>
-              <pre className="text-xs text-green-400 font-mono whitespace-pre-wrap">
-{`curl https://api.aifuel.fun/v1/chat/completions \\
-  -H "Authorization: Bearer YOUR_API_KEY" \\
-  -H "Content-Type: application/json" \\
-  -d '{"model": "${selectedModel.id}", "messages": [{"role": "user", "content": "Hello!"}]}'`}
-              </pre>
-            </div>
-          </div>
+            )
+          })}
         </div>
-      )}
+
+        {/* Count */}
+        <p className="text-xs text-gray-400 mb-3">
+          {isZh ? `${filtered.length} 个模型 · 价格单位: /1M tokens` : `${filtered.length} models · Prices per 1M tokens`}
+        </p>
+
+        {/* Table */}
+        {loading ? (
+          <div className="text-center py-16 text-gray-400">{isZh ? '加载中...' : 'Loading...'}</div>
+        ) : filtered.length === 0 ? (
+          <div className="text-center py-16 text-gray-400">{isZh ? '未找到模型' : 'No models found'}</div>
+        ) : (
+          <div className="border border-gray-200 rounded-xl overflow-hidden">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="bg-gray-50 border-b border-gray-200">
+                  <th className="text-left px-4 py-3 font-semibold text-gray-500 text-xs uppercase">{isZh ? '模型' : 'Model'}</th>
+                  <th className="text-right px-4 py-3 font-semibold text-gray-500 text-xs uppercase hidden sm:table-cell">{isZh ? '提供商' : 'Provider'}</th>
+                  <th className="text-right px-4 py-3 font-semibold text-gray-500 text-xs uppercase">{isZh ? '输入' : 'Input'}</th>
+                  <th className="text-right px-4 py-3 font-semibold text-gray-500 text-xs uppercase">{isZh ? '输出' : 'Output'}</th>
+                  <th className="text-right px-4 py-3 font-semibold text-gray-500 text-xs uppercase hidden md:table-cell">{isZh ? '上下文' : 'Context'}</th>
+                  <th className="w-10 px-2 py-3"></th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-100">
+                {filtered.map((m: any) => {
+                  const slug = m.id.split('/')[0]
+                  const info = getInfo(slug)
+                  return (
+                    <tr key={m.id} className="hover:bg-gray-50 transition">
+                      <td className="px-4 py-3">
+                        <p className="font-medium text-gray-900">{m.name}</p>
+                        <p className="text-xs text-gray-400 font-mono mt-0.5 truncate max-w-[200px] md:max-w-[300px]">{m.id}</p>
+                      </td>
+                      <td className="text-right px-4 py-3 hidden sm:table-cell">
+                        <span className="inline-flex items-center gap-1 text-xs text-gray-500">
+                          <span>{info.logo}</span> {info.label}
+                        </span>
+                      </td>
+                      <td className="text-right px-4 py-3 font-mono text-gray-700">{fmtPrice(m.pricing?.prompt)}</td>
+                      <td className="text-right px-4 py-3 font-mono text-gray-700">{fmtPrice(m.pricing?.completion)}</td>
+                      <td className="text-right px-4 py-3 text-gray-500 hidden md:table-cell">{fmtCtx(m)}</td>
+                      <td className="px-2 py-3">
+                        <button
+                          onClick={() => copy(m.id)}
+                          title={isZh ? '复制模型 ID' : 'Copy model ID'}
+                          className="p-1.5 text-gray-400 hover:text-primary hover:bg-gray-100 rounded transition"
+                        >
+                          {copiedId === m.id ? <Check className="h-3.5 w-3.5 text-green-500" /> : <Copy className="h-3.5 w-3.5" />}
+                        </button>
+                      </td>
+                    </tr>
+                  )
+                })}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
     </div>
   )
 }
