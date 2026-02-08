@@ -291,45 +291,45 @@ export function WalletPanel() {
       </div>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-          <div className="flex items-center justify-between mb-4">
-            <span className="text-gray-500 text-sm">{t('fuelHolding')}</span>
+      <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6">
+        <div className="bg-white rounded-xl md:rounded-2xl p-3 md:p-6 shadow-sm border border-gray-100">
+          <div className="flex items-center justify-between mb-2 md:mb-4">
+            <span className="text-gray-500 text-xs md:text-sm">{t('fuelHolding')}</span>
             <button onClick={refreshBalance} disabled={loadingBalance} className="p-1 hover:bg-gray-100 rounded">
-              <RefreshCw className={`h-4 w-4 text-gray-400 ${loadingBalance ? 'animate-spin' : ''}`} />
+              <RefreshCw className={`h-3 w-3 md:h-4 md:w-4 text-gray-400 ${loadingBalance ? 'animate-spin' : ''}`} />
             </button>
           </div>
-          <p className="text-3xl font-bold text-gray-900">{formatNumber(credits?.balance || 0)}</p>
-          <p className="text-sm text-gray-500 mt-1">
+          <p className="text-lg md:text-3xl font-bold text-gray-900">{formatNumber(credits?.balance || 0)}</p>
+          <p className="text-xs md:text-sm text-gray-500 mt-1">
             {hasTokens ? <span className="text-yellow-600">💎 {Math.round((credits?.multiplier || 1) * 100)}% {t('multiplier')}</span> : <a href={`https://raydium.io/swap/?inputMint=sol&outputMint=${TOKEN_CA}`} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">{t('buyToEarnCredits')}</a>}
           </p>
         </div>
 
-        <div className="bg-gradient-to-br from-primary to-primary-dark rounded-2xl p-6 text-white">
-          <div className="flex items-center justify-between mb-4">
-            <span className="text-white/80 text-sm">{t('dailyCredit')}</span>
-            <Zap className="h-5 w-5" />
+        <div className="bg-gradient-to-br from-primary to-primary-dark rounded-xl md:rounded-2xl p-3 md:p-6 text-white">
+          <div className="flex items-center justify-between mb-2 md:mb-4">
+            <span className="text-white/80 text-xs md:text-sm">{t('dailyCredit')}</span>
+            <Zap className="h-4 w-4 md:h-5 md:w-5" />
           </div>
-          <p className="text-3xl font-bold">{formatUSD(credits?.daily || 0)}</p>
-          <p className="text-sm text-white/80 mt-1">{hasTokens ? `💎 ${t('diamondHand')}` : t('holdToEarn')}</p>
+          <p className="text-lg md:text-3xl font-bold">{formatUSD(credits?.daily || 0)}</p>
+          <p className="text-xs md:text-sm text-white/80 mt-1">{hasTokens ? `💎 ${t('diamondHand')}` : t('holdToEarn')}</p>
         </div>
 
-        <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-          <div className="flex items-center justify-between mb-4">
-            <span className="text-gray-500 text-sm">{t('usedToday')}</span>
-            <TrendingUp className="h-5 w-5 text-blue-500" />
+        <div className="bg-white rounded-xl md:rounded-2xl p-3 md:p-6 shadow-sm border border-gray-100">
+          <div className="flex items-center justify-between mb-2 md:mb-4">
+            <span className="text-gray-500 text-xs md:text-sm">{t('usedToday')}</span>
+            <TrendingUp className="h-4 w-4 md:h-5 md:w-5 text-blue-500" />
           </div>
-          <p className="text-3xl font-bold text-gray-900">{formatUSD(credits?.used || 0)}</p>
-          <p className="text-sm text-gray-500 mt-1">{t('ofDaily', { amount: formatUSD(credits?.daily || 0) })}</p>
+          <p className="text-lg md:text-3xl font-bold text-gray-900">{formatUSD(credits?.used || 0)}</p>
+          <p className="text-xs md:text-sm text-gray-500 mt-1">{t('ofDaily', { amount: formatUSD(credits?.daily || 0) })}</p>
         </div>
 
-        <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-          <div className="flex items-center justify-between mb-4">
-            <span className="text-gray-500 text-sm">{t('remaining')}</span>
-            <Clock className="h-5 w-5 text-green-500" />
+        <div className="bg-white rounded-xl md:rounded-2xl p-3 md:p-6 shadow-sm border border-gray-100">
+          <div className="flex items-center justify-between mb-2 md:mb-4">
+            <span className="text-gray-500 text-xs md:text-sm">{t('remaining')}</span>
+            <Clock className="h-4 w-4 md:h-5 md:w-5 text-green-500" />
           </div>
-          <p className="text-3xl font-bold text-green-600">{formatUSD(credits?.remaining || 0)}</p>
-          <p className="text-sm text-gray-500 mt-1">{t('resetsAtMidnight')}</p>
+          <p className="text-lg md:text-3xl font-bold text-green-600">{formatUSD(credits?.remaining || 0)}</p>
+          <p className="text-xs md:text-sm text-gray-500 mt-1">{t('resetsAtMidnight')}</p>
         </div>
       </div>
 
