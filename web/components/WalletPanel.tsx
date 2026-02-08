@@ -370,11 +370,23 @@ export function WalletPanel() {
           <div className="p-6">
             {fullApiKey ? (
               <div className="space-y-4">
-                <div className="flex flex-col md:flex-row md:items-center gap-2 p-4 bg-gray-50 rounded-lg">
-                  <code className="flex-grow text-sm font-mono text-gray-900 break-all overflow-x-auto">{fullApiKey}</code>
-                  <button onClick={() => copyToClipboard(fullApiKey, 'apikey')} className="p-2 hover:bg-gray-200 rounded flex-shrink-0 w-full md:w-auto text-center md:text-left">
-                    {copiedKey === 'apikey' ? <Check className="h-5 w-5 text-green-600 mx-auto md:mx-0" /> : <Copy className="h-5 w-5 text-gray-600 mx-auto md:mx-0" />}
-                  </button>
+                <div className="p-4 bg-gray-50 rounded-lg">
+                  <div className="flex flex-col gap-3">
+                    <code className="text-sm font-mono text-gray-900 break-all word-break">{fullApiKey}</code>
+                    <button onClick={() => copyToClipboard(fullApiKey, 'apikey')} className="inline-flex items-center justify-center gap-2 px-4 py-2 bg-white border border-gray-200 text-gray-700 rounded-lg hover:bg-gray-100 font-medium text-sm">
+                      {copiedKey === 'apikey' ? (
+                        <>
+                          <Check className="h-4 w-4 text-green-600" />
+                          <span className="text-green-600">{t('copied')}</span>
+                        </>
+                      ) : (
+                        <>
+                          <Copy className="h-4 w-4" />
+                          <span>{t('copy')}</span>
+                        </>
+                      )}
+                    </button>
+                  </div>
                 </div>
                 <div className="bg-amber-50 border border-amber-200 rounded-lg p-3">
                   <p className="text-sm text-amber-800">{t('apiKeyWarning')}</p>
@@ -382,9 +394,26 @@ export function WalletPanel() {
               </div>
             ) : apiKey ? (
               <div className="space-y-4">
-                <div className="flex flex-col md:flex-row md:items-center gap-2 p-4 bg-gray-50 rounded-lg">
-                  <code className="flex-grow text-sm font-mono text-gray-700 overflow-x-auto">{apiKey.prefix}</code>
-                  <span className="text-xs text-gray-500 flex-shrink-0 whitespace-nowrap">Created {new Date(apiKey.createdAt).toLocaleDateString()}</span>
+                <div className="p-4 bg-gray-50 rounded-lg">
+                  <div className="flex flex-col gap-3">
+                    <div className="flex flex-col gap-2">
+                      <code className="text-sm font-mono text-gray-700 break-all">{apiKey.prefix}</code>
+                      <span className="text-xs text-gray-500">Created {new Date(apiKey.createdAt).toLocaleDateString()}</span>
+                    </div>
+                    <button onClick={() => copyToClipboard(apiKey.prefix, 'apikey')} className="inline-flex items-center justify-center gap-2 px-4 py-2 bg-white border border-gray-200 text-gray-700 rounded-lg hover:bg-gray-100 font-medium text-sm">
+                      {copiedKey === 'apikey' ? (
+                        <>
+                          <Check className="h-4 w-4 text-green-600" />
+                          <span className="text-green-600">{t('copied')}</span>
+                        </>
+                      ) : (
+                        <>
+                          <Copy className="h-4 w-4" />
+                          <span>{t('copy')}</span>
+                        </>
+                      )}
+                    </button>
+                  </div>
                 </div>
                 <div className="bg-amber-50 border border-amber-200 rounded-lg p-3">
                   <p className="text-sm text-amber-800">{t('apiKeyRegenNote')}</p>
