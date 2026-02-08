@@ -105,22 +105,12 @@ export default function ModelsPage() {
     <div className="min-h-screen bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
 
-        {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">
-            {isZh ? '模型列表' : 'Models'}
-          </h1>
-          <p className="text-gray-500">
-            {isZh ? '浏览所有付费模型并选择提供商' : 'Browse all paid models and select a provider'}
-          </p>
-        </div>
-
         {/* Search */}
         <div className="relative mb-6">
           <Search className="absolute left-4 top-3.5 h-5 w-5 text-gray-400" />
           <input
             type="text"
-            placeholder={isZh ? '搜索模型或提供商...' : 'Search models or providers...'}
+            placeholder={isZh ? '搜索模型...' : 'Search models...'}
             value={search}
             onChange={e => setSearch(e.target.value)}
             className="w-full pl-12 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:bg-white transition"
