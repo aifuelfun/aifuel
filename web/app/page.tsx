@@ -74,7 +74,10 @@ export default function Home() {
           <div className="mt-8 inline-flex flex-col sm:flex-row items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-3 rounded-lg max-w-full">
             <span className="text-sm text-white/70 shrink-0">{t('caAddress')}</span>
             <div className="flex items-center gap-2 min-w-0">
-              <code className="text-xs sm:text-sm font-mono text-yellow-300 truncate max-w-[200px] sm:max-w-none">{TOKEN_CA}</code>
+              <code className="text-xs sm:text-sm font-mono text-yellow-300 break-all">
+                <span className="hidden sm:inline">{TOKEN_CA}</span>
+                <span className="sm:hidden">{TOKEN_CA.slice(0, 8)}...{TOKEN_CA.slice(-8)}</span>
+              </code>
               <button 
                 onClick={copyCA}
                 className="shrink-0 p-1.5 hover:bg-white/20 rounded transition"
