@@ -8,10 +8,10 @@ import { useLocale } from '@/lib/LocaleContext'
 interface Model {
   id: string
   name: string
-  description: string
-  pricing: {
-    prompt: string
-    completion: string
+  description?: string
+  pricing?: {
+    prompt?: string
+    completion?: string
   }
 }
 
@@ -40,9 +40,8 @@ export default function ModelsPage() {
       loading: 'Loading models...',
       noResults: 'No models found',
       paidModels: 'Paid Models Only',
-      viewAll: 'View All',
-      hide: 'Hide',
       models: 'models',
+      price: 'Price:',
     },
     zh: {
       title: 'AI 模型',
@@ -51,27 +50,34 @@ export default function ModelsPage() {
       loading: '加载模型中...',
       noResults: '未找到模型',
       paidModels: '仅限付费模型',
-      viewAll: '查看全部',
-      hide: '隐藏',
       models: '个模型',
+      price: '价格：',
     }
   }
-  const t = texts[locale] || texts.en
+  const t = texts[locale as 'en' | 'zh'] || texts.en
 
   useEffect(() => {
-    fetch('https://api.aifuel.fun/v1/models')
-      .then(res => res.json())
-      .then(data => {
-        // Filter: only paid models (exclude free models)
-        const paidModels = data.data?.filter((m: Model) => {
+    const fetchModels = async () => {
+      try {
+        const res = await fetch('https://api.aifuel.fun/v1/models')
+        const data = await res.json()
+        
+        // Filter: only paid models
+        const paidModels = (data.data || []).filter((m: Model) => {
           const prompt = parseFloat(m.pricing?.prompt || '0')
           const completion = parseFloat(m.pricing?.completion || '0')
           return prompt > 0 || completion > 0
-        }) || []
+        })
+        
         setModels(paidModels)
+      } catch {
+        setModels([])
+      } finally {
         setLoading(false)
-      })
-      .catch(() => setLoading(false))
+      }
+    }
+    
+    fetchModels()
   }, [])
 
   // Group by provider
@@ -148,7 +154,9 @@ export default function ModelsPage() {
           <div className="text-center py-12 text-gray-600">{t('noResults')}</div>
         ) : (
           <div className="space-y-6">
-            {Object.entries(filteredByProvider).map(([provider, providerModels]) => (
+            {Object.entries(filteredByProvider)
+              .sort(([a], [b]) => a.localeCompare(b))
+              .map(([provider, providerModels]) => (
               <div key={provider} className={`rounded-lg border-2 overflow-hidden ${PROVIDER_COLORS[provider] || 'bg-gray-50 border-gray-200'}`}>
                 {/* Provider Header */}
                 <button
@@ -180,15 +188,15 @@ export default function ModelsPage() {
                             )}
                             {(model.pricing?.prompt || model.pricing?.completion) && (
                               <p className="text-xs text-gray-600 mt-2">
-                                {locale === 'zh' ? '价格：' : 'Price: '}
-                                {model.pricing?.prompt && `$${model.pricing.prompt}/1k input`}
-                                {model.pricing?.prompt && model.pricing?.completion && ' | '}
-                                {model.pricing?.completion && `$${model.pricing.completion}/1k output`}
+                                {t('price')}
+                                {model.pricing.prompt && ` $${model.pricing.prompt}/1k input`}
+                                {model.pricing.prompt && model.pricing.completion && ' | '}
+                                {model.pricing.completion && ` $${model.pricing.completion}/1k output`}
                               </p>
                             )}
                           </div>
                           <a
-                            href={`https://api.aifuel.fun/v1/models`}
+                            href="https://api.aifuel.fun/v1/models"
                             target="_blank"
                             rel="noopener noreferrer"
                             className="flex-shrink-0 p-2 hover:bg-white hover:bg-opacity-50 rounded transition"
