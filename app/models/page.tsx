@@ -50,7 +50,7 @@ export default function ModelsPage() {
   const [models, setModels] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState('')
-  const [selectedProvider, setSelectedProvider] = useState<string | null>(null)
+  const [selectedProvider, setSelectedProvider] = useState<string | null>('openai')
   const [copiedId, setCopiedId] = useState<string | null>(null)
 
   useEffect(() => {
@@ -129,37 +129,23 @@ export default function ModelsPage() {
 
         <div className="flex gap-6">
           {/* Left Panel - Providers */}
-          <div className="w-80 flex-shrink-0">
-            <h2 className="text-sm font-semibold text-gray-500 uppercase mb-4">
+          <div className="w-72 flex-shrink-0">
+            <h2 className="text-xs font-semibold text-gray-400 uppercase mb-3">
               {isZh ? '提供商' : 'Providers'}
             </h2>
-            <div className="grid grid-cols-2 gap-3">
-              {/* All option */}
-              <button
-                onClick={() => setSelectedProvider(null)}
-                className={`p-4 rounded-xl border-2 transition text-center ${selectedProvider === null ? 'border-primary bg-primary/5 shadow-md' : 'border-gray-200 hover:border-gray-300'}`}
-              >
-                <div className="text-2xl mb-2">🌐</div>
-                <div className="font-medium text-sm text-gray-900">
-                  {isZh ? '全部' : 'All'}
-                </div>
-                <div className="text-xs text-gray-500 mt-1">
-                  {models.length}
-                </div>
-              </button>
-
+            <div className="grid grid-cols-2 gap-2">
               {/* Provider cards */}
               {providerList.map(provider => (
                 <button
                   key={provider.slug}
                   onClick={() => setSelectedProvider(selectedProvider === provider.slug ? null : provider.slug)}
-                  className={`p-4 rounded-xl border-2 transition text-center ${selectedProvider === provider.slug ? 'border-primary bg-primary/5 shadow-md' : 'border-gray-200 hover:border-gray-300'}`}
+                  className={`p-2 rounded-lg border transition text-center ${selectedProvider === provider.slug ? 'border-primary bg-primary/5 shadow-sm' : 'border-gray-200 hover:border-gray-300'}`}
                 >
-                  <div className="text-2xl mb-2">{provider.logo}</div>
-                  <div className="font-medium text-sm text-gray-900 truncate">
+                  <div className="text-lg mb-1">{provider.logo}</div>
+                  <div className="font-medium text-xs text-gray-900 truncate">
                     {provider.label}
                   </div>
-                  <div className="text-xs text-gray-500 mt-1">
+                  <div className="text-[10px] text-gray-400">
                     {provider.count}
                   </div>
                 </button>
@@ -170,9 +156,9 @@ export default function ModelsPage() {
           {/* Right Panel - Models */}
           <div className="flex-1">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-sm font-semibold text-gray-500 uppercase">
+              <h2 className="text-xs font-semibold text-gray-400 uppercase">
                 {isZh ? '模型' : 'Models'}
-                <span className="ml-2 text-gray-400">({filteredModels.length})</span>
+                <span className="ml-2 text-gray-300">({filteredModels.length})</span>
               </h2>
             </div>
 
@@ -181,7 +167,7 @@ export default function ModelsPage() {
             ) : filteredModels.length === 0 ? (
               <div className="text-center py-16 text-gray-400">{isZh ? '未找到模型' : 'No models found'}</div>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
                 {filteredModels.map((m: any) => {
                   const slug = m.id.split('/')[0]
                   const info = getInfo(slug)
@@ -190,42 +176,34 @@ export default function ModelsPage() {
                   return (
                     <div
                       key={m.id}
-                      className="p-4 border border-gray-200 rounded-xl hover:border-primary/50 hover:shadow-md transition group"
+                      className="p-3 border border-gray-200 rounded-lg hover:border-primary/50 hover:shadow-sm transition group"
                     >
                       <div className="flex items-start justify-between">
                         <div className="flex-1 min-w-0">
-                          {/* Provider badge */}
-                          <div className="flex items-center gap-2 mb-2">
-                            <span className="text-lg">{info.logo}</span>
-                            <span className="text-xs font-medium text-gray-500 uppercase">
-                              {info.label}
-                            </span>
-                          </div>
-
                           {/* Model name */}
-                          <h3 className="font-semibold text-gray-900 mb-1 group-hover:text-primary transition truncate">
+                          <h3 className="font-medium text-sm text-gray-900 mb-1 group-hover:text-primary transition truncate">
                             {modelName}
                           </h3>
 
                           {/* Full ID */}
-                          <p className="text-xs text-gray-400 font-mono truncate mb-3">
+                          <p className="text-[10px] text-gray-400 font-mono truncate mb-2">
                             {m.id}
                           </p>
 
                           {/* Prices */}
-                          <div className="flex gap-4 text-sm">
+                          <div className="flex gap-3 text-xs">
                             <div>
-                              <span className="text-gray-500">{isZh ? '输入' : 'In'}:</span>
-                              <span className="ml-1 font-mono text-gray-700">{fmtPrice(m.pricing?.prompt)}</span>
+                              <span className="text-gray-400">{isZh ? '输入' : 'In'}:</span>
+                              <span className="ml-1 font-mono text-gray-600">{fmtPrice(m.pricing?.prompt)}</span>
                             </div>
                             <div>
-                              <span className="text-gray-500">{isZh ? '输出' : 'Out'}:</span>
-                              <span className="ml-1 font-mono text-gray-700">{fmtPrice(m.pricing?.completion)}</span>
+                              <span className="text-gray-400">{isZh ? '输出' : 'Out'}:</span>
+                              <span className="ml-1 font-mono text-gray-600">{fmtPrice(m.pricing?.completion)}</span>
                             </div>
                           </div>
 
                           {/* Context length */}
-                          <div className="mt-2 text-xs text-gray-500">
+                          <div className="mt-1 text-[10px] text-gray-400">
                             {isZh ? '上下文' : 'Context'}: {fmtCtx(m)}
                           </div>
                         </div>
@@ -234,12 +212,12 @@ export default function ModelsPage() {
                         <button
                           onClick={() => copy(m.id)}
                           title={isZh ? '复制模型 ID' : 'Copy model ID'}
-                          className="ml-3 p-2 text-gray-400 hover:text-primary hover:bg-gray-100 rounded-lg transition flex-shrink-0"
+                          className="ml-2 p-1.5 text-gray-400 hover:text-primary hover:bg-gray-100 rounded transition flex-shrink-0"
                         >
                           {copiedId === m.id ? (
-                            <Check className="h-4 w-4 text-green-500" />
+                            <Check className="h-3 w-3 text-green-500" />
                           ) : (
-                            <Copy className="h-4 w-4" />
+                            <Copy className="h-3 w-3" />
                           )}
                         </button>
                       </div>
