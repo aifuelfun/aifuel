@@ -242,22 +242,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="bg-gray-900 text-gray-400 py-8">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-            <div className="flex items-center gap-2">
-              <Logo size={24} />
-              <span className="text-white font-bold">AIFuel</span>
-            </div>
-            <div className="flex items-center gap-4 text-sm">
-              <Link href="/docs" className="hover:text-white transition">{t('docs')}</Link>
-              <a href="https://github.com/aifuelfun/aifuel" target="_blank" rel="noopener noreferrer" className="hover:text-white transition">{t('github')}</a>
-              <a href={`https://t.me/aifuel_fun`} target="_blank" rel="noopener noreferrer" className="hover:text-white transition">{t('telegram')}</a>
-            </div>
-          </div>
-        </div>
-      </footer>
     </div>
   )
 }
