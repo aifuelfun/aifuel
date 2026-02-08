@@ -370,10 +370,10 @@ export function WalletPanel() {
           <div className="p-6">
             {fullApiKey ? (
               <div className="space-y-4">
-                <div className="flex items-center gap-2 p-4 bg-gray-50 rounded-lg">
-                  <code className="flex-grow text-sm font-mono text-gray-900 break-all">{fullApiKey}</code>
-                  <button onClick={() => copyToClipboard(fullApiKey, 'apikey')} className="p-2 hover:bg-gray-200 rounded flex-shrink-0">
-                    {copiedKey === 'apikey' ? <Check className="h-5 w-5 text-green-600" /> : <Copy className="h-5 w-5 text-gray-600" />}
+                <div className="flex flex-col md:flex-row md:items-center gap-2 p-4 bg-gray-50 rounded-lg">
+                  <code className="flex-grow text-sm font-mono text-gray-900 break-all overflow-x-auto">{fullApiKey}</code>
+                  <button onClick={() => copyToClipboard(fullApiKey, 'apikey')} className="p-2 hover:bg-gray-200 rounded flex-shrink-0 w-full md:w-auto text-center md:text-left">
+                    {copiedKey === 'apikey' ? <Check className="h-5 w-5 text-green-600 mx-auto md:mx-0" /> : <Copy className="h-5 w-5 text-gray-600 mx-auto md:mx-0" />}
                   </button>
                 </div>
                 <div className="bg-amber-50 border border-amber-200 rounded-lg p-3">
@@ -382,9 +382,9 @@ export function WalletPanel() {
               </div>
             ) : apiKey ? (
               <div className="space-y-4">
-                <div className="flex items-center gap-2 p-4 bg-gray-50 rounded-lg">
-                  <code className="flex-grow text-sm font-mono text-gray-700">{apiKey.prefix}</code>
-                  <span className="text-xs text-gray-500 flex-shrink-0">Created {new Date(apiKey.createdAt).toLocaleDateString()}</span>
+                <div className="flex flex-col md:flex-row md:items-center gap-2 p-4 bg-gray-50 rounded-lg">
+                  <code className="flex-grow text-sm font-mono text-gray-700 overflow-x-auto">{apiKey.prefix}</code>
+                  <span className="text-xs text-gray-500 flex-shrink-0 whitespace-nowrap">Created {new Date(apiKey.createdAt).toLocaleDateString()}</span>
                 </div>
                 <div className="bg-amber-50 border border-amber-200 rounded-lg p-3">
                   <p className="text-sm text-amber-800">{t('apiKeyRegenNote')}</p>
@@ -402,9 +402,10 @@ export function WalletPanel() {
 
       {/* Quick Start */}
       {(fullApiKey || apiKey) && hasTokens && (
-        <div className="mt-8 bg-gray-50 rounded-xl p-6">
+        <div className="mt-8 bg-gray-50 rounded-xl p-4 md:p-6">
           <h3 className="text-lg font-semibold text-gray-900 mb-4">{t('quickStart')}</h3>
-          <pre className="bg-gray-900 text-green-400 p-4 rounded-lg overflow-x-auto text-sm">
+          <div className="bg-gray-900 text-green-400 p-3 md:p-4 rounded-lg overflow-x-auto text-xs md:text-sm">
+            <pre className="font-mono whitespace-pre-wrap md:whitespace-pre">
 {`curl https://api.aifuel.fun/v1/chat/completions \\
   -H "Authorization: Bearer ${fullApiKey || 'YOUR_API_KEY'}" \\
   -H "Content-Type: application/json" \\
@@ -412,7 +413,8 @@ export function WalletPanel() {
     "model": "gpt-4o-mini",
     "messages": [{"role": "user", "content": "Hello!"}]
   }'`}
-          </pre>
+            </pre>
+          </div>
         </div>
       )}
     </div>
