@@ -71,19 +71,19 @@ export default function Home() {
           )}
 
           {/* CA Address */}
-          <div className="mt-8 inline-flex flex-col sm:flex-row items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-3 rounded-lg max-w-full">
-            <span className="text-sm text-white/70 shrink-0">{t('caAddress')}</span>
+          <div className="mt-8 inline-flex flex-row items-center gap-2 bg-white/10 backdrop-blur-sm px-3 md:px-4 py-2 md:py-3 rounded-lg max-w-full">
+            <span className="text-xs md:text-sm text-white/70 shrink-0 whitespace-nowrap">{t('caAddress')}</span>
             <div className="flex items-center gap-2 min-w-0">
-              <code className="text-xs sm:text-sm font-mono text-yellow-300 break-all">
+              <code className="text-xs md:text-sm font-mono text-yellow-300 break-all">
                 <span className="hidden sm:inline">{TOKEN_CA}</span>
                 <span className="sm:hidden">{TOKEN_CA.slice(0, 8)}...{TOKEN_CA.slice(-8)}</span>
               </code>
               <button 
                 onClick={copyCA}
-                className="shrink-0 p-1.5 hover:bg-white/20 rounded transition"
+                className="shrink-0 p-1 md:p-1.5 hover:bg-white/20 rounded transition"
                 title={t('copyCa')}
               >
-                {caCopied ? <Check className="h-4 w-4 text-green-400" /> : <Copy className="h-4 w-4 text-white/60" />}
+                {caCopied ? <Check className="h-3 md:h-4 w-3 md:w-4 text-green-400" /> : <Copy className="h-3 md:h-4 w-3 md:w-4 text-white/60" />}
               </button>
             </div>
           </div>
