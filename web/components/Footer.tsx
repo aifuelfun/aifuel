@@ -49,11 +49,6 @@ export const Footer: FC<Props> = ({ t }) => {
                 </Link>
               </li>
               <li>
-                <Link href="/dashboard" className="text-gray-400 hover:text-white transition">
-                  {t('dashboard')}
-                </Link>
-              </li>
-              <li>
                 <Link href="/models" className="text-gray-400 hover:text-white transition">
                   Models
                 </Link>
@@ -64,14 +59,14 @@ export const Footer: FC<Props> = ({ t }) => {
           {/* Resources - icons only */}
           <div>
             <h3 className="font-semibold mb-4">{t('resources')}</h3>
-            <div className="flex items-center gap-5">
+            <div className="flex flex-col items-start gap-3">
               <a href={SOCIAL_LINKS.twitter} target="_blank" rel="noopener noreferrer"
                  className="text-gray-400 hover:text-primary transition">
-                <XIcon className="h-7 w-7" />
+                <XIcon className="h-4 w-4" />
               </a>
               <a href={SOCIAL_LINKS.discord} target="_blank" rel="noopener noreferrer"
                  className="text-gray-400 hover:text-primary transition">
-                <DiscordIcon className="h-7 w-7" />
+                <DiscordIcon className="h-4 w-4" />
               </a>
             </div>
           </div>
