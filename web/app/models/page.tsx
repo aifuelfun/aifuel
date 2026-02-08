@@ -50,7 +50,7 @@ export default function ModelsPage() {
   const [models, setModels] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState('')
-  const [filter, setFilter] = useState('all')
+  const [selectedProvider, setSelectedProvider] = useState<string | null>(null)
   const [copiedId, setCopiedId] = useState<string | null>(null)
 
   useEffect(() => {
@@ -69,13 +69,25 @@ export default function ModelsPage() {
       .catch(() => setLoading(false))
   }, [])
 
-  // Get unique providers
-  const providerSlugs = Array.from(new Set(models.map(m => m.id.split('/')[0]))).sort((a, b) => getInfo(a).label.localeCompare(getInfo(b).label))
-
-  // Filter
-  const filtered = models.filter(m => {
+  // Get unique providers with counts
+  const providerStats = new Map<string, { label: string; logo: string; count: number }>()
+  models.forEach(m => {
     const slug = m.id.split('/')[0]
-    if (filter !== 'all' && slug !== filter) return false
+    const info = getInfo(slug)
+    if (!providerStats.has(slug)) {
+      providerStats.set(slug, { ...info, count: 0 })
+    }
+    providerStats.get(slug)!.count++
+  })
+
+  const providerList = Array.from(providerStats.entries())
+    .map(([slug, stats]) => ({ slug, ...stats }))
+    .sort((a, b) => a.label.localeCompare(b.label))
+
+  // Filter models
+  const filteredModels = models.filter(m => {
+    const slug = m.id.split('/')[0]
+    if (selectedProvider && slug !== selectedProvider) return false
     if (search) {
       const s = search.toLowerCase()
       return m.name.toLowerCase().includes(s) || m.id.toLowerCase().includes(s)
@@ -91,98 +103,160 @@ export default function ModelsPage() {
 
   return (
     <div className="min-h-screen bg-white">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+        {/* Header */}
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">
+            {isZh ? '模型列表' : 'Models'}
+          </h1>
+          <p className="text-gray-500">
+            {isZh ? '浏览所有付费模型并选择提供商' : 'Browse all paid models and select a provider'}
+          </p>
+        </div>
 
         {/* Search */}
         <div className="relative mb-6">
           <Search className="absolute left-4 top-3.5 h-5 w-5 text-gray-400" />
           <input
             type="text"
-            placeholder={isZh ? '搜索模型...' : 'Search models...'}
+            placeholder={isZh ? '搜索模型或提供商...' : 'Search models or providers...'}
             value={search}
             onChange={e => setSearch(e.target.value)}
             className="w-full pl-12 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:bg-white transition"
           />
         </div>
 
-        {/* Provider Filter Buttons */}
-        <div className="flex flex-wrap gap-2 mb-6">
-          <button
-            onClick={() => setFilter('all')}
-            className={`px-4 py-2 rounded-full text-sm font-medium transition border ${filter === 'all' ? 'bg-gray-900 text-white border-gray-900' : 'bg-white text-gray-600 border-gray-200 hover:border-gray-400'}`}
-          >
-            {isZh ? '全部' : 'All'}
-          </button>
-          {providerSlugs.map(slug => {
-            const info = getInfo(slug)
-            return (
+        <div className="flex gap-6">
+          {/* Left Panel - Providers */}
+          <div className="w-80 flex-shrink-0">
+            <h2 className="text-sm font-semibold text-gray-500 uppercase mb-4">
+              {isZh ? '提供商' : 'Providers'}
+            </h2>
+            <div className="grid grid-cols-2 gap-3">
+              {/* All option */}
               <button
-                key={slug}
-                onClick={() => setFilter(filter === slug ? 'all' : slug)}
-                className={`px-4 py-2 rounded-full text-sm font-medium transition border flex items-center gap-1.5 ${filter === slug ? 'bg-gray-900 text-white border-gray-900' : 'bg-white text-gray-600 border-gray-200 hover:border-gray-400'}`}
+                onClick={() => setSelectedProvider(null)}
+                className={`p-4 rounded-xl border-2 transition text-center ${selectedProvider === null ? 'border-primary bg-primary/5 shadow-md' : 'border-gray-200 hover:border-gray-300'}`}
               >
-                <span className="text-sm">{info.logo}</span>
-                {info.label}
+                <div className="text-2xl mb-2">🌐</div>
+                <div className="font-medium text-sm text-gray-900">
+                  {isZh ? '全部' : 'All'}
+                </div>
+                <div className="text-xs text-gray-500 mt-1">
+                  {models.length}
+                </div>
               </button>
-            )
-          })}
-        </div>
 
-        {/* Count */}
-        <p className="text-xs text-gray-400 mb-3">
-          {isZh ? `${filtered.length} 个模型 · 价格单位: /1M tokens` : `${filtered.length} models · Prices per 1M tokens`}
-        </p>
+              {/* Provider cards */}
+              {providerList.map(provider => (
+                <button
+                  key={provider.slug}
+                  onClick={() => setSelectedProvider(selectedProvider === provider.slug ? null : provider.slug)}
+                  className={`p-4 rounded-xl border-2 transition text-center ${selectedProvider === provider.slug ? 'border-primary bg-primary/5 shadow-md' : 'border-gray-200 hover:border-gray-300'}`}
+                >
+                  <div className="text-2xl mb-2">{provider.logo}</div>
+                  <div className="font-medium text-sm text-gray-900 truncate">
+                    {provider.label}
+                  </div>
+                  <div className="text-xs text-gray-500 mt-1">
+                    {provider.count}
+                  </div>
+                </button>
+              ))}
+            </div>
+          </div>
 
-        {/* Table */}
-        {loading ? (
-          <div className="text-center py-16 text-gray-400">{isZh ? '加载中...' : 'Loading...'}</div>
-        ) : filtered.length === 0 ? (
-          <div className="text-center py-16 text-gray-400">{isZh ? '未找到模型' : 'No models found'}</div>
-        ) : (
-          <div className="border border-gray-200 rounded-xl overflow-hidden">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="bg-gray-50 border-b border-gray-200">
-                  <th className="text-left px-4 py-3 font-semibold text-gray-500 text-xs uppercase">{isZh ? '模型' : 'Model'}</th>
-                  <th className="text-right px-4 py-3 font-semibold text-gray-500 text-xs uppercase hidden sm:table-cell">{isZh ? '提供商' : 'Provider'}</th>
-                  <th className="text-right px-4 py-3 font-semibold text-gray-500 text-xs uppercase">{isZh ? '输入' : 'Input'}</th>
-                  <th className="text-right px-4 py-3 font-semibold text-gray-500 text-xs uppercase">{isZh ? '输出' : 'Output'}</th>
-                  <th className="text-right px-4 py-3 font-semibold text-gray-500 text-xs uppercase hidden md:table-cell">{isZh ? '上下文' : 'Context'}</th>
-                  <th className="w-10 px-2 py-3"></th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-100">
-                {filtered.map((m: any) => {
+          {/* Right Panel - Models */}
+          <div className="flex-1">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-sm font-semibold text-gray-500 uppercase">
+                {isZh ? '模型' : 'Models'}
+                <span className="ml-2 text-gray-400">({filteredModels.length})</span>
+              </h2>
+            </div>
+
+            {loading ? (
+              <div className="text-center py-16 text-gray-400">{isZh ? '加载中...' : 'Loading...'}</div>
+            ) : filteredModels.length === 0 ? (
+              <div className="text-center py-16 text-gray-400">{isZh ? '未找到模型' : 'No models found'}</div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {filteredModels.map((m: any) => {
                   const slug = m.id.split('/')[0]
                   const info = getInfo(slug)
+                  const modelName = m.name.replace(/^[a-zA-Z]+[.-]/, '') // Remove provider prefix
+
                   return (
-                    <tr key={m.id} className="hover:bg-gray-50 transition">
-                      <td className="px-4 py-3">
-                        <p className="font-medium text-gray-900">{m.name}</p>
-                        <p className="text-xs text-gray-400 font-mono mt-0.5 truncate max-w-[200px] md:max-w-[300px]">{m.id}</p>
-                      </td>
-                      <td className="text-right px-4 py-3 hidden sm:table-cell">
-                        <span className="inline-flex items-center gap-1 text-xs text-gray-500">
-                          <span>{info.logo}</span> {info.label}
-                        </span>
-                      </td>
-                      <td className="text-right px-4 py-3 font-mono text-gray-700">{fmtPrice(m.pricing?.prompt)}</td>
-                      <td className="text-right px-4 py-3 font-mono text-gray-700">{fmtPrice(m.pricing?.completion)}</td>
-                      <td className="text-right px-4 py-3 text-gray-500 hidden md:table-cell">{fmtCtx(m)}</td>
-                      <td className="px-2 py-3">
+                    <div
+                      key={m.id}
+                      className="p-4 border border-gray-200 rounded-xl hover:border-primary/50 hover:shadow-md transition group"
+                    >
+                      <div className="flex items-start justify-between">
+                        <div className="flex-1 min-w-0">
+                          {/* Provider badge */}
+                          <div className="flex items-center gap-2 mb-2">
+                            <span className="text-lg">{info.logo}</span>
+                            <span className="text-xs font-medium text-gray-500 uppercase">
+                              {info.label}
+                            </span>
+                          </div>
+
+                          {/* Model name */}
+                          <h3 className="font-semibold text-gray-900 mb-1 group-hover:text-primary transition truncate">
+                            {modelName}
+                          </h3>
+
+                          {/* Full ID */}
+                          <p className="text-xs text-gray-400 font-mono truncate mb-3">
+                            {m.id}
+                          </p>
+
+                          {/* Prices */}
+                          <div className="flex gap-4 text-sm">
+                            <div>
+                              <span className="text-gray-500">{isZh ? '输入' : 'In'}:</span>
+                              <span className="ml-1 font-mono text-gray-700">{fmtPrice(m.pricing?.prompt)}</span>
+                            </div>
+                            <div>
+                              <span className="text-gray-500">{isZh ? '输出' : 'Out'}:</span>
+                              <span className="ml-1 font-mono text-gray-700">{fmtPrice(m.pricing?.completion)}</span>
+                            </div>
+                          </div>
+
+                          {/* Context length */}
+                          <div className="mt-2 text-xs text-gray-500">
+                            {isZh ? '上下文' : 'Context'}: {fmtCtx(m)}
+                          </div>
+                        </div>
+
+                        {/* Copy button */}
                         <button
                           onClick={() => copy(m.id)}
                           title={isZh ? '复制模型 ID' : 'Copy model ID'}
-                          className="p-1.5 text-gray-400 hover:text-primary hover:bg-gray-100 rounded transition"
+                          className="ml-3 p-2 text-gray-400 hover:text-primary hover:bg-gray-100 rounded-lg transition flex-shrink-0"
                         >
-                          {copiedId === m.id ? <Check className="h-3.5 w-3.5 text-green-500" /> : <Copy className="h-3.5 w-3.5" />}
+                          {copiedId === m.id ? (
+                            <Check className="h-4 w-4 text-green-500" />
+                          ) : (
+                            <Copy className="h-4 w-4" />
+                          )}
                         </button>
-                      </td>
-                    </tr>
+                      </div>
+                    </div>
                   )
                 })}
-              </tbody>
-            </table>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Footer info */}
+        {!loading && filteredModels.length > 0 && (
+          <div className="mt-8 pt-6 border-t border-gray-100 text-center text-xs text-gray-400">
+            {isZh
+              ? '价格以每 1M tokens 为单位显示。点击复制按钮可复制模型 ID。'
+              : 'Prices shown per 1M tokens. Click copy button to copy model ID.'}
           </div>
         )}
       </div>
