@@ -71,10 +71,12 @@ export default function Home() {
           )}
 
           {/* CA Address */}
-          <div className="mt-8 w-full max-w-3xl flex flex-row items-center gap-2 md:gap-3 bg-white/10 backdrop-blur-sm px-4 md:px-6 py-3 md:py-4 rounded-lg">
-            <span className="text-sm md:text-base text-white/70 shrink-0 whitespace-nowrap font-medium">{t('caAddress')}</span>
-            <div className="flex items-center gap-2 md:gap-3 min-w-0 flex-1">
-              <code className="text-sm md:text-base font-mono text-yellow-300 break-all">
+          <div className="mt-8 w-full max-w-3xl bg-white/10 backdrop-blur-sm px-4 md:px-6 py-3 md:py-4 rounded-lg">
+            <div className="flex items-center gap-2 md:gap-3 mb-2">
+              <span className="text-sm md:text-base text-white/70 shrink-0 whitespace-nowrap font-medium">{t('caAddress')}</span>
+            </div>
+            <div className="flex items-center gap-2 md:gap-3">
+              <code className="text-sm md:text-base font-mono text-yellow-300 break-all flex-1">
                 <span className="hidden sm:inline">{TOKEN_CA}</span>
                 <span className="sm:hidden">{TOKEN_CA.slice(0, 8)}...{TOKEN_CA.slice(-8)}</span>
               </code>
