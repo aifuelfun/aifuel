@@ -242,20 +242,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* CTA Footer Banner */}
-      <section className="bg-hero-gradient text-white py-16">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-3xl font-bold mb-4">Ready to Get Started?</h2>
-          <p className="text-lg text-white/90 mb-8">Connect your wallet and start earning free AI credits today.</p>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <WalletButton className="!bg-white !text-primary hover:!bg-white/90 !border-0 !w-48" />
-            <a href={`https://raydium.io/swap/?inputMint=sol&outputMint=${TOKEN_CA}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center gap-2 px-6 py-3 border-2 border-white/30 hover:border-white bg-white/10 text-white font-medium rounded-lg transition hover:bg-white/20 text-sm w-48 backdrop-blur-sm">
-              {t('buyFuel')} <ExternalLink className="h-4 w-4" />
-            </a>
-          </div>
-        </div>
-      </section>
-
       {/* Footer */}
       <footer className="bg-gray-900 text-gray-400 py-12 border-t border-gray-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
