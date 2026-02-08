@@ -429,9 +429,9 @@ export function WalletPanel() {
         </div>
       )}
 
-      {/* Quick Start */}
+      {/* Quick Start - Desktop only */}
       {(fullApiKey || apiKey) && hasTokens && (
-        <div className="mt-8 bg-gray-50 rounded-xl p-4 md:p-6">
+        <div className="hidden md:block mt-8 bg-gray-50 rounded-xl p-4 md:p-6">
           <h3 className="text-lg font-semibold text-gray-900 mb-4">{t('quickStart')}</h3>
           <div className="bg-gray-900 text-green-400 p-3 md:p-4 rounded-lg overflow-x-auto text-xs md:text-sm">
             <pre className="font-mono whitespace-pre-wrap md:whitespace-pre">
