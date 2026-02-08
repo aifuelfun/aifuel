@@ -72,19 +72,16 @@ export const Navbar: FC<Props> = ({ locale, setLocale, t }) => {
             <Link href="/docs" className="text-gray-600 hover:text-primary transition">
               {t('docs')}
             </Link>
-            <Link href="/models" className="text-gray-600 hover:text-primary transition">
-              Models
-            </Link>
           </div>
 
           {/* Social, Language Switch & Wallet Button */}
           <div className="hidden md:flex items-center gap-4">
-            <div className="flex items-center gap-3">
+            <div className="flex flex-col items-center gap-2">
               <a href={SOCIAL_LINKS.twitter} target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:text-primary transition">
-                <XIcon className="h-4 w-4" />
+                <XIcon className="h-3 w-3" />
               </a>
               <a href={SOCIAL_LINKS.discord} target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:text-primary transition">
-                <DiscordIcon className="h-4 w-4" />
+                <DiscordIcon className="h-3 w-3" />
               </a>
             </div>
             <LanguageSwitch locale={locale} setLocale={setLocale} />
@@ -117,15 +114,12 @@ export const Navbar: FC<Props> = ({ locale, setLocale, t }) => {
               <Link href="/docs" className="text-gray-600 hover:text-primary transition">
                 {t('docs')}
               </Link>
-              <Link href="/models" className="text-gray-600 hover:text-primary transition">
-                Models
-              </Link>
-              <div className="pt-2 flex items-center gap-4">
+              <div className="pt-2 flex flex-col items-center gap-2">
                 <a href={SOCIAL_LINKS.twitter} target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:text-primary transition">
-                  <XIcon className="h-4 w-4" />
+                  <XIcon className="h-3 w-3" />
                 </a>
                 <a href={SOCIAL_LINKS.discord} target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:text-primary transition">
-                  <DiscordIcon className="h-4 w-4" />
+                  <DiscordIcon className="h-3 w-3" />
                 </a>
                 <LanguageSwitch locale={locale} setLocale={setLocale} />
               </div>
