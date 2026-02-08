@@ -1,10 +1,10 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Search, X } from 'lucide-react'
+import { Search, X, Check, Copy } from 'lucide-react'
 import { useLocale } from '@/lib/LocaleContext'
 
-// Provider info with logos (SVG inline or emoji fallback)
+// Provider info with logos
 const PROVIDERS: any = {
   'openai': { label: 'OpenAI', color: '#10A37F', logo: '🟢' },
   'anthropic': { label: 'Anthropic', color: '#D97706', logo: '🟠' },
@@ -52,6 +52,7 @@ export default function ModelsPage() {
   const [selectedProvider, setSelectedProvider] = useState<string | null>(null)
   const [selectedModel, setSelectedModel] = useState<any>(null)
   const [search, setSearch] = useState('')
+  const [copiedId, setCopiedId] = useState<string | null>(null)
 
   useEffect(() => {
     fetch('https://api.aifuel.fun/v1/models')
@@ -95,21 +96,27 @@ export default function ModelsPage() {
     ? currentModels.filter((m: any) => m.name.toLowerCase().includes(search.toLowerCase()) || m.id.toLowerCase().includes(search.toLowerCase()))
     : currentModels
 
+  const copyToClipboard = (text: string, id: string) => {
+    navigator.clipboard.writeText(text)
+    setCopiedId(id)
+    setTimeout(() => setCopiedId(null), 2000)
+  }
+
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        <div className="flex flex-col md:flex-row gap-6 min-h-[70vh]">
+        <div className="flex flex-col md:flex-row gap-6 md:gap-8 min-h-[70vh]">
 
           {/* Left: Provider List */}
-          <div className="w-full md:w-64 flex-shrink-0">
-            <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3">
+          <div className="w-full md:w-72 flex-shrink-0">
+            <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3 px-2">
               {isZh ? '提供商' : 'Providers'}
             </h2>
-            <div className="bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm">
+            <div className="bg-white rounded-xl border border-gray-200 p-2 shadow-sm">
               {loading ? (
                 <div className="p-4 text-center text-gray-500 text-sm">{isZh ? '加载中...' : 'Loading...'}</div>
               ) : (
-                <div className="divide-y divide-gray-100">
+                <div className="grid grid-cols-2 gap-2">
                   {providerSlugs.map(slug => {
                     const info = getProviderInfo(slug)
                     const count = grouped[slug].length
@@ -118,13 +125,15 @@ export default function ModelsPage() {
                       <button
                         key={slug}
                         onClick={() => { setSelectedProvider(slug); setSelectedModel(null); setSearch('') }}
-                        className={`w-full flex items-center gap-3 px-4 py-3 transition text-left ${isActive ? 'bg-primary/5 border-l-4 border-primary' : 'hover:bg-gray-50 border-l-4 border-transparent'}`}
+                        className={`w-full flex items-center gap-2.5 px-3 py-2.5 rounded-lg transition text-left ${isActive ? 'bg-primary text-white shadow-sm' : 'bg-gray-50 hover:bg-gray-100 text-gray-700'}`}
                       >
-                        <span className="text-xl" role="img">{info.logo}</span>
+                        <span className="text-lg" role="img" aria-label={info.label}>{info.logo}</span>
                         <div className="flex-1 min-w-0">
-                          <p className={`text-sm font-medium truncate ${isActive ? 'text-primary' : 'text-gray-900'}`}>{info.label}</p>
+                          <p className={`text-sm font-medium truncate ${isActive ? 'text-white' : 'text-gray-900'}`}>{info.label}</p>
                         </div>
-                        <span className="text-xs text-gray-400 bg-gray-100 px-2 py-0.5 rounded-full">{count}</span>
+                        <span className={`text-xs ${isActive ? 'bg-white/20 text-white' : 'bg-gray-200 text-gray-600'} px-1.5 py-0.5 rounded-full`}>
+                          {count}
+                        </span>
                       </button>
                     )
                   })}
@@ -137,16 +146,15 @@ export default function ModelsPage() {
           <div className="flex-1 min-w-0">
             {selectedProvider && (
               <>
-                {/* Provider Header */}
+                {/* Provider Header + Search */}
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center gap-3">
-                    <span className="text-2xl">{getProviderInfo(selectedProvider).logo}</span>
+                    <span className="text-2xl" role="img">{getProviderInfo(selectedProvider).logo}</span>
                     <div>
                       <h2 className="text-xl font-bold text-gray-900">{getProviderInfo(selectedProvider).label}</h2>
                       <p className="text-sm text-gray-500">{filteredModels.length} {isZh ? '个模型' : 'models'}</p>
                     </div>
                   </div>
-                  {/* Search */}
                   <div className="relative w-48 md:w-64">
                     <Search className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
                     <input
@@ -162,18 +170,26 @@ export default function ModelsPage() {
                 {/* Models Grid */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                   {filteredModels.map((model: any) => (
-                    <button
-                      key={model.id}
-                      onClick={() => setSelectedModel(model)}
-                      className="text-left bg-white rounded-xl border border-gray-200 p-4 hover:border-primary hover:shadow-md transition group"
-                    >
-                      <p className="font-semibold text-gray-900 text-sm group-hover:text-primary transition truncate">{model.name}</p>
-                      <p className="text-xs text-gray-400 font-mono mt-1 truncate">{model.id.split('/').slice(1).join('/')}</p>
-                      <div className="flex items-center gap-3 mt-3 text-xs text-gray-500">
-                        <span>{isZh ? '输入' : 'In'}: <span className="font-mono text-gray-700">{formatPrice(model.pricing?.prompt)}</span></span>
-                        <span>{isZh ? '输出' : 'Out'}: <span className="font-mono text-gray-700">{formatPrice(model.pricing?.completion)}</span></span>
-                      </div>
-                    </button>
+                    <div key={model.id} className="relative">
+                      <button
+                        onClick={() => setSelectedModel(model)}
+                        className="w-full text-left bg-white rounded-xl border border-gray-200 p-4 hover:border-primary hover:shadow-md transition group h-full"
+                      >
+                        <p className="font-semibold text-gray-900 text-sm group-hover:text-primary transition truncate">{model.name}</p>
+                        <p className="text-xs text-gray-400 font-mono mt-1 pr-8 truncate">{model.id.split('/').slice(1).join('/')}</p>
+                        <div className="flex items-center gap-3 mt-3 text-xs text-gray-500">
+                          <span>{isZh ? '输入' : 'In'}: <span className="font-mono text-gray-700">{formatPrice(model.pricing?.prompt)}</span></span>
+                          <span>{isZh ? '输出' : 'Out'}: <span className="font-mono text-gray-700">{formatPrice(model.pricing?.completion)}</span></span>
+                        </div>
+                      </button>
+                      <button 
+                        onClick={() => copyToClipboard(model.id, model.id)}
+                        title={isZh ? '复制模型 ID' : 'Copy Model ID'}
+                        className="absolute top-3 right-3 p-1.5 text-gray-400 hover:text-primary hover:bg-gray-100 rounded-md transition"
+                      >
+                        {copiedId === model.id ? <Check className="h-4 w-4 text-green-600" /> : <Copy className="h-4 w-4" />}
+                      </button>
+                    </div>
                   ))}
                 </div>
 
