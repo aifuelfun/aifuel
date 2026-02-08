@@ -243,36 +243,19 @@ export default function Home() {
       </section>
 
       {/* Footer */}
-      <footer className="bg-gray-900 text-gray-400 py-12 border-t border-gray-800">
+      <footer className="bg-gray-900 text-gray-400 py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid md:grid-cols-3 gap-8 mb-8">
-            <div>
-              <div className="flex items-center gap-2 mb-4">
-                <Logo size={24} />
-                <span className="text-white font-bold">AIFuel</span>
-              </div>
-              <p className="text-sm text-gray-500">Hold $FUEL tokens to get free AI API credits. Access 200+ models including GPT-4, Claude, and more.</p>
+          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+            <div className="flex items-center gap-2">
+              <Logo size={24} />
+              <span className="text-white font-bold">AIFuel</span>
             </div>
-            <div>
-              <h3 className="text-white font-semibold mb-4">Quick Links</h3>
-              <ul className="space-y-2 text-sm">
-                <li><Link href="/models" className="hover:text-white transition">{t('viewAllModels')}</Link></li>
-                <li><Link href="/docs" className="hover:text-white transition">{t('docs')}</Link></li>
-                <li><Link href="/dashboard" className="hover:text-white transition">Dashboard</Link></li>
-              </ul>
+            <p>© 2026 AIFuel. {t('allRightsReserved')}</p>
+            <div className="flex items-center gap-4">
+              <Link href="/docs" className="hover:text-white transition">{t('docs')}</Link>
+              <a href="https://github.com/aifuelfun/aifuel" target="_blank" rel="noopener noreferrer" className="hover:text-white transition">{t('github')}</a>
+              <a href={`https://t.me/aifuel_fun`} target="_blank" rel="noopener noreferrer" className="hover:text-white transition">{t('telegram')}</a>
             </div>
-            <div>
-              <h3 className="text-white font-semibold mb-4">Community</h3>
-              <ul className="space-y-2 text-sm">
-                <li><a href="https://github.com/aifuelfun/aifuel" target="_blank" rel="noopener noreferrer" className="hover:text-white transition">{t('github')}</a></li>
-                <li><a href={`https://t.me/aifuel_fun`} target="_blank" rel="noopener noreferrer" className="hover:text-white transition">{t('telegram')}</a></li>
-                <li><a href="https://twitter.com/aifuelfun" target="_blank" rel="noopener noreferrer" className="hover:text-white transition">Twitter</a></li>
-              </ul>
-            </div>
-          </div>
-          <div className="border-t border-gray-800 pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
-            <p className="text-sm">© 2026 AIFuel. {t('allRightsReserved')}</p>
-            <p className="text-xs text-gray-500 text-center">This service routes requests to third-party AI providers under their respective terms.</p>
           </div>
         </div>
       </footer>
