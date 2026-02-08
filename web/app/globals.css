@@ -90,3 +90,59 @@ body {
   transform: translateY(-4px);
   box-shadow: 0 20px 40px rgba(255, 107, 53, 0.15);
 }
+
+/* Feature cards with colored accents */
+.feature-card-1 {
+  border-left: 4px solid #FF6B35;
+}
+
+.feature-card-2 {
+  border-left: 4px solid #3B82F6;
+}
+
+.feature-card-3 {
+  border-left: 4px solid #10B981;
+}
+
+/* Icon backgrounds */
+.icon-bg-1 {
+  background: linear-gradient(135deg, rgba(255, 107, 53, 0.1) 0%, rgba(255, 107, 53, 0.05) 100%);
+}
+
+.icon-bg-2 {
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(59, 130, 246, 0.05) 100%);
+}
+
+.icon-bg-3 {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(16, 185, 129, 0.05) 100%);
+}
+
+/* Step cards */
+.step-card {
+  transition: all 0.3s ease;
+}
+
+.step-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1);
+}
+
+.step-number {
+  background: linear-gradient(135deg, #FF6B35 0%, #7C3AED 100%);
+  box-shadow: 0 8px 20px rgba(255, 107, 53, 0.3);
+}
+
+/* FAQ accordion */
+.faq-item {
+  transition: all 0.2s ease;
+}
+
+.faq-item.open {
+  background: linear-gradient(135deg, rgba(255, 107, 53, 0.05) 0%, rgba(124, 58, 237, 0.05) 100%);
+}
+
+/* Section dividers */
+.section-divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, rgba(0, 0, 0, 0.1) 50%, transparent 100%);
+}

@@ -24,6 +24,12 @@ const config: Config = {
           800: '#993817',
           900: '#66250F',
         },
+        accent: {
+          blue: '#3B82F6',
+          green: '#10B981',
+          purple: '#7C3AED',
+          pink: '#EC4899',
+        },
         dark: {
           DEFAULT: '#1A1A2E',
           light: '#25253D',
@@ -33,7 +39,8 @@ const config: Config = {
       backgroundImage: {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
         'gradient-conic': 'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
-        'hero-gradient': 'linear-gradient(135deg, #FF6B35 0%, #E55A2B 50%, #CC4A21 100%)',
+        'hero-gradient': 'linear-gradient(135deg, #FF6B35 0%, #7C3AED 100%)',
+        'feature-glow': 'radial-gradient(circle at center, rgba(255, 107, 53, 0.1) 0%, transparent 70%)',
       },
       animation: {
         'float': 'float 3s ease-in-out infinite',
