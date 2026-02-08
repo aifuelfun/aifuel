@@ -50,7 +50,6 @@ export default function ModelsPage() {
   const [models, setModels] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
   const [selectedProvider, setSelectedProvider] = useState<string | null>(null)
-  const [selectedModel, setSelectedModel] = useState<any>(null)
   const [search, setSearch] = useState('')
   const [copiedId, setCopiedId] = useState<string | null>(null)
 
@@ -108,36 +107,32 @@ export default function ModelsPage() {
         <div className="flex flex-col md:flex-row gap-6 md:gap-8 min-h-[70vh]">
 
           {/* Left: Provider List */}
-          <div className="w-full md:w-72 flex-shrink-0">
-            <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3 px-2">
+          <div className="w-full md:w-64 flex-shrink-0">
+            <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3 px-1">
               {isZh ? '提供商' : 'Providers'}
             </h2>
-            <div className="bg-white rounded-xl border border-gray-200 p-2 shadow-sm">
+            <div className="space-y-1">
               {loading ? (
                 <div className="p-4 text-center text-gray-500 text-sm">{isZh ? '加载中...' : 'Loading...'}</div>
               ) : (
-                <div className="grid grid-cols-2 gap-2">
-                  {providerSlugs.map(slug => {
-                    const info = getProviderInfo(slug)
-                    const count = grouped[slug].length
-                    const isActive = selectedProvider === slug
-                    return (
-                      <button
-                        key={slug}
-                        onClick={() => { setSelectedProvider(slug); setSelectedModel(null); setSearch('') }}
-                        className={`w-full flex items-center gap-2.5 px-3 py-2.5 rounded-lg transition text-left ${isActive ? 'bg-primary text-white shadow-sm' : 'bg-gray-50 hover:bg-gray-100 text-gray-700'}`}
-                      >
-                        <span className="text-lg" role="img" aria-label={info.label}>{info.logo}</span>
-                        <div className="flex-1 min-w-0">
-                          <p className={`text-sm font-medium truncate ${isActive ? 'text-white' : 'text-gray-900'}`}>{info.label}</p>
-                        </div>
-                        <span className={`text-xs ${isActive ? 'bg-white/20 text-white' : 'bg-gray-200 text-gray-600'} px-1.5 py-0.5 rounded-full`}>
-                          {count}
-                        </span>
-                      </button>
-                    )
-                  })}
-                </div>
+                providerSlugs.map(slug => {
+                  const info = getProviderInfo(slug)
+                  const count = grouped[slug].length
+                  const isActive = selectedProvider === slug
+                  return (
+                    <button
+                      key={slug}
+                      onClick={() => { setSelectedProvider(slug); setSearch('') }}
+                      className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition text-left ${isActive ? 'bg-primary/10 text-primary' : 'hover:bg-gray-100 text-gray-700'}`}
+                    >
+                      <span className="text-lg" role="img" aria-label={info.label}>{info.logo}</span>
+                      <p className={`text-sm font-semibold truncate`}>{info.label}</p>
+                      <span className="ml-auto text-xs font-medium bg-gray-200/80 px-2 py-1 rounded-full">
+                        {count}
+                      </span>
+                    </button>
+                  )
+                })
               )}
             </div>
           </div>
@@ -146,144 +141,87 @@ export default function ModelsPage() {
           <div className="flex-1 min-w-0">
             {selectedProvider && (
               <>
-                {/* Provider Header + Search */}
-                <div className="flex items-center justify-between mb-4">
-                  <div className="flex items-center gap-3">
+                {/* Header + Search */}
+                <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-4">
+                  <div className="flex items-center gap-3 mb-3 md:mb-0">
                     <span className="text-2xl" role="img">{getProviderInfo(selectedProvider).logo}</span>
                     <div>
                       <h2 className="text-xl font-bold text-gray-900">{getProviderInfo(selectedProvider).label}</h2>
-                      <p className="text-sm text-gray-500">{filteredModels.length} {isZh ? '个模型' : 'models'}</p>
+                      <p className="text-sm text-gray-500">{filteredModels.length} {isZh ? '个可用模型' : 'models available'}</p>
                     </div>
                   </div>
-                  <div className="relative w-48 md:w-64">
+                  <div className="relative">
                     <Search className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
                     <input
                       type="text"
                       placeholder={isZh ? '搜索...' : 'Search...'}
                       value={search}
                       onChange={(e) => setSearch(e.target.value)}
-                      className="w-full pl-9 pr-4 py-2 border border-gray-200 rounded-lg bg-white text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                      className="w-full md:w-64 pl-9 pr-4 py-2 border border-gray-200 rounded-lg bg-white text-sm focus:outline-none focus:ring-2 focus:ring-primary"
                     />
                   </div>
                 </div>
 
-                {/* Models Grid */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                  {filteredModels.map((model: any) => (
-                    <div key={model.id} className="relative">
-                      <button
-                        onClick={() => setSelectedModel(model)}
-                        className="w-full text-left bg-white rounded-xl border border-gray-200 p-4 hover:border-primary hover:shadow-md transition group h-full"
-                      >
-                        <p className="font-semibold text-gray-900 text-sm group-hover:text-primary transition truncate">{model.name}</p>
-                        <p className="text-xs text-gray-400 font-mono mt-1 pr-8 truncate">{model.id.split('/').slice(1).join('/')}</p>
-                        <div className="flex items-center gap-3 mt-3 text-xs text-gray-500">
-                          <span>{isZh ? '输入' : 'In'}: <span className="font-mono text-gray-700">{formatPrice(model.pricing?.prompt)}</span></span>
-                          <span>{isZh ? '输出' : 'Out'}: <span className="font-mono text-gray-700">{formatPrice(model.pricing?.completion)}</span></span>
-                        </div>
-                      </button>
-                      <button 
-                        onClick={() => copyToClipboard(model.id, model.id)}
-                        title={isZh ? '复制模型 ID' : 'Copy Model ID'}
-                        className="absolute top-3 right-3 p-1.5 text-gray-400 hover:text-primary hover:bg-gray-100 rounded-md transition"
-                      >
-                        {copiedId === model.id ? <Check className="h-4 w-4 text-green-600" /> : <Copy className="h-4 w-4" />}
-                      </button>
+                {/* Models Table */}
+                <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+                  <div className="divide-y divide-gray-100">
+                    {/* Header */}
+                    <div className="hidden md:grid grid-cols-12 gap-4 px-4 py-2 bg-gray-50 text-xs font-semibold text-gray-500 uppercase">
+                      <div className="col-span-5">{isZh ? '模型' : 'Model'}</div>
+                      <div className="col-span-2 text-right">{isZh ? '输入价格' : 'Input'}</div>
+                      <div className="col-span-2 text-right">{isZh ? '输出价格' : 'Output'}</div>
+                      <div className="col-span-2 text-right">{isZh ? '上下文' : 'Context'}</div>
+                      <div className="col-span-1"></div>
                     </div>
-                  ))}
-                </div>
 
-                {filteredModels.length === 0 && (
-                  <div className="text-center py-12 text-gray-500">{isZh ? '未找到模型' : 'No models found'}</div>
-                )}
+                    {filteredModels.map((model: any) => (
+                      <div key={model.id} className="p-4 hover:bg-gray-50 transition">
+                        <div className="grid grid-cols-2 md:grid-cols-12 gap-x-4 gap-y-2 items-center">
+                          {/* Model */}
+                          <div className="md:col-span-5 col-span-2">
+                            <p className="font-medium text-gray-900 text-sm truncate">{model.name}</p>
+                          </div>
+
+                          {/* Prices - Responsive */}
+                          <div className="md:col-span-2 md:text-right">
+                              <span className="md:hidden text-xs text-gray-500">{isZh ? '输入:' : 'Input:'} </span>
+                              <span className="font-mono text-sm text-gray-800">{formatPrice(model.pricing?.prompt)}</span>
+                          </div>
+                          <div className="md:col-span-2 md:text-right">
+                              <span className="md:hidden text-xs text-gray-500">{isZh ? '输出:' : 'Output:'} </span>
+                              <span className="font-mono text-sm text-gray-800">{formatPrice(model.pricing?.completion)}</span>
+                          </div>
+
+                          {/* Context */}
+                          <div className="md:col-span-2 md:text-right">
+                            <span className="md:hidden text-xs text-gray-500">{isZh ? '上下文:' : 'Context:'} </span>
+                            <span className="text-sm text-gray-600">{formatCtx(model)}</span>
+                          </div>
+
+                           {/* Copy Button */}
+                          <div className="md:col-span-1 flex justify-end col-span-2 mt-2 md:mt-0">
+                            <button 
+                              onClick={() => copyToClipboard(model.id, model.id)}
+                              title={isZh ? '复制模型 ID' : 'Copy Model ID'}
+                              className="p-1.5 text-gray-400 hover:text-primary hover:bg-gray-200 rounded-md transition"
+                            >
+                              {copiedId === model.id ? <Check className="h-4 w-4 text-green-600" /> : <Copy className="h-4 w-4" />}
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+
+                  {filteredModels.length === 0 && (
+                    <div className="text-center py-12 text-gray-500">{isZh ? '未找到模型' : 'No models found'}</div>
+                  )}
+                </div>
               </>
             )}
           </div>
         </div>
       </div>
-
-      {/* Model Detail Modal */}
-      {selectedModel && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50" onClick={() => setSelectedModel(null)}>
-          <div className="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl max-h-[80vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
-            {/* Header */}
-            <div className="flex items-start justify-between mb-4">
-              <div>
-                <h3 className="text-xl font-bold text-gray-900">{selectedModel.name}</h3>
-                <p className="text-sm text-gray-400 font-mono mt-1 break-all">{selectedModel.id}</p>
-              </div>
-              <button onClick={() => setSelectedModel(null)} className="p-1 hover:bg-gray-100 rounded-lg">
-                <X className="h-5 w-5 text-gray-500" />
-              </button>
-            </div>
-
-            {/* Description */}
-            {selectedModel.description && (
-              <p className="text-sm text-gray-700 mb-4">{selectedModel.description}</p>
-            )}
-
-            {/* Details Grid */}
-            <div className="grid grid-cols-2 gap-3 mb-4">
-              <div className="bg-gray-50 rounded-lg p-3">
-                <p className="text-xs text-gray-500 mb-1">{isZh ? '输入价格' : 'Input Price'}</p>
-                <p className="text-lg font-bold font-mono text-gray-900">{formatPrice(selectedModel.pricing?.prompt)}</p>
-                <p className="text-xs text-gray-400">{isZh ? '每百万 tokens' : 'per 1M tokens'}</p>
-              </div>
-              <div className="bg-gray-50 rounded-lg p-3">
-                <p className="text-xs text-gray-500 mb-1">{isZh ? '输出价格' : 'Output Price'}</p>
-                <p className="text-lg font-bold font-mono text-gray-900">{formatPrice(selectedModel.pricing?.completion)}</p>
-                <p className="text-xs text-gray-400">{isZh ? '每百万 tokens' : 'per 1M tokens'}</p>
-              </div>
-              <div className="bg-gray-50 rounded-lg p-3">
-                <p className="text-xs text-gray-500 mb-1">{isZh ? '上下文长度' : 'Context Length'}</p>
-                <p className="text-lg font-bold text-gray-900">{formatCtx(selectedModel)}</p>
-                <p className="text-xs text-gray-400">tokens</p>
-              </div>
-              <div className="bg-gray-50 rounded-lg p-3">
-                <p className="text-xs text-gray-500 mb-1">{isZh ? '最大输出' : 'Max Output'}</p>
-                <p className="text-lg font-bold text-gray-900">
-                  {selectedModel.top_provider?.max_completion_tokens 
-                    ? (selectedModel.top_provider.max_completion_tokens >= 1000 
-                        ? `${Math.round(selectedModel.top_provider.max_completion_tokens / 1000)}k` 
-                        : selectedModel.top_provider.max_completion_tokens)
-                    : '-'}
-                </p>
-                <p className="text-xs text-gray-400">tokens</p>
-              </div>
-            </div>
-
-            {/* Modality */}
-            {selectedModel.architecture && (
-              <div className="mb-4">
-                <p className="text-xs text-gray-500 mb-2">{isZh ? '支持模态' : 'Modality'}</p>
-                <div className="flex flex-wrap gap-2">
-                  {(selectedModel.architecture.input_modalities || []).map((m: string) => (
-                    <span key={`in-${m}`} className="px-2 py-1 bg-blue-50 text-blue-700 text-xs rounded-full">
-                      {isZh ? '输入' : 'Input'}: {m}
-                    </span>
-                  ))}
-                  {(selectedModel.architecture.output_modalities || []).map((m: string) => (
-                    <span key={`out-${m}`} className="px-2 py-1 bg-green-50 text-green-700 text-xs rounded-full">
-                      {isZh ? '输出' : 'Output'}: {m}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* API Usage */}
-            <div className="bg-gray-900 rounded-lg p-4 overflow-x-auto">
-              <p className="text-xs text-gray-400 mb-2">{isZh ? '使用示例' : 'Usage Example'}</p>
-              <pre className="text-xs text-green-400 font-mono whitespace-pre-wrap">
-{`curl https://api.aifuel.fun/v1/chat/completions \\
-  -H "Authorization: Bearer YOUR_API_KEY" \\
-  -H "Content-Type: application/json" \\
-  -d '{"model": "${selectedModel.id}", "messages": [{"role": "user", "content": "Hello!"}]}'`}
-              </pre>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   )
 }
