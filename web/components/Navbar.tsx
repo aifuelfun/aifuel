@@ -69,24 +69,26 @@ export const Navbar: FC<Props> = ({ locale, setLocale, t }) => {
             <a href="/#pricing" onClick={(e) => handleAnchorClick(e, 'pricing')} className="text-gray-600 hover:text-primary transition cursor-pointer">
               {t('pricing')}
             </a>
-            <Link href="/docs" className="text-gray-600 hover:text-primary transition">
-              {t('docs')}
-            </Link>
-            <Link href="/models" className="text-gray-600 hover:text-primary transition">
-              {t('models')}
-            </Link>
-          </div>
-
-          {/* Social, Language Switch & Wallet Button */}
-          <div className="hidden md:flex items-center gap-4">
-            <div className="flex items-center gap-3">
-              <a href={SOCIAL_LINKS.twitter} target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:text-primary transition">
-                <XIcon className="h-4 w-4" />
-              </a>
-              <a href={SOCIAL_LINKS.discord} target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:text-primary transition">
-                <DiscordIcon className="h-4 w-4" />
+            <div className="flex items-center gap-2">
+              <Link href="/docs" className="text-gray-600 hover:text-primary transition">
+                {t('docs')}
+              </Link>
+              <a href={SOCIAL_LINKS.twitter} target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:text-primary transition p-1">
+                <XIcon className="h-5 w-5" />
               </a>
             </div>
+            <div className="flex items-center gap-2">
+              <Link href="/models" className="text-gray-600 hover:text-primary transition">
+                {t('models')}
+              </Link>
+              <a href={SOCIAL_LINKS.discord} target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:text-primary transition p-1">
+                <DiscordIcon className="h-5 w-5" />
+              </a>
+            </div>
+          </div>
+
+          {/* Language Switch & Wallet Button */}
+          <div className="hidden md:flex items-center gap-4">
             <LanguageSwitch locale={locale} setLocale={setLocale} />
             <WalletButton />
           </div>
