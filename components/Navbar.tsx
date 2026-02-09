@@ -80,10 +80,10 @@ export const Navbar: FC<Props> = ({ locale, setLocale, t }) => {
           {/* Social, Language Switch & Wallet Button */}
           <div className="hidden md:flex items-center gap-4">
             <div className="flex items-center gap-3">
-              <a href={SOCIAL_LINKS.twitter} target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:text-primary transition">
+              <a href={SOCIAL_LINKS.twitter} target="_blank" rel="noopener noreferrer" className="text-sol-text-muted hover:text-primary transition">
                 <XIcon className="h-4 w-4" />
               </a>
-              <a href={SOCIAL_LINKS.discord} target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:text-primary transition">
+              <a href={SOCIAL_LINKS.discord} target="_blank" rel="noopener noreferrer" className="text-sol-text-muted hover:text-primary transition">
                 <DiscordIcon className="h-4 w-4" />
               </a>
             </div>
@@ -121,10 +121,10 @@ export const Navbar: FC<Props> = ({ locale, setLocale, t }) => {
                 {t('models')}
               </Link>
               <div className="pt-2 flex items-center gap-4">
-                <a href={SOCIAL_LINKS.twitter} target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:text-primary transition">
+                <a href={SOCIAL_LINKS.twitter} target="_blank" rel="noopener noreferrer" className="text-sol-text-muted hover:text-primary transition">
                   <XIcon className="h-4 w-4" />
                 </a>
-                <a href={SOCIAL_LINKS.discord} target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:text-primary transition">
+                <a href={SOCIAL_LINKS.discord} target="_blank" rel="noopener noreferrer" className="text-sol-text-muted hover:text-primary transition">
                   <DiscordIcon className="h-4 w-4" />
                 </a>
                 <LanguageSwitch locale={locale} setLocale={setLocale} />

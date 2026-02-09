@@ -97,7 +97,7 @@ export default function Home() {
                 </div>
                 
                 <h3 className="text-lg font-semibold text-sol-text mb-1 group-hover:text-primary-light transition-colors truncate">{model.name}</h3>
-                <p className="text-xs text-gray-500 font-mono mb-4">{model.id}</p>
+                <p className="text-xs text-sol-text-muted font-mono mb-4">{model.id}</p>
                 
                 <div className="flex items-center justify-between text-xs mt-auto">
                    <span className="text-sol-text-muted">In: <span className="text-sol-text">${model.inputPrice}</span></span>
@@ -170,7 +170,7 @@ export default function Home() {
                   className="w-full px-6 py-5 text-left flex items-center justify-between group"
                 >
                   <span className={`font-medium transition ${openFaq === idx ? 'text-sol-text' : 'text-gray-300'}`}>{faq.q}</span>
-                  <span className={`text-gray-500 text-xl transition-transform duration-300 ${openFaq === idx ? 'rotate-45 text-primary' : ''}`}>+</span>
+                  <span className={`text-sol-text-muted text-xl transition-transform duration-300 ${openFaq === idx ? 'rotate-45 text-primary' : ''}`}>+</span>
                 </button>
                 {openFaq === idx && (
                   <div className="px-6 pb-5 animate-fade-in border-t border-sol-border/50">

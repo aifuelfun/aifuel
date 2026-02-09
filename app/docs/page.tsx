@@ -120,7 +120,7 @@ export default function DocsPage() {
           <Book className="h-8 w-8 text-primary" />
           <h1 className="text-4xl font-bold text-gray-900">{t.title}</h1>
         </div>
-        <p className="text-xl text-gray-600">
+        <p className="text-xl text-sol-text-dim">
           {t.subtitle}
         </p>
       </div>
@@ -135,14 +135,14 @@ export default function DocsPage() {
         <div className="space-y-6">
           <div className="bg-white border border-gray-200 rounded-xl p-6">
             <h3 className="font-semibold text-gray-900 mb-2">{t.step1Title}</h3>
-            <p className="text-gray-600 mb-4">
+            <p className="text-sol-text-dim mb-4">
               {t.step1Desc} <a href="/dashboard" className="text-primary hover:underline">{t.step1Link}</a> {t.step1Desc2}
             </p>
           </div>
 
           <div className="bg-white border border-gray-200 rounded-xl p-6">
             <h3 className="font-semibold text-gray-900 mb-2">{t.step2Title}</h3>
-            <p className="text-gray-600 mb-4">
+            <p className="text-sol-text-dim mb-4">
               {t.step2Desc}
             </p>
             <CodeBlock
@@ -198,7 +198,7 @@ print(response.choices[0].message.content)`}
 
           <div className="p-6 border-b border-gray-200">
             <h3 className="font-semibold text-gray-900 mb-4">{t.authentication}</h3>
-            <p className="text-gray-600 mb-4">
+            <p className="text-sol-text-dim mb-4">
               {t.authDesc}
             </p>
             <CodeBlock
@@ -225,7 +225,7 @@ print(response.choices[0].message.content)`}
                     {endpoint.method}
                   </span>
                   <code className="text-sm font-mono text-gray-900">{endpoint.path}</code>
-                  <span className="text-sm text-gray-500">{endpoint.desc}</span>
+                  <span className="text-sm text-sol-text-muted">{endpoint.desc}</span>
                 </div>
               ))}
             </div>
@@ -255,7 +255,7 @@ print(response.choices[0].message.content)`}
                   <td className="px-6 py-4">
                     <code className="text-sm">{model.id}</code>
                   </td>
-                  <td className="px-6 py-4 text-sm text-gray-600">{model.provider}</td>
+                  <td className="px-6 py-4 text-sm text-sol-text-dim">{model.provider}</td>
                   <td className="px-6 py-4">
                     <span className={`px-2 py-1 text-xs font-medium rounded ${
                       model.tier === 'premium' ? 'bg-purple-100 text-purple-700' :
@@ -269,7 +269,7 @@ print(response.choices[0].message.content)`}
               ))}
             </tbody>
           </table>
-          <div className="p-4 bg-gray-50 text-sm text-gray-500 text-center">
+          <div className="p-4 bg-gray-50 text-sm text-sol-text-muted text-center">
             <a href="/models" className="hover:text-primary transition underline">
               {t.moreModels}
             </a>
@@ -450,7 +450,7 @@ for await (const chunk of stream) {
         
         <div className="bg-white border border-gray-200 rounded-xl p-6">
           <h3 className="font-semibold text-gray-900 mb-4">{t.howCreditsWork}</h3>
-          <p className="text-gray-600 mb-4">
+          <p className="text-sol-text-dim mb-4">
             {t.creditsDesc}
           </p>
           <div className="bg-primary/5 border border-primary/20 rounded-lg p-4 mb-4">
@@ -458,7 +458,7 @@ for await (const chunk of stream) {
               {t.creditFormula}
             </code>
           </div>
-          <ul className="space-y-2 text-gray-600">
+          <ul className="space-y-2 text-sol-text-dim">
             <li>• {t.credit1}</li>
             <li>• {t.credit2}</li>
             <li>• {t.credit3}</li>

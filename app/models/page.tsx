@@ -60,7 +60,7 @@ export default function ModelsPage() {
 
         {/* Search */}
         <div className="relative mb-6 max-w-md">
-          <Search className="absolute left-4 top-3 h-4 w-4 text-gray-500" />
+          <Search className="absolute left-4 top-3 h-4 w-4 text-sol-text-muted" />
           <input
             type="text"
             placeholder={isZh ? '搜索模型...' : 'Search models...'}
@@ -74,7 +74,7 @@ export default function ModelsPage() {
 
           {/* ─── Left Panel: Providers ─── */}
           <div className="w-52 flex-shrink-0">
-            <h2 className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-3 px-1">
+            <h2 className="text-[10px] font-semibold text-sol-text-muted uppercase tracking-wider mb-3 px-1">
               {isZh ? '提供商' : 'Providers'}
             </h2>
             <div className="space-y-1">
@@ -104,7 +104,7 @@ export default function ModelsPage() {
                         {p.slug}
                       </div>
                     </div>
-                    <span className={`text-xs ${active ? 'text-primary-light' : 'text-gray-600'}`}>
+                    <span className={`text-xs ${active ? 'text-primary-light' : 'text-sol-text-dim'}`}>
                       {count}
                     </span>
                   </button>
@@ -116,17 +116,17 @@ export default function ModelsPage() {
           {/* ─── Right Panel: Model Cards ─── */}
           <div className="flex-1">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider">
+              <h2 className="text-[10px] font-semibold text-sol-text-muted uppercase tracking-wider">
                 {selectedProvider} {isZh ? '模型' : 'Models'}
-                <span className="ml-2 text-gray-600">({filtered.length})</span>
+                <span className="ml-2 text-sol-text-dim">({filtered.length})</span>
               </h2>
-              <span className="text-[10px] text-gray-600">
+              <span className="text-[10px] text-sol-text-dim">
                 {isZh ? '价格 / 1M tokens · 零加价' : 'per 1M tokens · zero markup'}
               </span>
             </div>
 
             {filtered.length === 0 ? (
-              <div className="text-center py-16 text-gray-600">
+              <div className="text-center py-16 text-sol-text-dim">
                 {isZh ? '未找到模型' : 'No models found'}
               </div>
             ) : (
@@ -142,12 +142,12 @@ export default function ModelsPage() {
                         <h3 className="text-sm font-semibold text-sol-text group-hover:text-primary-light transition truncate">
                           {m.name}
                         </h3>
-                        <p className="text-[10px] text-gray-600 font-mono truncate mt-0.5">{m.id}</p>
+                        <p className="text-[10px] text-sol-text-dim font-mono truncate mt-0.5">{m.id}</p>
                       </div>
                       <button
                         onClick={() => copy(m.id)}
                         title={isZh ? '复制模型 ID' : 'Copy model ID'}
-                        className="ml-2 p-1.5 text-gray-600 hover:text-primary hover:bg-primary/10 rounded-lg transition flex-shrink-0"
+                        className="ml-2 p-1.5 text-sol-text-dim hover:text-primary hover:bg-primary/10 rounded-lg transition flex-shrink-0"
                       >
                         {copiedId === m.id ? (
                           <Check className="h-3.5 w-3.5 text-green-400" />
@@ -160,19 +160,19 @@ export default function ModelsPage() {
                     {/* Pricing Row */}
                     <div className="flex items-center gap-4 text-xs">
                       <div className="flex-1">
-                        <div className="text-gray-500 mb-0.5">{isZh ? '输入' : 'Input'}</div>
+                        <div className="text-sol-text-muted mb-0.5">{isZh ? '输入' : 'Input'}</div>
                         <div className={`font-mono font-medium ${m.inputPrice === 0 ? 'text-green-400' : 'text-sol-text'}`}>
                           {fmtPrice(m.inputPrice)}
                         </div>
                       </div>
                       <div className="flex-1">
-                        <div className="text-gray-500 mb-0.5">{isZh ? '输出' : 'Output'}</div>
+                        <div className="text-sol-text-muted mb-0.5">{isZh ? '输出' : 'Output'}</div>
                         <div className={`font-mono font-medium ${m.outputPrice === 0 ? 'text-green-400' : 'text-sol-text'}`}>
                           {fmtPrice(m.outputPrice)}
                         </div>
                       </div>
                       <div className="flex-1">
-                        <div className="text-gray-500 mb-0.5">{isZh ? '上下文' : 'Context'}</div>
+                        <div className="text-sol-text-muted mb-0.5">{isZh ? '上下文' : 'Context'}</div>
                         <div className="font-mono text-sol-text-muted">{m.context}</div>
                       </div>
                     </div>
@@ -184,7 +184,7 @@ export default function ModelsPage() {
         </div>
 
         {/* Footer */}
-        <div className="mt-10 pt-6 border-t border-sol-border/50 text-center text-xs text-gray-600">
+        <div className="mt-10 pt-6 border-t border-sol-border/50 text-center text-xs text-sol-text-dim">
           {isZh
             ? '实际费用与 OpenRouter 完全一致 · 零加价透传'
             : 'Exact same pricing as OpenRouter · Zero markup pass-through'}

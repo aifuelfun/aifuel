@@ -9,32 +9,33 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // Solana Brand Colors
+        // Solana Brand Colors (高对比度优化版)
         primary: {
-          DEFAULT: '#14F195',
+          DEFAULT: '#14F195',  // Solana 绿
           light: '#5FFAC1',
           dark: '#0FD67E',
         },
         secondary: {
-          DEFAULT: '#9945FF',
+          DEFAULT: '#9945FF',  // Solana 紫
           light: '#B96FFF',
           dark: '#7B2ECC',
         },
-        // Background
+        // Background (优化对比度)
         'sol-dark': {
-          DEFAULT: '#0f0f23',
-          card: '#1a1a33',
-          lighter: '#252545',
+          DEFAULT: '#0f0f23',      // 主背景
+          card: '#1e1e3a',         // 卡片背景 (提亮)
+          lighter: '#2a2a48',      // 更亮的卡片
         },
-        // Borders
+        // Borders (更清晰)
         'sol-border': {
-          DEFAULT: '#27273a',
-          light: '#3a3a55',
+          DEFAULT: '#3a3a55',      // 边框 (提亮)
+          light: '#4a4a65',
         },
-        // Text
+        // Text (高对比度)
         'sol-text': {
-          DEFAULT: '#e4e4e7',
-          muted: '#a1a1aa',
+          DEFAULT: '#f4f4f5',      // 主文字 (提亮)
+          muted: '#d4d4d8',        // 次要文字 (大幅提亮)
+          dim: '#a1a1aa',          // 更暗的辅助文字
         },
       },
       backgroundImage: {

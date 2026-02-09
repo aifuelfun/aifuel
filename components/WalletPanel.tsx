@@ -259,10 +259,10 @@ export function WalletPanel() {
                   {shortenAddress(address, 6)}
                 </code>
                 <button onClick={() => copyToClipboard(address, 'wallet')} className="p-1.5 hover:bg-sol-dark-lighter rounded-lg transition-colors">
-                  {copiedKey === 'wallet' ? <Check className="h-4 w-4 text-green-400" /> : <Copy className="h-4 w-4 text-gray-500" />}
+                  {copiedKey === 'wallet' ? <Check className="h-4 w-4 text-green-400" /> : <Copy className="h-4 w-4 text-sol-text-muted" />}
                 </button>
                 <a href={`https://solscan.io/account/${address}`} target="_blank" rel="noopener noreferrer" className="p-1.5 hover:bg-sol-dark-lighter rounded-lg transition-colors">
-                  <ExternalLink className="h-4 w-4 text-gray-500" />
+                  <ExternalLink className="h-4 w-4 text-sol-text-muted" />
                 </a>
               </div>
             </div>
@@ -333,7 +333,7 @@ export function WalletPanel() {
                 </div>
                 <div>
                   <h2 className="text-lg font-bold text-sol-text">{t('yourApiKey')}</h2>
-                  <p className="text-xs text-gray-500 font-mono mt-0.5">https://api.aifuel.fun/v1</p>
+                  <p className="text-xs text-sol-text-muted font-mono mt-0.5">https://api.aifuel.fun/v1</p>
                 </div>
               </div>
               <button 
@@ -372,10 +372,10 @@ export function WalletPanel() {
               // Case 2: Only Prefix Available
               <div className="space-y-4">
                 <div className="bg-sol-dark border border-sol-border rounded-xl p-4 flex flex-col gap-3 opacity-70">
-                   <label className="text-[10px] uppercase font-bold text-gray-500 tracking-wider">Partial Key (Hidden)</label>
+                   <label className="text-[10px] uppercase font-bold text-sol-text-muted tracking-wider">Partial Key (Hidden)</label>
                    <div className="flex items-center gap-3">
                      <code className="flex-1 font-mono text-sm text-sol-text-muted break-all">{apiKey.prefix}...******</code>
-                     <button disabled className="p-2 bg-sol-dark-lighter rounded-lg text-gray-600 cursor-not-allowed">
+                     <button disabled className="p-2 bg-sol-dark-lighter rounded-lg text-sol-text-dim cursor-not-allowed">
                        <Copy className="h-5 w-5" />
                      </button>
                    </div>
@@ -390,8 +390,8 @@ export function WalletPanel() {
             ) : (
               // Case 3: Loading
               <div className="text-center py-8">
-                <RefreshCw className="h-8 w-8 text-gray-600 mx-auto mb-4 animate-spin" />
-                <p className="text-gray-500 text-sm">Generating secure key...</p>
+                <RefreshCw className="h-8 w-8 text-sol-text-dim mx-auto mb-4 animate-spin" />
+                <p className="text-sol-text-muted text-sm">Generating secure key...</p>
               </div>
             )}
           </div>
@@ -405,7 +405,7 @@ export function WalletPanel() {
           <div className="bg-sol-dark p-4 rounded-lg border border-sol-border overflow-x-auto relative group">
              <button 
                 onClick={() => copyToClipboard(`curl https://api.aifuel.fun/v1/chat/completions ...`, 'curl')} 
-                className="absolute top-3 right-3 p-1.5 text-gray-500 hover:text-sol-text bg-sol-dark-lighter hover:bg-gray-700 rounded opacity-0 group-hover:opacity-100 transition-opacity"
+                className="absolute top-3 right-3 p-1.5 text-sol-text-muted hover:text-sol-text bg-sol-dark-lighter hover:bg-gray-700 rounded opacity-0 group-hover:opacity-100 transition-opacity"
              >
                 <Copy className="h-3 w-3" />
              </button>
@@ -429,13 +429,13 @@ function StatCard({ label, value, sub, highlight = false, valueColor = "text-sol
   return (
     <div className={`bg-sol-dark-card border border-sol-border rounded-xl p-4 md:p-5 flex flex-col justify-between min-h-[120px] ${highlight ? 'border-primary/30' : ''}`}>
       <div className="flex justify-between items-start mb-2">
-        <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider">{label}</span>
+        <span className="text-xs font-semibold text-sol-text-muted uppercase tracking-wider">{label}</span>
         {icon && <div className={`p-1.5 rounded-md ${highlight ? 'bg-purple-900/20 text-primary' : 'bg-sol-dark-lighter text-sol-text-muted'}`}>{icon}</div>}
         {action && <div className="text-sol-text-muted hover:text-sol-text transition-colors">{action}</div>}
       </div>
       <div>
         <div className={`text-2xl md:text-3xl font-bold font-mono tracking-tight ${valueColor}`}>{value}</div>
-        <div className={`text-xs mt-1 ${highlight ? 'text-primary' : 'text-gray-500'}`}>{sub}</div>
+        <div className={`text-xs mt-1 ${highlight ? 'text-primary' : 'text-sol-text-muted'}`}>{sub}</div>
       </div>
     </div>
   )
