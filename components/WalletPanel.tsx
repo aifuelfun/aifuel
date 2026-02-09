@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback, useRef } from 'react'
 import { useWallet } from '@solana/wallet-adapter-react'
 import { Copy, Check, RefreshCw, LogOut, Key, Flame, Zap, TrendingUp, Clock, Diamond, ExternalLink, AlertTriangle } from 'lucide-react'
 import { useLocale } from '@/lib/LocaleContext'
-import { API_BASE_URL } from '@/lib/constants'
+import { API_BASE_URL, TOKEN_CA } from '@/lib/constants'
 import { shortenAddress, formatUSD, formatNumber } from '@/lib/utils'
 import bs58 from 'bs58'
 
