@@ -93,11 +93,11 @@ export default function DocsPage() {
 
   const CodeBlock = ({ code, language, id }: { code: string; language: string; id: string }) => (
     <div className="relative bg-dark rounded-lg overflow-hidden">
-      <div className="flex items-center justify-between px-4 py-2 bg-dark-light border-b border-gray-800">
-        <span className="text-xs text-gray-400">{language}</span>
+      <div className="flex items-center justify-between px-4 py-2 bg-dark-lighter border-b border-border">
+        <span className="text-xs text-text-muted">{language}</span>
         <button
           onClick={() => copyCode(code, id)}
-          className="p-1 text-gray-400 hover:text-white transition"
+          className="p-1 text-text-muted hover:text-text transition"
         >
           {copiedCode === id ? (
             <Check className="h-4 w-4 text-green-400" />
@@ -107,7 +107,7 @@ export default function DocsPage() {
         </button>
       </div>
       <pre className="p-4 overflow-x-auto text-sm">
-        <code className="text-gray-300">{code}</code>
+        <code className="text-text">{code}</code>
       </pre>
     </div>
   )

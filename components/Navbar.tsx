@@ -66,9 +66,6 @@ export const Navbar: FC<Props> = ({ locale, setLocale, t }) => {
             <a href="/#features" onClick={(e) => handleAnchorClick(e, 'features')} className="text-text-muted hover:text-primary transition cursor-pointer">
               {t('features')}
             </a>
-            <a href="/#pricing" onClick={(e) => handleAnchorClick(e, 'pricing')} className="text-text-muted hover:text-primary transition cursor-pointer">
-              {t('pricing')}
-            </a>
             <Link href="/docs" className="text-text-muted hover:text-primary transition">
               {t('docs')}
             </Link>
@@ -110,9 +107,6 @@ export const Navbar: FC<Props> = ({ locale, setLocale, t }) => {
             <div className="flex flex-col gap-4">
               <a href="/#features" onClick={(e) => handleAnchorClick(e, 'features')} className="text-text-muted hover:text-primary transition cursor-pointer">
                 {t('features')}
-              </a>
-              <a href="/#pricing" onClick={(e) => handleAnchorClick(e, 'pricing')} className="text-text-muted hover:text-primary transition cursor-pointer">
-                {t('pricing')}
               </a>
               <Link href="/docs" className="text-text-muted hover:text-primary transition">
                 {t('docs')}

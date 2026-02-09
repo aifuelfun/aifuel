@@ -29,7 +29,7 @@ export default function Home() {
     <div className="min-h-screen text-text">
       
       {/* Hero Section */}
-      <section className="relative pt-32 pb-24 px-4 overflow-hidden bg-dark">
+      <section className="relative pt-32 pb-12 px-4 overflow-hidden bg-dark">
         <div className="max-w-5xl mx-auto text-center relative z-10">
           
           <h1 className="text-4xl md:text-6xl font-bold tracking-tight mb-8 leading-tight">
@@ -74,7 +74,7 @@ export default function Home() {
       </section>
 
       {/* Models Grid - Solid Dark */}
-      <section className="py-24 bg-dark">
+      <section className="py-16 bg-dark">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-end justify-between mb-10">
             <div>
