@@ -2,9 +2,9 @@
 
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { useWallet } from '@solana/wallet-adapter-react'
-import { Copy, Check, RefreshCw, LogOut, Key, Flame, Zap, TrendingUp, Clock, Diamond, ExternalLink } from 'lucide-react'
+import { Copy, Check, RefreshCw, LogOut, Key, Flame, Zap, TrendingUp, Clock, Diamond, ExternalLink, AlertTriangle } from 'lucide-react'
 import { useLocale } from '@/lib/LocaleContext'
-import { API_BASE_URL, CIRCULATING_SUPPLY, DAILY_CREDIT_POOL, TOKEN_CA } from '@/lib/constants'
+import { API_BASE_URL } from '@/lib/constants'
 import { shortenAddress, formatUSD, formatNumber } from '@/lib/utils'
 import bs58 from 'bs58'
 
@@ -19,7 +19,6 @@ const clearToken = () => typeof window !== 'undefined' && localStorage.removeIte
 
 const getStoredApiKey = () => typeof window !== 'undefined' ? localStorage.getItem(API_KEY_STORAGE) : null
 const setStoredApiKey = (k: string) => typeof window !== 'undefined' && localStorage.setItem(API_KEY_STORAGE, k)
-const clearStoredApiKey = () => typeof window !== 'undefined' && localStorage.removeItem(API_KEY_STORAGE)
 
 const getStoredWallet = () => typeof window !== 'undefined' ? localStorage.getItem(WALLET_KEY) : null
 const setStoredWallet = (w: string) => typeof window !== 'undefined' && localStorage.setItem(WALLET_KEY, w)
@@ -38,7 +37,6 @@ interface CreditsData {
   remaining: number
   multiplier: number
   isDiamondHands: boolean
-  resetsAt: string
 }
 
 interface ApiKeyData {
@@ -78,40 +76,33 @@ export function WalletPanel() {
     return data
   }
 
-  // Authenticate with backend (sign once)
+  // Authenticate
   const authenticate = useCallback(async (): Promise<boolean> => {
     if (!publicKey || !signMessage) return false
     
     const wallet = publicKey.toBase58()
-    
-    // Already attempted for this wallet in this session?
     if (authAttemptedRef.current === wallet) return false
     authAttemptedRef.current = wallet
     
-    // Clear old data if wallet changed
     const storedWallet = getStoredWallet()
     if (storedWallet && storedWallet !== wallet) {
       clearAllData()
     }
     
-    // Already have token for this wallet?
     if (getToken() && storedWallet === wallet) {
       return true
     }
     
     try {
-      // Get nonce
       const { message } = await apiCall('/v1/auth/nonce', {
         method: 'POST',
         body: JSON.stringify({ wallet }),
       })
       
-      // Sign message
       const messageBytes = new TextEncoder().encode(message)
       const signatureBytes = await signMessage(messageBytes)
       const signature = bs58.encode(signatureBytes)
       
-      // Connect
       const { token } = await apiCall('/v1/auth/connect', {
         method: 'POST',
         body: JSON.stringify({ wallet, signature, message }),
@@ -156,7 +147,7 @@ export function WalletPanel() {
       const data = await apiCall('/v1/keys', { method: 'POST' })
       setApiKey({ id: data.id, prefix: data.prefix, createdAt: data.createdAt })
       setFullApiKey(data.key)
-      setStoredApiKey(data.key)
+      setStoredApiKey(data.key) // Persist locally!
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to generate key')
     } finally {
@@ -164,7 +155,7 @@ export function WalletPanel() {
     }
   }, [])
 
-  // Main init: authenticate and load data
+  // Init
   useEffect(() => {
     const init = async () => {
       if (!connected || !publicKey) {
@@ -175,27 +166,27 @@ export function WalletPanel() {
       setLoading(true)
       setError(null)
       
-      // Authenticate (if needed)
       const authOk = await authenticate()
       if (!authOk) {
         setLoading(false)
         return
       }
       
-      // Load credits and API key in parallel
       await Promise.all([loadCredits(), loadApiKey()])
       
-      // Ensure we have full API key stored
+      // Check local storage for FULL key
       const storedKey = getStoredApiKey()
-      if (!storedKey) {
-        await generateApiKey()
+      if (storedKey) {
+        setFullApiKey(storedKey)
+      } else {
+        // If we don't have it, we don't have it. User must regen.
       }
       
       setLoading(false)
     }
     
     init()
-  }, [connected, publicKey, authenticate, loadCredits, loadApiKey, generateApiKey])
+  }, [connected, publicKey, authenticate, loadCredits, loadApiKey])
 
   const copyToClipboard = async (text: string, id: string) => {
     await navigator.clipboard.writeText(text)
@@ -218,33 +209,27 @@ export function WalletPanel() {
     authAttemptedRef.current = null
     clearAllData()
     await disconnect()
-    // Reload page to reset state
     window.location.reload()
   }
 
-  // Not connected? Should not render - caller handles this
-  if (!connected) {
-    return null
-  }
+  if (!connected) return null
 
-  // Loading state
   if (loading) {
     return (
-      <div className="bg-[#12121a] rounded-2xl border border-gray-800 p-8 text-center">
-        <RefreshCw className="h-8 w-8 text-primary animate-spin mx-auto mb-4" />
+      <div className="glass-card rounded-2xl p-8 text-center animate-pulse">
+        <RefreshCw className="h-8 w-8 text-purple-400 animate-spin mx-auto mb-4" />
         <p className="text-gray-400">{t('walletLoading')}</p>
       </div>
     )
   }
 
-  // Error state
   if (error) {
     return (
-      <div className="bg-red-900/20 border border-red-700/30 rounded-xl p-4">
+      <div className="glass-card border-red-500/30 bg-red-900/10 rounded-xl p-4">
         <div className="flex items-center gap-3">
-          <Flame className="h-5 w-5 text-red-600" />
-          <p className="text-red-300">{error}</p>
-          <button onClick={() => setError(null)} className="ml-auto text-red-600 hover:text-red-300">✕</button>
+          <Flame className="h-5 w-5 text-red-500" />
+          <p className="text-red-400">{error}</p>
+          <button onClick={() => setError(null)} className="ml-auto text-red-400 hover:text-red-300">✕</button>
         </div>
       </div>
     )
@@ -255,188 +240,183 @@ export function WalletPanel() {
 
   return (
     <div className="space-y-6">
-      {/* Wallet Card */}
-      <div className="bg-[#12121a] rounded-2xl border border-gray-800 p-6">
+      {/* Wallet Info Card */}
+      <div className="glass-card rounded-2xl p-6">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-full overflow-hidden flex items-center justify-center bg-gray-800">
-              <img src="/logo.webp" alt="AIFuel" className="w-10 h-10 object-contain" />
+            <div className="w-12 h-12 rounded-full overflow-hidden flex items-center justify-center bg-white/10 border border-white/10 shrink-0">
+              <img src="/logo.webp" alt="AIFuel" className="w-8 h-8 object-contain" />
             </div>
-            <div>
+            <div className="min-w-0">
               <div className="flex items-center gap-2">
-                <span className="text-sm text-gray-400">{t('connectedWallet')}</span>
+                <span className="text-xs font-semibold text-gray-400 uppercase tracking-wider">{t('connectedWallet')}</span>
                 {credits?.isDiamondHands && hasTokens && (
-                  <span className="inline-flex items-center gap-1 bg-yellow-100 text-yellow-800 text-xs font-semibold px-2 py-0.5 rounded-full">
+                  <span className="inline-flex items-center gap-1 bg-yellow-500/10 text-yellow-500 border border-yellow-500/20 text-[10px] font-bold px-2 py-0.5 rounded-full">
                     <Diamond className="h-3 w-3" /> {t('diamondHand')}
                   </span>
                 )}
               </div>
               <div className="flex items-center gap-2 mt-1">
-                <code className="text-lg font-mono font-semibold text-white">
+                <code className="text-lg font-mono font-bold text-white truncate">
                   {shortenAddress(address, 6)}
                 </code>
-                <button onClick={() => copyToClipboard(address, 'wallet')} className="p-1.5 hover:bg-gray-800 rounded">
+                <button onClick={() => copyToClipboard(address, 'wallet')} className="p-1.5 hover:bg-white/10 rounded-lg transition-colors">
                   {copiedKey === 'wallet' ? <Check className="h-4 w-4 text-green-400" /> : <Copy className="h-4 w-4 text-gray-500" />}
                 </button>
-                <a href={`https://solscan.io/account/${address}`} target="_blank" rel="noopener noreferrer" className="p-1.5 hover:bg-gray-800 rounded">
+                <a href={`https://solscan.io/account/${address}`} target="_blank" rel="noopener noreferrer" className="p-1.5 hover:bg-white/10 rounded-lg transition-colors">
                   <ExternalLink className="h-4 w-4 text-gray-500" />
                 </a>
               </div>
             </div>
           </div>
-          <button onClick={handleDisconnect} className="inline-flex items-center gap-2 px-4 py-2 border border-gray-700 text-gray-400 rounded-lg hover:bg-gray-800">
+          <button onClick={handleDisconnect} className="inline-flex items-center justify-center gap-2 px-4 py-2 bg-white/5 border border-white/10 text-gray-400 rounded-lg hover:bg-white/10 hover:text-white transition-all text-sm font-medium">
             <LogOut className="h-4 w-4" /> {t('disconnect')}
           </button>
         </div>
       </div>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6">
-        <div className="bg-[#12121a] rounded-xl md:rounded-2xl p-3 md:p-6 border border-gray-800">
-          <div className="flex items-center justify-between mb-2 md:mb-4">
-            <span className="text-gray-400 text-xs md:text-sm">{t('fuelHolding')}</span>
-            <button onClick={refreshBalance} disabled={loadingBalance} className="p-1 hover:bg-gray-800 rounded">
-              <RefreshCw className={`h-3 w-3 md:h-4 md:w-4 text-gray-400 ${loadingBalance ? 'animate-spin' : ''}`} />
-            </button>
-          </div>
-          <p className="text-lg md:text-3xl font-bold text-white">{formatNumber(credits?.balance || 0)}</p>
-          <p className="text-xs md:text-sm text-gray-500 mt-1">
-            {hasTokens ? <span className="text-yellow-600">💎 {Math.round((credits?.multiplier || 1) * 100)}% {t('multiplier')}</span> : <a href={`https://raydium.io/swap/?inputMint=sol&outputMint=${TOKEN_CA}`} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">{t('buyToEarnCredits')}</a>}
-          </p>
-        </div>
-
-        <div className="bg-gradient-to-br from-primary to-primary-dark rounded-xl md:rounded-2xl p-3 md:p-6 text-white">
-          <div className="flex items-center justify-between mb-2 md:mb-4">
-            <span className="text-white/80 text-xs md:text-sm">{t('dailyCredit')}</span>
-            <Zap className="h-4 w-4 md:h-5 md:w-5" />
-          </div>
-          <p className="text-lg md:text-3xl font-bold">{formatUSD(credits?.daily || 0)}</p>
-          <p className="text-xs md:text-sm text-white/80 mt-1">{hasTokens ? `💎 ${t('diamondHand')}` : t('holdToEarn')}</p>
-        </div>
-
-        <div className="bg-[#12121a] rounded-xl md:rounded-2xl p-3 md:p-6 border border-gray-800">
-          <div className="flex items-center justify-between mb-2 md:mb-4">
-            <span className="text-gray-400 text-xs md:text-sm">{t('usedToday')}</span>
-            <TrendingUp className="h-4 w-4 md:h-5 md:w-5 text-blue-500" />
-          </div>
-          <p className="text-lg md:text-3xl font-bold text-white">{formatUSD(credits?.used || 0)}</p>
-          <p className="text-xs md:text-sm text-gray-500 mt-1">{t('ofDaily', { amount: formatUSD(credits?.daily || 0) })}</p>
-        </div>
-
-        <div className="bg-[#12121a] rounded-xl md:rounded-2xl p-3 md:p-6 border border-gray-800">
-          <div className="flex items-center justify-between mb-2 md:mb-4">
-            <span className="text-gray-400 text-xs md:text-sm">{t('remaining')}</span>
-            <Clock className="h-4 w-4 md:h-5 md:w-5 text-green-500" />
-          </div>
-          <p className="text-lg md:text-3xl font-bold text-green-600">{formatUSD(credits?.remaining || 0)}</p>
-          <p className="text-xs md:text-sm text-gray-500 mt-1">{t('resetsAtMidnight')}</p>
-        </div>
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
+        <StatCard 
+          label={t('fuelHolding')} 
+          value={formatNumber(credits?.balance || 0)} 
+          sub={hasTokens ? `💎 +${Math.round((credits?.multiplier || 1) * 100 - 100)}% Bonus` : t('buyToEarnCredits')}
+          action={<button onClick={refreshBalance} disabled={loadingBalance}><RefreshCw className={`h-3 w-3 ${loadingBalance ? 'animate-spin' : ''}`} /></button>}
+        />
+        
+        <StatCard 
+          label={t('dailyCredit')} 
+          value={formatUSD(credits?.daily || 0)} 
+          sub={t('dailyCreditDesc')}
+          highlight 
+          icon={<Zap className="h-4 w-4" />}
+        />
+        
+        <StatCard 
+          label={t('usedToday')} 
+          value={formatUSD(credits?.used || 0)} 
+          sub={t('ofDaily', { amount: formatUSD(credits?.daily || 0) })} 
+          icon={<TrendingUp className="h-4 w-4 text-blue-400" />}
+        />
+        
+        <StatCard 
+          label={t('remaining')} 
+          value={formatUSD(credits?.remaining || 0)} 
+          sub={t('resetsAtMidnight')} 
+          valueColor="text-green-400"
+          icon={<Clock className="h-4 w-4 text-green-400" />}
+        />
       </div>
 
-      {/* No tokens message */}
+      {/* No tokens Warning */}
       {!hasTokens && (
-        <div className="bg-blue-900/20 border border-blue-700/30 rounded-xl p-4">
-          <div className="flex items-center gap-3">
-            <Flame className="h-5 w-5 text-blue-600" />
-            <div className="flex-grow">
-              <p className="font-semibold text-blue-300">{t('noTokens')}</p>
-              <p className="text-sm text-blue-400">{t('buyToUnlock')}</p>
-            </div>
-            <a href={`https://raydium.io/swap/?inputMint=sol&outputMint=${TOKEN_CA}`} target="_blank" rel="noopener noreferrer" className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-500">
-              {t('buyFuel')}
-            </a>
+        <div className="glass-card bg-blue-500/10 border-blue-500/20 rounded-xl p-4 flex flex-col md:flex-row items-center gap-4">
+          <div className="p-3 bg-blue-500/20 rounded-full shrink-0">
+            <Flame className="h-6 w-6 text-blue-400" />
           </div>
+          <div className="flex-grow text-center md:text-left">
+            <p className="font-bold text-blue-100">{t('noTokens')}</p>
+            <p className="text-sm text-blue-300/80">{t('buyToUnlock')}</p>
+          </div>
+          <a href={`https://raydium.io/swap/?inputMint=sol&outputMint=${TOKEN_CA}`} target="_blank" rel="noopener noreferrer" className="px-6 py-2.5 bg-blue-600 hover:bg-blue-500 text-white rounded-lg font-medium transition-colors shadow-lg shadow-blue-900/20 w-full md:w-auto text-center">
+            {t('buyFuel')}
+          </a>
         </div>
       )}
 
-      {/* API Key Section */}
+      {/* API Key Section - REDESIGNED */}
       {hasTokens && (
-        <div className="bg-[#12121a] rounded-2xl border border-gray-800 overflow-hidden">
-          <div className="p-6 border-b border-gray-800">
-            <div className="flex items-center justify-between">
+        <div className="glass-card rounded-2xl overflow-hidden">
+          <div className="p-6 border-b border-white/5 bg-white/5">
+            <div className="flex flex-col md:flex-row items-center justify-between gap-4">
               <div className="flex items-center gap-3">
-                <Key className="h-6 w-6 text-primary" />
+                <div className="p-2 bg-purple-500/20 rounded-lg">
+                  <Key className="h-5 w-5 text-purple-400" />
+                </div>
                 <div>
-                  <h2 className="text-xl font-bold text-white">{t('yourApiKey')}</h2>
-                  <p className="text-sm text-gray-500">{t('endpoint')}: https://api.aifuel.fun/v1</p>
+                  <h2 className="text-lg font-bold text-white">{t('yourApiKey')}</h2>
+                  <p className="text-xs text-gray-500 font-mono mt-0.5">https://api.aifuel.fun/v1</p>
                 </div>
               </div>
-              <button onClick={generateApiKey} disabled={regenerating} className="inline-flex items-center gap-2 px-4 py-2 border border-gray-700 text-gray-400 rounded-lg hover:bg-gray-800 disabled:opacity-50">
-                <RefreshCw className={`h-4 w-4 ${regenerating ? 'animate-spin' : ''}`} /> {t('regenerate')}
+              <button 
+                onClick={generateApiKey} 
+                disabled={regenerating} 
+                className="inline-flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/10 text-gray-300 rounded-lg hover:bg-white/10 hover:text-white disabled:opacity-50 transition-all text-sm font-medium w-full md:w-auto justify-center"
+              >
+                <RefreshCw className={`h-4 w-4 ${regenerating ? 'animate-spin' : ''}`} /> 
+                {t('regenerate')}
               </button>
             </div>
           </div>
 
-          <div className="p-6">
+          <div className="p-6 bg-black/20">
             {fullApiKey ? (
+              // Case 1: Full Key Available
               <div className="space-y-4">
-                <div className="p-4 bg-[#0a0a0f] rounded-lg">
-                  <div className="flex flex-col gap-3">
-                    <code className="text-xs sm:text-sm font-mono text-green-400 break-all select-all" style={{ wordBreak: 'break-all' }}>{fullApiKey}</code>
-                    <button onClick={() => copyToClipboard(fullApiKey, 'apikey')} className="inline-flex items-center justify-center gap-2 px-4 py-2 bg-[#12121a] border border-gray-700 text-gray-300 rounded-lg hover:bg-gray-800 font-medium text-sm">
-                      {copiedKey === 'apikey' ? (
-                        <>
-                          <Check className="h-4 w-4 text-green-400" />
-                          <span className="text-green-400">{t('copied')}</span>
-                        </>
-                      ) : (
-                        <>
-                          <Copy className="h-4 w-4" />
-                          <span>{t('copy')}</span>
-                        </>
-                      )}
-                    </button>
+                <div className="relative group">
+                  <div className="absolute inset-0 bg-purple-500/5 rounded-xl blur-lg group-hover:bg-purple-500/10 transition-colors"></div>
+                  <div className="relative bg-[#0a0a0f] border border-purple-500/30 rounded-xl p-4 flex flex-col gap-3">
+                    <label className="text-[10px] uppercase font-bold text-purple-400 tracking-wider">Secret Key</label>
+                    <div className="flex items-center gap-3">
+                      <code className="flex-1 font-mono text-sm md:text-base text-white break-all">{fullApiKey}</code>
+                      <button 
+                        onClick={() => copyToClipboard(fullApiKey, 'apikey')} 
+                        className="p-2 bg-white/10 hover:bg-white/20 rounded-lg text-white transition-colors shrink-0"
+                      >
+                        {copiedKey === 'apikey' ? <Check className="h-5 w-5 text-green-400" /> : <Copy className="h-5 w-5" />}
+                      </button>
+                    </div>
                   </div>
                 </div>
-                <div className="bg-amber-900/20 border border-amber-700/30 rounded-lg p-3">
-                  <p className="text-sm text-amber-400">{t('apiKeyWarning')}</p>
+                <div className="flex items-start gap-2 text-amber-400/80 bg-amber-900/10 p-3 rounded-lg border border-amber-900/30">
+                  <AlertTriangle className="h-4 w-4 shrink-0 mt-0.5" />
+                  <p className="text-xs leading-relaxed">{t('apiKeyWarning')}</p>
                 </div>
               </div>
             ) : apiKey ? (
+              // Case 2: Only Prefix Available
               <div className="space-y-4">
-                <div className="p-4 bg-[#0a0a0f] rounded-lg">
-                  <div className="flex flex-col gap-3">
-                    <div className="flex flex-col gap-2">
-                      <code className="text-xs sm:text-sm font-mono text-gray-300 break-all select-all" style={{ wordBreak: 'break-all' }}>{apiKey.prefix}</code>
-                      <span className="text-xs text-gray-600">Created {new Date(apiKey.createdAt).toLocaleDateString()}</span>
-                    </div>
-                    <button onClick={() => copyToClipboard(apiKey.prefix, 'apikey')} className="inline-flex items-center justify-center gap-2 px-4 py-2 bg-[#12121a] border border-gray-700 text-gray-300 rounded-lg hover:bg-gray-800 font-medium text-sm">
-                      {copiedKey === 'apikey' ? (
-                        <>
-                          <Check className="h-4 w-4 text-green-400" />
-                          <span className="text-green-400">{t('copied')}</span>
-                        </>
-                      ) : (
-                        <>
-                          <Copy className="h-4 w-4" />
-                          <span>{t('copy')}</span>
-                        </>
-                      )}
-                    </button>
-                  </div>
+                <div className="bg-[#0a0a0f]/50 border border-white/10 rounded-xl p-4 flex flex-col gap-3 opacity-70">
+                   <label className="text-[10px] uppercase font-bold text-gray-500 tracking-wider">Partial Key (Hidden)</label>
+                   <div className="flex items-center gap-3">
+                     <code className="flex-1 font-mono text-sm text-gray-400 break-all">{apiKey.prefix}...******</code>
+                     <button disabled className="p-2 bg-white/5 rounded-lg text-gray-600 cursor-not-allowed">
+                       <Copy className="h-5 w-5" />
+                     </button>
+                   </div>
                 </div>
-                <div className="bg-amber-900/20 border border-amber-700/30 rounded-lg p-3">
-                  <p className="text-sm text-amber-400">{t('apiKeyRegenNote')}</p>
+                <div className="flex items-start gap-2 text-rose-400/80 bg-rose-900/10 p-3 rounded-lg border border-rose-900/30">
+                  <AlertTriangle className="h-4 w-4 shrink-0 mt-0.5" />
+                  <p className="text-xs leading-relaxed">
+                    {t('hiddenKeyWarning') || "For your security, we don't store your full key. Click 'Regenerate' to get a new one."}
+                  </p>
                 </div>
               </div>
             ) : (
+              // Case 3: Loading / No Key
               <div className="text-center py-8">
-                <RefreshCw className="h-8 w-8 text-gray-300 mx-auto mb-4 animate-spin" />
-                <p className="text-gray-500">{t('generatingKey')}</p>
+                <RefreshCw className="h-8 w-8 text-gray-600 mx-auto mb-4 animate-spin" />
+                <p className="text-gray-500 text-sm">Generating secure key...</p>
               </div>
             )}
           </div>
         </div>
       )}
 
-      {/* Quick Start - Desktop only */}
-      {(fullApiKey || apiKey) && hasTokens && (
-        <div className="hidden md:block mt-8 bg-[#0a0a0f] rounded-xl p-4 md:p-6">
-          <h3 className="text-lg font-semibold text-white mb-4">{t('quickStart')}</h3>
-          <div className="bg-gray-900 text-green-400 p-3 md:p-4 rounded-lg overflow-x-auto text-xs md:text-sm">
-            <pre className="font-mono whitespace-pre-wrap md:whitespace-pre">
+      {/* Quick Start Code Snippet - Only if full key available */}
+      {fullApiKey && hasTokens && (
+        <div className="glass-card rounded-xl p-6 hidden md:block">
+          <h3 className="text-sm font-bold text-gray-400 uppercase tracking-wider mb-4">{t('quickStart')}</h3>
+          <div className="bg-[#050508] p-4 rounded-lg border border-white/10 overflow-x-auto relative group">
+             <button 
+                onClick={() => copyToClipboard(`curl https://api.aifuel.fun/v1/chat/completions ...`, 'curl')} 
+                className="absolute top-3 right-3 p-1.5 text-gray-500 hover:text-white bg-white/5 hover:bg-white/10 rounded opacity-0 group-hover:opacity-100 transition-opacity"
+             >
+                <Copy className="h-3 w-3" />
+             </button>
+             <pre className="font-mono text-sm text-gray-300 leading-relaxed">
 {`curl https://api.aifuel.fun/v1/chat/completions \\
-  -H "Authorization: Bearer ${fullApiKey || 'YOUR_API_KEY'}" \\
+  -H "Authorization: Bearer ${fullApiKey}" \\
   -H "Content-Type: application/json" \\
   -d '{
     "model": "gpt-4o-mini",
@@ -446,6 +426,22 @@ export function WalletPanel() {
           </div>
         </div>
       )}
+    </div>
+  )
+}
+
+function StatCard({ label, value, sub, highlight = false, valueColor = "text-white", icon, action }: any) {
+  return (
+    <div className={`glass-card rounded-xl p-4 md:p-5 flex flex-col justify-between min-h-[120px] ${highlight ? 'bg-gradient-to-br from-purple-900/40 to-blue-900/40 border-purple-500/30' : ''}`}>
+      <div className="flex justify-between items-start mb-2">
+        <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider">{label}</span>
+        {icon && <div className={`p-1.5 rounded-md ${highlight ? 'bg-white/10 text-white' : 'bg-white/5 text-gray-400'}`}>{icon}</div>}
+        {action && <div className="text-gray-400 hover:text-white transition-colors">{action}</div>}
+      </div>
+      <div>
+        <div className={`text-2xl md:text-3xl font-bold font-mono tracking-tight ${valueColor}`}>{value}</div>
+        <div className={`text-xs mt-1 ${highlight ? 'text-purple-200' : 'text-gray-500'}`}>{sub}</div>
+      </div>
     </div>
   )
 }

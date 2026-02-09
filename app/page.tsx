@@ -1,16 +1,13 @@
 'use client'
 
-import { useState, useRef } from 'react'
+import { useState } from 'react'
 import { useWallet } from '@solana/wallet-adapter-react'
 import { WalletButton } from '@/components/WalletButton'
 import Link from 'next/link'
-import { Copy, Check, ExternalLink, Zap, Shield, Coins } from 'lucide-react'
-import { TOKEN_CA, MODELS, SOCIAL_LINKS } from '@/lib/constants'
+import { Copy, Check, ExternalLink, Zap, Shield, Coins, ArrowRight } from 'lucide-react'
+import { TOKEN_CA, MODELS } from '@/lib/constants'
 import { useLocale } from '@/lib/LocaleContext'
-import { CountUp } from '@/components'
 import { WalletPanel } from '@/components/WalletPanel'
-import { formatUSD } from '@/lib/utils'
-import { Logo } from '@/components/Logo'
 
 export default function Home() {
   const { connected } = useWallet()
@@ -29,221 +26,181 @@ export default function Home() {
   }
 
   return (
-    <div>
+    <div className="relative min-h-screen text-gray-200 selection:bg-purple-500/30 selection:text-white">
+      {/* Aurora Background */}
+      <div className="fixed inset-0 pointer-events-none z-[-1]">
+        <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] bg-purple-900/20 blur-[120px] rounded-full animate-float"></div>
+        <div className="absolute bottom-[0%] right-[-10%] w-[40%] h-[40%] bg-blue-900/20 blur-[120px] rounded-full animate-float" style={{ animationDelay: '-5s' }}></div>
+      </div>
+
       {/* Hero Section */}
-      <section className="relative overflow-hidden bg-hero-gradient text-white py-24 md:py-32">
-        {/* Enhanced background effects */}
-        <div className="absolute inset-0 opacity-20">
-          <div className="absolute top-20 left-10 w-72 h-72 bg-white rounded-full blur-3xl" />
-          <div className="absolute bottom-20 right-10 w-96 h-96 bg-purple-300 rounded-full blur-3xl opacity-30" />
-          <div className="absolute top-1/2 left-1/2 w-96 h-96 bg-blue-300 rounded-full blur-3xl opacity-20 -translate-x-1/2 -translate-y-1/2" />
-        </div>
-        
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-4xl md:text-6xl font-bold mb-6">
-            {t('heroTitle')}
+      <section className="relative pt-32 pb-24 px-4 overflow-hidden">
+        <div className="max-w-5xl mx-auto text-center relative z-10">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-xs font-medium text-purple-300 mb-8 backdrop-blur-sm">
+            <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span>
+            AIFuel is Live on Solana
+          </div>
+          
+          <h1 className="text-5xl md:text-7xl font-bold tracking-tight mb-8 leading-tight">
+            <span className="block text-white drop-shadow-lg">{t('heroTitle')}</span>
           </h1>
-          <p className="text-xl md:text-2xl text-white/90 mb-8 max-w-3xl mx-auto">
+          
+          <p className="text-xl md:text-2xl text-gray-400 mb-10 max-w-2xl mx-auto font-light leading-relaxed">
             {t('heroDesc')}
           </p>
           
           {/* CTA Buttons */}
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-8">
-            {connected ? (
-              <>
-                <div className="text-white/80 mb-2 sm:mb-0 sm:mr-4">
-                  {t('walletConnected')}
-                </div>
-              </>
-            ) : (
-              <WalletButton className="!bg-transparent !border-2 !border-white hover:!bg-white/10 !text-sm !w-48 !justify-center" />
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12">
+            {!connected && (
+              <div className="scale-110 shadow-lg shadow-purple-500/20 rounded-lg">
+                <WalletButton className="!bg-white !text-black !border-0 !h-12 !px-8 !font-bold hover:!opacity-90 transition-opacity" />
+              </div>
             )}
-            <a href={`https://raydium.io/swap/?inputMint=sol&outputMint=${TOKEN_CA}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center gap-2 px-6 py-3 border-2 border-white/30 hover:border-white bg-white/5 text-white font-medium rounded-lg transition hover:bg-white/15 text-sm w-48 backdrop-blur-sm">
-              {t('buyFuel')} <ExternalLink className="h-4 w-4" />
+            
+            <a href={`https://raydium.io/swap/?inputMint=sol&outputMint=${TOKEN_CA}`} target="_blank" rel="noopener noreferrer" 
+               className="flex items-center gap-2 px-8 py-3 bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 text-white rounded-lg transition-all font-medium backdrop-blur-sm group">
+              {t('buyFuel')} 
+              <ExternalLink className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
             </a>
           </div>
 
-          {/* Show WalletPanel if connected */}
+          {/* Wallet Panel (Floats here if connected) */}
           {connected && (
-            <div className="mt-8 max-w-4xl mx-auto">
+            <div className="mt-8 mb-16 max-w-4xl mx-auto animate-fade-in-up">
               <WalletPanel />
             </div>
           )}
 
-          {/* CA Address */}
-          <div className="mt-8 mx-auto w-full max-w-2xl bg-white/10 backdrop-blur-sm px-4 md:px-6 py-3 md:py-4 rounded-lg text-center">
-            <span className="text-sm md:text-base text-white/70 font-medium">{t('caAddress')}</span>
-            <div className="flex items-center justify-center gap-2 md:gap-3 mt-2">
-              <code className="text-xs md:text-base font-mono text-yellow-300 break-all">
-                {TOKEN_CA}
-              </code>
-              <button 
-                onClick={copyCA}
-                className="shrink-0 p-1.5 md:p-2 hover:bg-white/20 rounded transition"
-                title={t('copyCa')}
-              >
-                {caCopied ? <Check className="h-4 md:h-5 w-4 md:w-5 text-green-400" /> : <Copy className="h-4 md:h-5 w-4 md:w-5 text-white/60" />}
-              </button>
-            </div>
+          {/* CA Address - Ultra Clean */}
+          <div className="mt-12 inline-flex items-center gap-3 bg-white/5 border border-white/10 backdrop-blur-md rounded-full pl-5 pr-2 py-2 group hover:border-purple-500/30 transition-colors cursor-pointer" onClick={copyCA}>
+            <span className="text-gray-400 text-sm font-medium">CA:</span>
+            <code className="font-mono text-purple-300 text-sm tracking-wide">
+              {TOKEN_CA.slice(0, 4)}...{TOKEN_CA.slice(-4)}
+            </code>
+            <button className="p-2 bg-white/5 hover:bg-white/10 rounded-full text-gray-300 transition-colors">
+              {caCopied ? <Check className="w-4 h-4 text-green-400" /> : <Copy className="w-4 h-4" />}
+            </button>
           </div>
         </div>
       </section>
 
-      {/* Features Section */}
-      <section id="features" className="py-24 bg-[#0a0a0f]">
+      {/* Models Grid - Glass Cards */}
+      <section className="py-24 relative">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-white mb-4">
-              {t('whyAIFuel')}
-            </h2>
-            <p className="text-xl text-gray-400 max-w-2xl mx-auto">
-              {t('whyAIFuelDesc')}
-            </p>
+          <div className="flex items-end justify-between mb-10">
+            <div>
+              <h2 className="text-3xl font-bold text-white mb-2">{t('modelsTitle')}</h2>
+              <p className="text-gray-400">{t('modelsDesc')}</p>
+            </div>
+            <Link href="/models" className="hidden md:flex items-center gap-2 text-purple-400 hover:text-purple-300 transition text-sm font-medium group">
+              {t('viewAllModels')} <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+            </Link>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8">
-            <div className="bg-[#12121a] rounded-2xl p-8 border border-gray-800 card-hover feature-card-1">
-              <div className="w-12 h-12 rounded-xl icon-bg-1 flex items-center justify-center mb-4">
-                <Zap className="h-6 w-6 text-primary" />
-              </div>
-              <h3 className="text-xl font-bold text-white mb-2">{t('feature1Title')}</h3>
-              <p className="text-gray-400">
-                {t('feature1Desc')}
-              </p>
-            </div>
-            
-            <div className="bg-[#12121a] rounded-2xl p-8 border border-gray-800 card-hover feature-card-2">
-              <div className="w-12 h-12 rounded-xl icon-bg-2 flex items-center justify-center mb-4">
-                <Shield className="h-6 w-6 text-blue-400" />
-              </div>
-              <h3 className="text-xl font-bold text-white mb-2">{t('feature2Title')}</h3>
-              <p className="text-gray-400">
-                {t('feature2Desc')}
-              </p>
-            </div>
-            
-            <div className="bg-[#12121a] rounded-2xl p-8 border border-gray-800 card-hover feature-card-3">
-              <div className="w-12 h-12 rounded-xl icon-bg-3 flex items-center justify-center mb-4">
-                <Coins className="h-6 w-6 text-green-400" />
-              </div>
-              <h3 className="text-xl font-bold text-white mb-2">{t('feature3Title')}</h3>
-              <p className="text-gray-400">
-                {t('feature3Desc')}
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Models Preview Section */}
-      <section className="py-24 bg-[#0e0e16]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-white mb-4">{t('modelsTitle')}</h2>
-            <p className="text-xl text-gray-400">{t('modelsDesc')}</p>
-          </div>
-          
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
             {MODELS.slice(0, 8).map((model, idx) => (
-              <div key={model.id} className="bg-[#12121a] rounded-xl p-6 text-center border border-gray-800 card-hover group relative overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-r from-primary/0 to-purple-400/0 group-hover:from-primary/5 group-hover:to-purple-400/5 transition-all duration-300" />
-                <div className="relative z-10">
-                  <p className="font-semibold text-white">{model.name}</p>
-                  <p className="text-sm text-gray-500">{model.provider}</p>
-                  {idx < 4 && <span className="inline-block mt-2 px-2 py-1 bg-primary/10 text-primary text-xs font-semibold rounded">⭐ Popular</span>}
+              <div key={model.id} className="glass-card rounded-xl p-5 relative group overflow-hidden">
+                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-purple-500 to-blue-500 opacity-0 group-hover:opacity-100 transition-opacity" />
+                
+                <div className="flex items-center justify-between mb-3">
+                  <div className="px-2 py-0.5 rounded text-[10px] font-mono bg-white/5 text-gray-400 border border-white/5 truncate max-w-[120px]">
+                    {model.provider}
+                  </div>
+                  {idx < 2 && <span className="w-2 h-2 rounded-full bg-green-500 shadow-[0_0_10px_rgba(34,197,94,0.5)]"></span>}
+                </div>
+                
+                <h3 className="text-lg font-semibold text-white mb-1 group-hover:text-purple-300 transition-colors truncate">{model.name}</h3>
+                <p className="text-xs text-gray-500 font-mono mb-4">{model.id}</p>
+                
+                <div className="flex items-center justify-between text-xs mt-auto">
+                   <span className="text-gray-400">In: <span className="text-white">${model.inputPrice}</span></span>
+                   <span className="text-gray-400">Out: <span className="text-white">${model.outputPrice}</span></span>
                 </div>
               </div>
             ))}
           </div>
-          
-          <div className="text-center mt-8">
-            <Link href="/models" className="inline-flex items-center gap-2 text-primary hover:text-primary-dark font-medium">
-              {t('viewAllModels')} <ExternalLink className="h-4 w-4" />
+
+          <div className="mt-8 text-center md:hidden">
+            <Link href="/models" className="inline-flex items-center gap-2 text-purple-400 transition text-sm font-medium">
+              {t('viewAllModels')} <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
         </div>
       </section>
 
-      {/* Pricing/How it works */}
-      <section id="pricing" className="py-24 bg-[#0a0a0f]">
+      {/* Features - Minimalist */}
+      <section id="features" className="py-24 border-t border-white/5">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-white mb-4">{t('howItWorks')}</h2>
-            <p className="text-xl text-gray-400">{t('threeSteps')}</p>
+            <h2 className="text-3xl font-bold text-white mb-4">{t('whyAIFuel')}</h2>
+            <p className="text-gray-400 max-w-2xl mx-auto">{t('whyAIFuelDesc')}</p>
           </div>
-          
-          <div className="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto relative">
-            {/* Connection lines */}
-            <div className="hidden md:block absolute top-1/2 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-primary/30 to-transparent -translate-y-1/2" />
-            
-            <div className="bg-[#12121a] rounded-2xl p-8 border border-gray-800 step-card text-center relative z-10">
-              <div className="step-number w-16 h-16 rounded-full text-white text-2xl font-bold flex items-center justify-center mx-auto mb-4">1</div>
-              <h3 className="text-xl font-bold text-white mb-2">{t('step1Title')}</h3>
-              <p className="text-gray-400">{t('step1Desc')}</p>
-            </div>
-            
-            <div className="bg-[#12121a] rounded-2xl p-8 border border-gray-800 step-card text-center relative z-10">
-              <div className="step-number w-16 h-16 rounded-full text-white text-2xl font-bold flex items-center justify-center mx-auto mb-4">2</div>
-              <h3 className="text-xl font-bold text-white mb-2">{t('step2Title')}</h3>
-              <p className="text-gray-400">{t('step2Desc')}</p>
-            </div>
-            
-            <div className="bg-[#12121a] rounded-2xl p-8 border border-gray-800 step-card text-center relative z-10">
-              <div className="step-number w-16 h-16 rounded-full text-white text-2xl font-bold flex items-center justify-center mx-auto mb-4">3</div>
-              <h3 className="text-xl font-bold text-white mb-2">{t('step3Title')}</h3>
-              <p className="text-gray-400">{t('step3Desc')}</p>
-            </div>
+
+          <div className="grid md:grid-cols-3 gap-6">
+            <FeatureCard 
+              icon={<Zap className="w-6 h-6 text-yellow-400" />}
+              title={t('feature1Title')}
+              desc={t('feature1Desc')}
+            />
+            <FeatureCard 
+              icon={<Shield className="w-6 h-6 text-purple-400" />}
+              title={t('feature2Title')}
+              desc={t('feature2Desc')}
+            />
+            <FeatureCard 
+              icon={<Coins className="w-6 h-6 text-green-400" />}
+              title={t('feature3Title')}
+              desc={t('feature3Desc')}
+            />
           </div>
         </div>
       </section>
 
-      {/* FAQ Section */}
-      <section className="py-24 bg-[#0e0e16]">
-        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold text-white mb-8 text-center">{t('faq')}</h2>
+      {/* FAQ - Accordion */}
+      <section className="py-24 border-t border-white/5 bg-black/20">
+        <div className="max-w-3xl mx-auto px-4 md:px-0">
+          <h2 className="text-3xl font-bold text-white mb-10 text-center">{t('faq')}</h2>
           
-          <div className="space-y-4">
+          <div className="space-y-3">
             {[
-              {
-                q: t('faq1Q'),
-                a: t('faq1A'),
-              },
-              {
-                q: t('faq2Q'),
-                a: t('faq2A'),
-              },
-              {
-                q: t('faq3Q'),
-                a: t('faq3A'),
-              },
-              {
-                q: t('faq4Q'),
-                a: t('faq4A'),
-              },
-              {
-                q: t('faq5Q'),
-                a: t('faq5A'),
-              },
+              { q: t('faq1Q'), a: t('faq1A') },
+              { q: t('faq2Q'), a: t('faq2A') },
+              { q: t('faq3Q'), a: t('faq3A') },
+              { q: t('faq4Q'), a: t('faq4A') },
+              { q: t('faq5Q'), a: t('faq5A') },
             ].map((faq, idx) => (
-              <div key={idx} className={`faq-item bg-[#12121a] rounded-xl border border-gray-800 transition-all ${openFaq === idx ? 'open ring-2 ring-primary/30' : ''}`}>
+              <div key={idx} className={`glass-card rounded-lg overflow-hidden transition-all duration-300 ${openFaq === idx ? 'bg-white/5 border-purple-500/30' : 'hover:bg-white/5'}`}>
                 <button
                   onClick={() => toggleFaq(idx)}
-                  className="w-full px-6 py-4 text-left flex items-center justify-between hover:bg-[#16161f] rounded-t-xl"
+                  className="w-full px-6 py-5 text-left flex items-center justify-between group"
                 >
-                  <span className="font-semibold text-white">{faq.q}</span>
-                  <span className={`text-primary text-xl transition-transform ${openFaq === idx ? 'rotate-45' : ''}`}>+</span>
+                  <span className={`font-medium transition ${openFaq === idx ? 'text-white' : 'text-gray-300'}`}>{faq.q}</span>
+                  <span className={`text-gray-500 text-xl transition-transform duration-300 ${openFaq === idx ? 'rotate-45 text-purple-400' : ''}`}>+</span>
                 </button>
-                {openFaq === idx && (
-                  <div className="px-6 pb-4 animate-fade-in border-t border-gray-800">
-                    <p className="text-gray-400">{faq.a}</p>
+                <div 
+                  className={`grid transition-all duration-300 ease-in-out ${openFaq === idx ? 'grid-rows-[1fr] opacity-100 pb-5' : 'grid-rows-[0fr] opacity-0'}`}
+                >
+                  <div className="overflow-hidden px-6">
+                    <p className="text-gray-400 leading-relaxed text-sm">{faq.a}</p>
                   </div>
-                )}
+                </div>
               </div>
             ))}
           </div>
         </div>
       </section>
+    </div>
+  )
+}
 
+function FeatureCard({ icon, title, desc }: { icon: any, title: string, desc: string }) {
+  return (
+    <div className="glass-card p-8 rounded-2xl md:min-h-[240px] flex flex-col justify-center text-center hover:bg-white/5 transition duration-300">
+      <div className="w-12 h-12 rounded-full bg-white/5 border border-white/10 flex items-center justify-center mx-auto mb-6 shadow-inner">
+        {icon}
+      </div>
+      <h3 className="text-lg font-bold text-white mb-3">{title}</h3>
+      <p className="text-gray-400 text-sm leading-relaxed">{desc}</p>
     </div>
   )
 }
