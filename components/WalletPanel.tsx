@@ -230,9 +230,9 @@ export function WalletPanel() {
   // Loading state
   if (loading) {
     return (
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 text-center">
+      <div className="bg-[#12121a] rounded-2xl border border-gray-800 p-8 text-center">
         <RefreshCw className="h-8 w-8 text-primary animate-spin mx-auto mb-4" />
-        <p className="text-gray-600">{t('walletLoading')}</p>
+        <p className="text-gray-400">{t('walletLoading')}</p>
       </div>
     )
   }
@@ -240,11 +240,11 @@ export function WalletPanel() {
   // Error state
   if (error) {
     return (
-      <div className="bg-red-50 border border-red-200 rounded-xl p-4">
+      <div className="bg-red-900/20 border border-red-700/30 rounded-xl p-4">
         <div className="flex items-center gap-3">
           <Flame className="h-5 w-5 text-red-600" />
-          <p className="text-red-800">{error}</p>
-          <button onClick={() => setError(null)} className="ml-auto text-red-600 hover:text-red-800">✕</button>
+          <p className="text-red-300">{error}</p>
+          <button onClick={() => setError(null)} className="ml-auto text-red-600 hover:text-red-300">✕</button>
         </div>
       </div>
     )
@@ -256,15 +256,15 @@ export function WalletPanel() {
   return (
     <div className="space-y-6">
       {/* Wallet Card */}
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+      <div className="bg-[#12121a] rounded-2xl border border-gray-800 p-6">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-full overflow-hidden flex items-center justify-center bg-gray-100">
+            <div className="w-12 h-12 rounded-full overflow-hidden flex items-center justify-center bg-gray-800">
               <img src="/logo.webp" alt="AIFuel" className="w-10 h-10 object-contain" />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <span className="text-sm text-gray-500">{t('connectedWallet')}</span>
+                <span className="text-sm text-gray-400">{t('connectedWallet')}</span>
                 {credits?.isDiamondHands && hasTokens && (
                   <span className="inline-flex items-center gap-1 bg-yellow-100 text-yellow-800 text-xs font-semibold px-2 py-0.5 rounded-full">
                     <Diamond className="h-3 w-3" /> {t('diamondHand')}
@@ -272,19 +272,19 @@ export function WalletPanel() {
                 )}
               </div>
               <div className="flex items-center gap-2 mt-1">
-                <code className="text-lg font-mono font-semibold text-gray-900">
+                <code className="text-lg font-mono font-semibold text-white">
                   {shortenAddress(address, 6)}
                 </code>
-                <button onClick={() => copyToClipboard(address, 'wallet')} className="p-1.5 hover:bg-gray-100 rounded">
-                  {copiedKey === 'wallet' ? <Check className="h-4 w-4 text-green-600" /> : <Copy className="h-4 w-4 text-gray-400" />}
+                <button onClick={() => copyToClipboard(address, 'wallet')} className="p-1.5 hover:bg-gray-800 rounded">
+                  {copiedKey === 'wallet' ? <Check className="h-4 w-4 text-green-400" /> : <Copy className="h-4 w-4 text-gray-500" />}
                 </button>
-                <a href={`https://solscan.io/account/${address}`} target="_blank" rel="noopener noreferrer" className="p-1.5 hover:bg-gray-100 rounded">
-                  <ExternalLink className="h-4 w-4 text-gray-400" />
+                <a href={`https://solscan.io/account/${address}`} target="_blank" rel="noopener noreferrer" className="p-1.5 hover:bg-gray-800 rounded">
+                  <ExternalLink className="h-4 w-4 text-gray-500" />
                 </a>
               </div>
             </div>
           </div>
-          <button onClick={handleDisconnect} className="inline-flex items-center gap-2 px-4 py-2 border border-gray-200 text-gray-600 rounded-lg hover:bg-gray-50">
+          <button onClick={handleDisconnect} className="inline-flex items-center gap-2 px-4 py-2 border border-gray-700 text-gray-400 rounded-lg hover:bg-gray-800">
             <LogOut className="h-4 w-4" /> {t('disconnect')}
           </button>
         </div>
@@ -292,14 +292,14 @@ export function WalletPanel() {
 
       {/* Stats Grid */}
       <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6">
-        <div className="bg-white rounded-xl md:rounded-2xl p-3 md:p-6 shadow-sm border border-gray-100">
+        <div className="bg-[#12121a] rounded-xl md:rounded-2xl p-3 md:p-6 border border-gray-800">
           <div className="flex items-center justify-between mb-2 md:mb-4">
-            <span className="text-gray-500 text-xs md:text-sm">{t('fuelHolding')}</span>
-            <button onClick={refreshBalance} disabled={loadingBalance} className="p-1 hover:bg-gray-100 rounded">
+            <span className="text-gray-400 text-xs md:text-sm">{t('fuelHolding')}</span>
+            <button onClick={refreshBalance} disabled={loadingBalance} className="p-1 hover:bg-gray-800 rounded">
               <RefreshCw className={`h-3 w-3 md:h-4 md:w-4 text-gray-400 ${loadingBalance ? 'animate-spin' : ''}`} />
             </button>
           </div>
-          <p className="text-lg md:text-3xl font-bold text-gray-900">{formatNumber(credits?.balance || 0)}</p>
+          <p className="text-lg md:text-3xl font-bold text-white">{formatNumber(credits?.balance || 0)}</p>
           <p className="text-xs md:text-sm text-gray-500 mt-1">
             {hasTokens ? <span className="text-yellow-600">💎 {Math.round((credits?.multiplier || 1) * 100)}% {t('multiplier')}</span> : <a href={`https://raydium.io/swap/?inputMint=sol&outputMint=${TOKEN_CA}`} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">{t('buyToEarnCredits')}</a>}
           </p>
@@ -314,18 +314,18 @@ export function WalletPanel() {
           <p className="text-xs md:text-sm text-white/80 mt-1">{hasTokens ? `💎 ${t('diamondHand')}` : t('holdToEarn')}</p>
         </div>
 
-        <div className="bg-white rounded-xl md:rounded-2xl p-3 md:p-6 shadow-sm border border-gray-100">
+        <div className="bg-[#12121a] rounded-xl md:rounded-2xl p-3 md:p-6 border border-gray-800">
           <div className="flex items-center justify-between mb-2 md:mb-4">
-            <span className="text-gray-500 text-xs md:text-sm">{t('usedToday')}</span>
+            <span className="text-gray-400 text-xs md:text-sm">{t('usedToday')}</span>
             <TrendingUp className="h-4 w-4 md:h-5 md:w-5 text-blue-500" />
           </div>
-          <p className="text-lg md:text-3xl font-bold text-gray-900">{formatUSD(credits?.used || 0)}</p>
+          <p className="text-lg md:text-3xl font-bold text-white">{formatUSD(credits?.used || 0)}</p>
           <p className="text-xs md:text-sm text-gray-500 mt-1">{t('ofDaily', { amount: formatUSD(credits?.daily || 0) })}</p>
         </div>
 
-        <div className="bg-white rounded-xl md:rounded-2xl p-3 md:p-6 shadow-sm border border-gray-100">
+        <div className="bg-[#12121a] rounded-xl md:rounded-2xl p-3 md:p-6 border border-gray-800">
           <div className="flex items-center justify-between mb-2 md:mb-4">
-            <span className="text-gray-500 text-xs md:text-sm">{t('remaining')}</span>
+            <span className="text-gray-400 text-xs md:text-sm">{t('remaining')}</span>
             <Clock className="h-4 w-4 md:h-5 md:w-5 text-green-500" />
           </div>
           <p className="text-lg md:text-3xl font-bold text-green-600">{formatUSD(credits?.remaining || 0)}</p>
@@ -335,14 +335,14 @@ export function WalletPanel() {
 
       {/* No tokens message */}
       {!hasTokens && (
-        <div className="bg-blue-50 border border-blue-200 rounded-xl p-4">
+        <div className="bg-blue-900/20 border border-blue-700/30 rounded-xl p-4">
           <div className="flex items-center gap-3">
             <Flame className="h-5 w-5 text-blue-600" />
             <div className="flex-grow">
-              <p className="font-semibold text-blue-800">{t('noTokens')}</p>
-              <p className="text-sm text-blue-700">{t('buyToUnlock')}</p>
+              <p className="font-semibold text-blue-300">{t('noTokens')}</p>
+              <p className="text-sm text-blue-400">{t('buyToUnlock')}</p>
             </div>
-            <a href={`https://raydium.io/swap/?inputMint=sol&outputMint=${TOKEN_CA}`} target="_blank" rel="noopener noreferrer" className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+            <a href={`https://raydium.io/swap/?inputMint=sol&outputMint=${TOKEN_CA}`} target="_blank" rel="noopener noreferrer" className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-500">
               {t('buyFuel')}
             </a>
           </div>
@@ -351,17 +351,17 @@ export function WalletPanel() {
 
       {/* API Key Section */}
       {hasTokens && (
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-          <div className="p-6 border-b border-gray-100">
+        <div className="bg-[#12121a] rounded-2xl border border-gray-800 overflow-hidden">
+          <div className="p-6 border-b border-gray-800">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <Key className="h-6 w-6 text-primary" />
                 <div>
-                  <h2 className="text-xl font-bold text-gray-900">{t('yourApiKey')}</h2>
+                  <h2 className="text-xl font-bold text-white">{t('yourApiKey')}</h2>
                   <p className="text-sm text-gray-500">{t('endpoint')}: https://api.aifuel.fun/v1</p>
                 </div>
               </div>
-              <button onClick={generateApiKey} disabled={regenerating} className="inline-flex items-center gap-2 px-4 py-2 border border-gray-200 text-gray-600 rounded-lg hover:bg-gray-50 disabled:opacity-50">
+              <button onClick={generateApiKey} disabled={regenerating} className="inline-flex items-center gap-2 px-4 py-2 border border-gray-700 text-gray-400 rounded-lg hover:bg-gray-800 disabled:opacity-50">
                 <RefreshCw className={`h-4 w-4 ${regenerating ? 'animate-spin' : ''}`} /> {t('regenerate')}
               </button>
             </div>
@@ -370,14 +370,14 @@ export function WalletPanel() {
           <div className="p-6">
             {fullApiKey ? (
               <div className="space-y-4">
-                <div className="p-4 bg-gray-50 rounded-lg">
+                <div className="p-4 bg-[#0a0a0f] rounded-lg">
                   <div className="flex flex-col gap-3">
-                    <code className="text-sm font-mono text-gray-900 break-all word-break">{fullApiKey}</code>
-                    <button onClick={() => copyToClipboard(fullApiKey, 'apikey')} className="inline-flex items-center justify-center gap-2 px-4 py-2 bg-white border border-gray-200 text-gray-700 rounded-lg hover:bg-gray-100 font-medium text-sm">
+                    <code className="text-xs sm:text-sm font-mono text-green-400 break-all select-all" style={{ wordBreak: 'break-all' }}>{fullApiKey}</code>
+                    <button onClick={() => copyToClipboard(fullApiKey, 'apikey')} className="inline-flex items-center justify-center gap-2 px-4 py-2 bg-[#12121a] border border-gray-700 text-gray-300 rounded-lg hover:bg-gray-800 font-medium text-sm">
                       {copiedKey === 'apikey' ? (
                         <>
-                          <Check className="h-4 w-4 text-green-600" />
-                          <span className="text-green-600">{t('copied')}</span>
+                          <Check className="h-4 w-4 text-green-400" />
+                          <span className="text-green-400">{t('copied')}</span>
                         </>
                       ) : (
                         <>
@@ -388,23 +388,23 @@ export function WalletPanel() {
                     </button>
                   </div>
                 </div>
-                <div className="bg-amber-50 border border-amber-200 rounded-lg p-3">
-                  <p className="text-sm text-amber-800">{t('apiKeyWarning')}</p>
+                <div className="bg-amber-900/20 border border-amber-700/30 rounded-lg p-3">
+                  <p className="text-sm text-amber-400">{t('apiKeyWarning')}</p>
                 </div>
               </div>
             ) : apiKey ? (
               <div className="space-y-4">
-                <div className="p-4 bg-gray-50 rounded-lg">
+                <div className="p-4 bg-[#0a0a0f] rounded-lg">
                   <div className="flex flex-col gap-3">
                     <div className="flex flex-col gap-2">
-                      <code className="text-sm font-mono text-gray-700 break-all">{apiKey.prefix}</code>
-                      <span className="text-xs text-gray-500">Created {new Date(apiKey.createdAt).toLocaleDateString()}</span>
+                      <code className="text-xs sm:text-sm font-mono text-gray-300 break-all select-all" style={{ wordBreak: 'break-all' }}>{apiKey.prefix}</code>
+                      <span className="text-xs text-gray-600">Created {new Date(apiKey.createdAt).toLocaleDateString()}</span>
                     </div>
-                    <button onClick={() => copyToClipboard(apiKey.prefix, 'apikey')} className="inline-flex items-center justify-center gap-2 px-4 py-2 bg-white border border-gray-200 text-gray-700 rounded-lg hover:bg-gray-100 font-medium text-sm">
+                    <button onClick={() => copyToClipboard(apiKey.prefix, 'apikey')} className="inline-flex items-center justify-center gap-2 px-4 py-2 bg-[#12121a] border border-gray-700 text-gray-300 rounded-lg hover:bg-gray-800 font-medium text-sm">
                       {copiedKey === 'apikey' ? (
                         <>
-                          <Check className="h-4 w-4 text-green-600" />
-                          <span className="text-green-600">{t('copied')}</span>
+                          <Check className="h-4 w-4 text-green-400" />
+                          <span className="text-green-400">{t('copied')}</span>
                         </>
                       ) : (
                         <>
@@ -415,8 +415,8 @@ export function WalletPanel() {
                     </button>
                   </div>
                 </div>
-                <div className="bg-amber-50 border border-amber-200 rounded-lg p-3">
-                  <p className="text-sm text-amber-800">{t('apiKeyRegenNote')}</p>
+                <div className="bg-amber-900/20 border border-amber-700/30 rounded-lg p-3">
+                  <p className="text-sm text-amber-400">{t('apiKeyRegenNote')}</p>
                 </div>
               </div>
             ) : (
@@ -431,8 +431,8 @@ export function WalletPanel() {
 
       {/* Quick Start - Desktop only */}
       {(fullApiKey || apiKey) && hasTokens && (
-        <div className="hidden md:block mt-8 bg-gray-50 rounded-xl p-4 md:p-6">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">{t('quickStart')}</h3>
+        <div className="hidden md:block mt-8 bg-[#0a0a0f] rounded-xl p-4 md:p-6">
+          <h3 className="text-lg font-semibold text-white mb-4">{t('quickStart')}</h3>
           <div className="bg-gray-900 text-green-400 p-3 md:p-4 rounded-lg overflow-x-auto text-xs md:text-sm">
             <pre className="font-mono whitespace-pre-wrap md:whitespace-pre">
 {`curl https://api.aifuel.fun/v1/chat/completions \\

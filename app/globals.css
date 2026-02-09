@@ -3,17 +3,9 @@
 @tailwind utilities;
 
 :root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 255, 255, 255;
-  --background-end-rgb: 255, 255, 255;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 26, 26, 46;
-    --background-end-rgb: 26, 26, 46;
-  }
+  --foreground-rgb: 229, 231, 235;
+  --background-start-rgb: 10, 10, 15;
+  --background-end-rgb: 10, 10, 15;
 }
 
 body {
@@ -47,16 +39,16 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-  background: #f1f1f1;
+  background: #12121a;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #FF6B35;
+  background: #333;
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #E55A2B;
+  background: #FF6B35;
 }
 
 /* Animations */
@@ -88,7 +80,7 @@ body {
 
 .card-hover:hover {
   transform: translateY(-4px);
-  box-shadow: 0 20px 40px rgba(255, 107, 53, 0.15);
+  box-shadow: 0 20px 40px rgba(255, 107, 53, 0.1);
 }
 
 /* Feature cards with colored accents */
@@ -124,7 +116,7 @@ body {
 
 .step-card:hover {
   transform: translateY(-8px);
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 20px 50px rgba(255, 107, 53, 0.08);
 }
 
 .step-number {

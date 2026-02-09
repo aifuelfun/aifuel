@@ -71,14 +71,11 @@ export default function Home() {
           )}
 
           {/* CA Address */}
-          <div className="mt-8 w-full max-w-3xl bg-white/10 backdrop-blur-sm px-4 md:px-6 py-3 md:py-4 rounded-lg">
-            <div className="flex items-center gap-2 md:gap-3 mb-2">
-              <span className="text-sm md:text-base text-white/70 shrink-0 whitespace-nowrap font-medium">{t('caAddress')}</span>
-            </div>
-            <div className="flex items-center gap-2 md:gap-3">
-              <code className="text-sm md:text-base font-mono text-yellow-300 break-all flex-1">
-                <span className="hidden sm:inline">{TOKEN_CA}</span>
-                <span className="sm:hidden">{TOKEN_CA.slice(0, 8)}...{TOKEN_CA.slice(-8)}</span>
+          <div className="mt-8 mx-auto w-full max-w-2xl bg-white/10 backdrop-blur-sm px-4 md:px-6 py-3 md:py-4 rounded-lg text-center">
+            <span className="text-sm md:text-base text-white/70 font-medium">{t('caAddress')}</span>
+            <div className="flex items-center justify-center gap-2 md:gap-3 mt-2">
+              <code className="text-xs md:text-base font-mono text-yellow-300 break-all">
+                {TOKEN_CA}
               </code>
               <button 
                 onClick={copyCA}
@@ -93,44 +90,44 @@ export default function Home() {
       </section>
 
       {/* Features Section */}
-      <section id="features" className="py-24 bg-white">
+      <section id="features" className="py-24 bg-[#0a0a0f]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">
+            <h2 className="text-4xl font-bold text-white mb-4">
               {t('whyAIFuel')}
             </h2>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+            <p className="text-xl text-gray-400 max-w-2xl mx-auto">
               {t('whyAIFuelDesc')}
             </p>
           </div>
 
           <div className="grid md:grid-cols-3 gap-8">
-            <div className="bg-white rounded-2xl p-8 shadow-sm border border-gray-200 card-hover feature-card-1">
+            <div className="bg-[#12121a] rounded-2xl p-8 border border-gray-800 card-hover feature-card-1">
               <div className="w-12 h-12 rounded-xl icon-bg-1 flex items-center justify-center mb-4">
                 <Zap className="h-6 w-6 text-primary" />
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-2">{t('feature1Title')}</h3>
-              <p className="text-gray-600">
+              <h3 className="text-xl font-bold text-white mb-2">{t('feature1Title')}</h3>
+              <p className="text-gray-400">
                 {t('feature1Desc')}
               </p>
             </div>
             
-            <div className="bg-white rounded-2xl p-8 shadow-sm border border-gray-200 card-hover feature-card-2">
+            <div className="bg-[#12121a] rounded-2xl p-8 border border-gray-800 card-hover feature-card-2">
               <div className="w-12 h-12 rounded-xl icon-bg-2 flex items-center justify-center mb-4">
-                <Shield className="h-6 w-6 text-blue-600" />
+                <Shield className="h-6 w-6 text-blue-400" />
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-2">{t('feature2Title')}</h3>
-              <p className="text-gray-600">
+              <h3 className="text-xl font-bold text-white mb-2">{t('feature2Title')}</h3>
+              <p className="text-gray-400">
                 {t('feature2Desc')}
               </p>
             </div>
             
-            <div className="bg-white rounded-2xl p-8 shadow-sm border border-gray-200 card-hover feature-card-3">
+            <div className="bg-[#12121a] rounded-2xl p-8 border border-gray-800 card-hover feature-card-3">
               <div className="w-12 h-12 rounded-xl icon-bg-3 flex items-center justify-center mb-4">
-                <Coins className="h-6 w-6 text-green-600" />
+                <Coins className="h-6 w-6 text-green-400" />
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-2">{t('feature3Title')}</h3>
-              <p className="text-gray-600">
+              <h3 className="text-xl font-bold text-white mb-2">{t('feature3Title')}</h3>
+              <p className="text-gray-400">
                 {t('feature3Desc')}
               </p>
             </div>
@@ -139,19 +136,19 @@ export default function Home() {
       </section>
 
       {/* Models Preview Section */}
-      <section className="py-24 bg-gray-50">
+      <section className="py-24 bg-[#0e0e16]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">{t('modelsTitle')}</h2>
-            <p className="text-xl text-gray-600">{t('modelsDesc')}</p>
+            <h2 className="text-4xl font-bold text-white mb-4">{t('modelsTitle')}</h2>
+            <p className="text-xl text-gray-400">{t('modelsDesc')}</p>
           </div>
           
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             {MODELS.slice(0, 8).map((model, idx) => (
-              <div key={model.id} className="bg-white rounded-xl p-6 text-center border border-gray-200 card-hover group relative overflow-hidden">
+              <div key={model.id} className="bg-[#12121a] rounded-xl p-6 text-center border border-gray-800 card-hover group relative overflow-hidden">
                 <div className="absolute inset-0 bg-gradient-to-r from-primary/0 to-purple-400/0 group-hover:from-primary/5 group-hover:to-purple-400/5 transition-all duration-300" />
                 <div className="relative z-10">
-                  <p className="font-semibold text-gray-900">{model.name}</p>
+                  <p className="font-semibold text-white">{model.name}</p>
                   <p className="text-sm text-gray-500">{model.provider}</p>
                   {idx < 4 && <span className="inline-block mt-2 px-2 py-1 bg-primary/10 text-primary text-xs font-semibold rounded">⭐ Popular</span>}
                 </div>
@@ -168,42 +165,42 @@ export default function Home() {
       </section>
 
       {/* Pricing/How it works */}
-      <section id="pricing" className="py-24 bg-white">
+      <section id="pricing" className="py-24 bg-[#0a0a0f]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">{t('howItWorks')}</h2>
-            <p className="text-xl text-gray-600">{t('threeSteps')}</p>
+            <h2 className="text-4xl font-bold text-white mb-4">{t('howItWorks')}</h2>
+            <p className="text-xl text-gray-400">{t('threeSteps')}</p>
           </div>
           
           <div className="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto relative">
             {/* Connection lines */}
             <div className="hidden md:block absolute top-1/2 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-primary/30 to-transparent -translate-y-1/2" />
             
-            <div className="bg-gray-50 rounded-2xl p-8 shadow-sm border border-gray-200 step-card text-center relative z-10">
+            <div className="bg-[#12121a] rounded-2xl p-8 border border-gray-800 step-card text-center relative z-10">
               <div className="step-number w-16 h-16 rounded-full text-white text-2xl font-bold flex items-center justify-center mx-auto mb-4">1</div>
-              <h3 className="text-xl font-bold text-gray-900 mb-2">{t('step1Title')}</h3>
-              <p className="text-gray-600">{t('step1Desc')}</p>
+              <h3 className="text-xl font-bold text-white mb-2">{t('step1Title')}</h3>
+              <p className="text-gray-400">{t('step1Desc')}</p>
             </div>
             
-            <div className="bg-gray-50 rounded-2xl p-8 shadow-sm border border-gray-200 step-card text-center relative z-10">
+            <div className="bg-[#12121a] rounded-2xl p-8 border border-gray-800 step-card text-center relative z-10">
               <div className="step-number w-16 h-16 rounded-full text-white text-2xl font-bold flex items-center justify-center mx-auto mb-4">2</div>
-              <h3 className="text-xl font-bold text-gray-900 mb-2">{t('step2Title')}</h3>
-              <p className="text-gray-600">{t('step2Desc')}</p>
+              <h3 className="text-xl font-bold text-white mb-2">{t('step2Title')}</h3>
+              <p className="text-gray-400">{t('step2Desc')}</p>
             </div>
             
-            <div className="bg-gray-50 rounded-2xl p-8 shadow-sm border border-gray-200 step-card text-center relative z-10">
+            <div className="bg-[#12121a] rounded-2xl p-8 border border-gray-800 step-card text-center relative z-10">
               <div className="step-number w-16 h-16 rounded-full text-white text-2xl font-bold flex items-center justify-center mx-auto mb-4">3</div>
-              <h3 className="text-xl font-bold text-gray-900 mb-2">{t('step3Title')}</h3>
-              <p className="text-gray-600">{t('step3Desc')}</p>
+              <h3 className="text-xl font-bold text-white mb-2">{t('step3Title')}</h3>
+              <p className="text-gray-400">{t('step3Desc')}</p>
             </div>
           </div>
         </div>
       </section>
 
       {/* FAQ Section */}
-      <section className="py-24 bg-white">
+      <section className="py-24 bg-[#0e0e16]">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold text-gray-900 mb-8 text-center">{t('faq')}</h2>
+          <h2 className="text-3xl font-bold text-white mb-8 text-center">{t('faq')}</h2>
           
           <div className="space-y-4">
             {[
@@ -228,17 +225,17 @@ export default function Home() {
                 a: t('faq5A'),
               },
             ].map((faq, idx) => (
-              <div key={idx} className={`faq-item bg-white rounded-xl border border-gray-200 transition-all ${openFaq === idx ? 'open ring-2 ring-primary/30' : ''}`}>
+              <div key={idx} className={`faq-item bg-[#12121a] rounded-xl border border-gray-800 transition-all ${openFaq === idx ? 'open ring-2 ring-primary/30' : ''}`}>
                 <button
                   onClick={() => toggleFaq(idx)}
-                  className="w-full px-6 py-4 text-left flex items-center justify-between hover:bg-gray-50 rounded-t-xl"
+                  className="w-full px-6 py-4 text-left flex items-center justify-between hover:bg-[#16161f] rounded-t-xl"
                 >
-                  <span className="font-semibold text-gray-900">{faq.q}</span>
+                  <span className="font-semibold text-white">{faq.q}</span>
                   <span className={`text-primary text-xl transition-transform ${openFaq === idx ? 'rotate-45' : ''}`}>+</span>
                 </button>
                 {openFaq === idx && (
-                  <div className="px-6 pb-4 animate-fade-in border-t border-gray-100">
-                    <p className="text-gray-600">{faq.a}</p>
+                  <div className="px-6 pb-4 animate-fade-in border-t border-gray-800">
+                    <p className="text-gray-400">{faq.a}</p>
                   </div>
                 )}
               </div>

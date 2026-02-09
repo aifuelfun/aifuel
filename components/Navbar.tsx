@@ -52,27 +52,27 @@ export const Navbar: FC<Props> = ({ locale, setLocale, t }) => {
   }
 
   return (
-    <nav className="fixed w-full top-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-100">
+    <nav className="fixed w-full top-0 z-50 bg-[#0a0a0f]/90 backdrop-blur-md border-b border-gray-800">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2">
             <Logo size={32} />
-            <span className="text-xl font-bold text-gray-900">AIFuel</span>
+            <span className="text-xl font-bold text-white">AIFuel</span>
           </Link>
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center gap-8">
-            <a href="/#features" onClick={(e) => handleAnchorClick(e, 'features')} className="text-gray-600 hover:text-primary transition cursor-pointer">
+            <a href="/#features" onClick={(e) => handleAnchorClick(e, 'features')} className="text-gray-400 hover:text-primary transition cursor-pointer">
               {t('features')}
             </a>
-            <a href="/#pricing" onClick={(e) => handleAnchorClick(e, 'pricing')} className="text-gray-600 hover:text-primary transition cursor-pointer">
+            <a href="/#pricing" onClick={(e) => handleAnchorClick(e, 'pricing')} className="text-gray-400 hover:text-primary transition cursor-pointer">
               {t('pricing')}
             </a>
-            <Link href="/docs" className="text-gray-600 hover:text-primary transition">
+            <Link href="/docs" className="text-gray-400 hover:text-primary transition">
               {t('docs')}
             </Link>
-            <Link href="/models" className="text-gray-600 hover:text-primary transition">
+            <Link href="/models" className="text-gray-400 hover:text-primary transition">
               {t('models')}
             </Link>
           </div>
@@ -97,27 +97,27 @@ export const Navbar: FC<Props> = ({ locale, setLocale, t }) => {
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           >
             {mobileMenuOpen ? (
-              <X className="h-6 w-6 text-gray-600" />
+              <X className="h-6 w-6 text-gray-400" />
             ) : (
-              <Menu className="h-6 w-6 text-gray-600" />
+              <Menu className="h-6 w-6 text-gray-400" />
             )}
           </button>
         </div>
 
         {/* Mobile Navigation */}
         {mobileMenuOpen && (
-          <div className="md:hidden py-4 border-t border-gray-100">
+          <div className="md:hidden py-4 border-t border-gray-800">
             <div className="flex flex-col gap-4">
-              <a href="/#features" onClick={(e) => handleAnchorClick(e, 'features')} className="text-gray-600 hover:text-primary transition cursor-pointer">
+              <a href="/#features" onClick={(e) => handleAnchorClick(e, 'features')} className="text-gray-400 hover:text-primary transition cursor-pointer">
                 {t('features')}
               </a>
-              <a href="/#pricing" onClick={(e) => handleAnchorClick(e, 'pricing')} className="text-gray-600 hover:text-primary transition cursor-pointer">
+              <a href="/#pricing" onClick={(e) => handleAnchorClick(e, 'pricing')} className="text-gray-400 hover:text-primary transition cursor-pointer">
                 {t('pricing')}
               </a>
-              <Link href="/docs" className="text-gray-600 hover:text-primary transition">
+              <Link href="/docs" className="text-gray-400 hover:text-primary transition">
                 {t('docs')}
               </Link>
-              <Link href="/models" className="text-gray-600 hover:text-primary transition">
+              <Link href="/models" className="text-gray-400 hover:text-primary transition">
                 {t('models')}
               </Link>
               <div className="pt-2 flex items-center gap-4">
