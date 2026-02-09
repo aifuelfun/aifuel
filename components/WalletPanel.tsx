@@ -178,8 +178,6 @@ export function WalletPanel() {
       const storedKey = getStoredApiKey()
       if (storedKey) {
         setFullApiKey(storedKey)
-      } else {
-        // If we don't have it, we don't have it. User must regen.
       }
       
       setLoading(false)
@@ -216,7 +214,7 @@ export function WalletPanel() {
 
   if (loading) {
     return (
-      <div className="glass-card rounded-2xl p-8 text-center animate-pulse">
+      <div className="bg-[#12121a] rounded-2xl border border-gray-800 p-8 text-center animate-pulse">
         <RefreshCw className="h-8 w-8 text-purple-400 animate-spin mx-auto mb-4" />
         <p className="text-gray-400">{t('walletLoading')}</p>
       </div>
@@ -225,7 +223,7 @@ export function WalletPanel() {
 
   if (error) {
     return (
-      <div className="glass-card border-red-500/30 bg-red-900/10 rounded-xl p-4">
+      <div className="bg-red-900/10 border border-red-500/30 rounded-xl p-4">
         <div className="flex items-center gap-3">
           <Flame className="h-5 w-5 text-red-500" />
           <p className="text-red-400">{error}</p>
@@ -241,10 +239,10 @@ export function WalletPanel() {
   return (
     <div className="space-y-6">
       {/* Wallet Info Card */}
-      <div className="glass-card rounded-2xl p-6">
+      <div className="bg-[#12121a] rounded-2xl border border-gray-800 p-6">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-full overflow-hidden flex items-center justify-center bg-white/10 border border-white/10 shrink-0">
+            <div className="w-12 h-12 rounded-full overflow-hidden flex items-center justify-center bg-gray-800 border border-gray-700 shrink-0">
               <img src="/logo.webp" alt="AIFuel" className="w-8 h-8 object-contain" />
             </div>
             <div className="min-w-0">
@@ -260,16 +258,16 @@ export function WalletPanel() {
                 <code className="text-lg font-mono font-bold text-white truncate">
                   {shortenAddress(address, 6)}
                 </code>
-                <button onClick={() => copyToClipboard(address, 'wallet')} className="p-1.5 hover:bg-white/10 rounded-lg transition-colors">
+                <button onClick={() => copyToClipboard(address, 'wallet')} className="p-1.5 hover:bg-gray-800 rounded-lg transition-colors">
                   {copiedKey === 'wallet' ? <Check className="h-4 w-4 text-green-400" /> : <Copy className="h-4 w-4 text-gray-500" />}
                 </button>
-                <a href={`https://solscan.io/account/${address}`} target="_blank" rel="noopener noreferrer" className="p-1.5 hover:bg-white/10 rounded-lg transition-colors">
+                <a href={`https://solscan.io/account/${address}`} target="_blank" rel="noopener noreferrer" className="p-1.5 hover:bg-gray-800 rounded-lg transition-colors">
                   <ExternalLink className="h-4 w-4 text-gray-500" />
                 </a>
               </div>
             </div>
           </div>
-          <button onClick={handleDisconnect} className="inline-flex items-center justify-center gap-2 px-4 py-2 bg-white/5 border border-white/10 text-gray-400 rounded-lg hover:bg-white/10 hover:text-white transition-all text-sm font-medium">
+          <button onClick={handleDisconnect} className="inline-flex items-center justify-center gap-2 px-4 py-2 bg-gray-800 border border-gray-700 text-gray-400 rounded-lg hover:text-white transition-all text-sm font-medium">
             <LogOut className="h-4 w-4" /> {t('disconnect')}
           </button>
         </div>
@@ -310,7 +308,7 @@ export function WalletPanel() {
 
       {/* No tokens Warning */}
       {!hasTokens && (
-        <div className="glass-card bg-blue-500/10 border-blue-500/20 rounded-xl p-4 flex flex-col md:flex-row items-center gap-4">
+        <div className="bg-blue-900/10 border border-blue-500/20 rounded-xl p-4 flex flex-col md:flex-row items-center gap-4">
           <div className="p-3 bg-blue-500/20 rounded-full shrink-0">
             <Flame className="h-6 w-6 text-blue-400" />
           </div>
@@ -324,10 +322,10 @@ export function WalletPanel() {
         </div>
       )}
 
-      {/* API Key Section - REDESIGNED */}
+      {/* API Key Section */}
       {hasTokens && (
-        <div className="glass-card rounded-2xl overflow-hidden">
-          <div className="p-6 border-b border-white/5 bg-white/5">
+        <div className="bg-[#12121a] rounded-2xl border border-gray-800 overflow-hidden">
+          <div className="p-6 border-b border-gray-800 bg-gray-900/50">
             <div className="flex flex-col md:flex-row items-center justify-between gap-4">
               <div className="flex items-center gap-3">
                 <div className="p-2 bg-purple-500/20 rounded-lg">
@@ -341,7 +339,7 @@ export function WalletPanel() {
               <button 
                 onClick={generateApiKey} 
                 disabled={regenerating} 
-                className="inline-flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/10 text-gray-300 rounded-lg hover:bg-white/10 hover:text-white disabled:opacity-50 transition-all text-sm font-medium w-full md:w-auto justify-center"
+                className="inline-flex items-center gap-2 px-4 py-2 bg-gray-800 border border-gray-700 text-gray-300 rounded-lg hover:text-white disabled:opacity-50 transition-all text-sm font-medium w-full md:w-auto justify-center"
               >
                 <RefreshCw className={`h-4 w-4 ${regenerating ? 'animate-spin' : ''}`} /> 
                 {t('regenerate')}
@@ -349,23 +347,20 @@ export function WalletPanel() {
             </div>
           </div>
 
-          <div className="p-6 bg-black/20">
+          <div className="p-6">
             {fullApiKey ? (
               // Case 1: Full Key Available
               <div className="space-y-4">
-                <div className="relative group">
-                  <div className="absolute inset-0 bg-purple-500/5 rounded-xl blur-lg group-hover:bg-purple-500/10 transition-colors"></div>
-                  <div className="relative bg-[#0a0a0f] border border-purple-500/30 rounded-xl p-4 flex flex-col gap-3">
-                    <label className="text-[10px] uppercase font-bold text-purple-400 tracking-wider">Secret Key</label>
-                    <div className="flex items-center gap-3">
-                      <code className="flex-1 font-mono text-sm md:text-base text-white break-all">{fullApiKey}</code>
-                      <button 
-                        onClick={() => copyToClipboard(fullApiKey, 'apikey')} 
-                        className="p-2 bg-white/10 hover:bg-white/20 rounded-lg text-white transition-colors shrink-0"
-                      >
-                        {copiedKey === 'apikey' ? <Check className="h-5 w-5 text-green-400" /> : <Copy className="h-5 w-5" />}
-                      </button>
-                    </div>
+                <div className="bg-[#0a0a0f] border border-purple-500/30 rounded-xl p-4 flex flex-col gap-3">
+                  <label className="text-[10px] uppercase font-bold text-purple-400 tracking-wider">Secret Key</label>
+                  <div className="flex items-center gap-3">
+                    <code className="flex-1 font-mono text-sm md:text-base text-white break-all">{fullApiKey}</code>
+                    <button 
+                      onClick={() => copyToClipboard(fullApiKey, 'apikey')} 
+                      className="p-2 bg-gray-800 hover:bg-gray-700 rounded-lg text-white transition-colors shrink-0"
+                    >
+                      {copiedKey === 'apikey' ? <Check className="h-5 w-5 text-green-400" /> : <Copy className="h-5 w-5" />}
+                    </button>
                   </div>
                 </div>
                 <div className="flex items-start gap-2 text-amber-400/80 bg-amber-900/10 p-3 rounded-lg border border-amber-900/30">
@@ -376,11 +371,11 @@ export function WalletPanel() {
             ) : apiKey ? (
               // Case 2: Only Prefix Available
               <div className="space-y-4">
-                <div className="bg-[#0a0a0f]/50 border border-white/10 rounded-xl p-4 flex flex-col gap-3 opacity-70">
+                <div className="bg-[#0a0a0f] border border-gray-800 rounded-xl p-4 flex flex-col gap-3 opacity-70">
                    <label className="text-[10px] uppercase font-bold text-gray-500 tracking-wider">Partial Key (Hidden)</label>
                    <div className="flex items-center gap-3">
                      <code className="flex-1 font-mono text-sm text-gray-400 break-all">{apiKey.prefix}...******</code>
-                     <button disabled className="p-2 bg-white/5 rounded-lg text-gray-600 cursor-not-allowed">
+                     <button disabled className="p-2 bg-gray-800 rounded-lg text-gray-600 cursor-not-allowed">
                        <Copy className="h-5 w-5" />
                      </button>
                    </div>
@@ -393,7 +388,7 @@ export function WalletPanel() {
                 </div>
               </div>
             ) : (
-              // Case 3: Loading / No Key
+              // Case 3: Loading
               <div className="text-center py-8">
                 <RefreshCw className="h-8 w-8 text-gray-600 mx-auto mb-4 animate-spin" />
                 <p className="text-gray-500 text-sm">Generating secure key...</p>
@@ -405,12 +400,12 @@ export function WalletPanel() {
 
       {/* Quick Start Code Snippet - Only if full key available */}
       {fullApiKey && hasTokens && (
-        <div className="glass-card rounded-xl p-6 hidden md:block">
+        <div className="bg-[#12121a] border border-gray-800 rounded-xl p-6 hidden md:block">
           <h3 className="text-sm font-bold text-gray-400 uppercase tracking-wider mb-4">{t('quickStart')}</h3>
-          <div className="bg-[#050508] p-4 rounded-lg border border-white/10 overflow-x-auto relative group">
+          <div className="bg-[#0a0a0f] p-4 rounded-lg border border-gray-800 overflow-x-auto relative group">
              <button 
                 onClick={() => copyToClipboard(`curl https://api.aifuel.fun/v1/chat/completions ...`, 'curl')} 
-                className="absolute top-3 right-3 p-1.5 text-gray-500 hover:text-white bg-white/5 hover:bg-white/10 rounded opacity-0 group-hover:opacity-100 transition-opacity"
+                className="absolute top-3 right-3 p-1.5 text-gray-500 hover:text-white bg-gray-800 hover:bg-gray-700 rounded opacity-0 group-hover:opacity-100 transition-opacity"
              >
                 <Copy className="h-3 w-3" />
              </button>
@@ -432,15 +427,15 @@ export function WalletPanel() {
 
 function StatCard({ label, value, sub, highlight = false, valueColor = "text-white", icon, action }: any) {
   return (
-    <div className={`glass-card rounded-xl p-4 md:p-5 flex flex-col justify-between min-h-[120px] ${highlight ? 'bg-gradient-to-br from-purple-900/40 to-blue-900/40 border-purple-500/30' : ''}`}>
+    <div className={`bg-[#12121a] border border-gray-800 rounded-xl p-4 md:p-5 flex flex-col justify-between min-h-[120px] ${highlight ? 'border-purple-500/30' : ''}`}>
       <div className="flex justify-between items-start mb-2">
         <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider">{label}</span>
-        {icon && <div className={`p-1.5 rounded-md ${highlight ? 'bg-white/10 text-white' : 'bg-white/5 text-gray-400'}`}>{icon}</div>}
+        {icon && <div className={`p-1.5 rounded-md ${highlight ? 'bg-purple-900/20 text-purple-400' : 'bg-gray-800 text-gray-400'}`}>{icon}</div>}
         {action && <div className="text-gray-400 hover:text-white transition-colors">{action}</div>}
       </div>
       <div>
         <div className={`text-2xl md:text-3xl font-bold font-mono tracking-tight ${valueColor}`}>{value}</div>
-        <div className={`text-xs mt-1 ${highlight ? 'text-purple-200' : 'text-gray-500'}`}>{sub}</div>
+        <div className={`text-xs mt-1 ${highlight ? 'text-purple-400' : 'text-gray-500'}`}>{sub}</div>
       </div>
     </div>
   )
