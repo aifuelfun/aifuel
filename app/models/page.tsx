@@ -4,70 +4,7 @@ import { useState } from 'react'
 import { Search, Copy, Check } from 'lucide-react'
 import { useLocale } from '@/lib/LocaleContext'
 import Image from 'next/image'
-
-// ─── Curated Model List ─────────────────────────────────────────────
-interface Model {
-  id: string
-  name: string
-  provider: string
-  inputPrice: number
-  outputPrice: number
-  context: string
-}
-
-const MODELS: Model[] = [
-  // OpenAI
-  { id: 'openai/gpt-4o', name: 'GPT-4o', provider: 'OpenAI', inputPrice: 2.50, outputPrice: 10.00, context: '128K' },
-  { id: 'openai/gpt-4o-mini', name: 'GPT-4o Mini', provider: 'OpenAI', inputPrice: 0.15, outputPrice: 0.60, context: '128K' },
-  { id: 'openai/gpt-4-turbo', name: 'GPT-4 Turbo', provider: 'OpenAI', inputPrice: 10.00, outputPrice: 30.00, context: '128K' },
-  { id: 'openai/o1', name: 'o1', provider: 'OpenAI', inputPrice: 15.00, outputPrice: 60.00, context: '200K' },
-  { id: 'openai/o1-mini', name: 'o1 Mini', provider: 'OpenAI', inputPrice: 3.00, outputPrice: 12.00, context: '128K' },
-  { id: 'openai/o3-mini', name: 'o3 Mini', provider: 'OpenAI', inputPrice: 1.10, outputPrice: 4.40, context: '200K' },
-
-  // Anthropic
-  { id: 'anthropic/claude-3.5-sonnet', name: 'Claude 3.5 Sonnet', provider: 'Anthropic', inputPrice: 3.00, outputPrice: 15.00, context: '200K' },
-  { id: 'anthropic/claude-3-opus', name: 'Claude 3 Opus', provider: 'Anthropic', inputPrice: 15.00, outputPrice: 75.00, context: '200K' },
-  { id: 'anthropic/claude-3.5-haiku', name: 'Claude 3.5 Haiku', provider: 'Anthropic', inputPrice: 0.80, outputPrice: 4.00, context: '200K' },
-  { id: 'anthropic/claude-3-haiku', name: 'Claude 3 Haiku', provider: 'Anthropic', inputPrice: 0.25, outputPrice: 1.25, context: '200K' },
-
-  // Google
-  { id: 'google/gemini-2.0-pro-exp-02-05', name: 'Gemini 2.0 Pro', provider: 'Google', inputPrice: 0, outputPrice: 0, context: '2M' },
-  { id: 'google/gemini-2.0-flash-001', name: 'Gemini 2.0 Flash', provider: 'Google', inputPrice: 0.10, outputPrice: 0.40, context: '1M' },
-  { id: 'google/gemini-1.5-pro', name: 'Gemini 1.5 Pro', provider: 'Google', inputPrice: 1.25, outputPrice: 5.00, context: '2M' },
-  { id: 'google/gemini-1.5-flash', name: 'Gemini 1.5 Flash', provider: 'Google', inputPrice: 0.075, outputPrice: 0.30, context: '1M' },
-
-  // DeepSeek
-  { id: 'deepseek/deepseek-chat', name: 'DeepSeek V3', provider: 'DeepSeek', inputPrice: 0.14, outputPrice: 0.28, context: '64K' },
-  { id: 'deepseek/deepseek-r1', name: 'DeepSeek R1', provider: 'DeepSeek', inputPrice: 0.55, outputPrice: 2.19, context: '64K' },
-
-  // Meta
-  { id: 'meta-llama/llama-3.1-405b-instruct', name: 'Llama 3.1 405B', provider: 'Meta', inputPrice: 2.00, outputPrice: 2.00, context: '128K' },
-  { id: 'meta-llama/llama-3.1-70b-instruct', name: 'Llama 3.1 70B', provider: 'Meta', inputPrice: 0.40, outputPrice: 0.40, context: '128K' },
-  { id: 'meta-llama/llama-3.1-8b-instruct', name: 'Llama 3.1 8B', provider: 'Meta', inputPrice: 0.05, outputPrice: 0.05, context: '128K' },
-  { id: 'meta-llama/llama-3.2-3b-instruct', name: 'Llama 3.2 3B', provider: 'Meta', inputPrice: 0.03, outputPrice: 0.05, context: '128K' },
-
-  // Mistral
-  { id: 'mistralai/mistral-large', name: 'Mistral Large', provider: 'Mistral', inputPrice: 2.00, outputPrice: 6.00, context: '128K' },
-  { id: 'mistralai/mistral-medium', name: 'Mistral Medium', provider: 'Mistral', inputPrice: 2.75, outputPrice: 8.10, context: '32K' },
-  { id: 'mistralai/mixtral-8x22b-instruct', name: 'Mixtral 8x22B', provider: 'Mistral', inputPrice: 0.90, outputPrice: 0.90, context: '64K' },
-  { id: 'mistralai/mistral-small', name: 'Mistral Small', provider: 'Mistral', inputPrice: 0.20, outputPrice: 0.60, context: '32K' },
-
-  // xAI
-  { id: 'x-ai/grok-2-1212', name: 'Grok 2', provider: 'xAI', inputPrice: 2.00, outputPrice: 10.00, context: '128K' },
-
-  // Qwen
-  { id: 'qwen/qwen-2.5-72b-instruct', name: 'Qwen 2.5 72B', provider: 'Qwen', inputPrice: 0.36, outputPrice: 0.36, context: '128K' },
-  { id: 'qwen/qwen-2.5-32b-instruct', name: 'Qwen 2.5 32B', provider: 'Qwen', inputPrice: 0.18, outputPrice: 0.18, context: '128K' },
-  { id: 'qwen/qwen-2.5-7b-instruct', name: 'Qwen 2.5 7B', provider: 'Qwen', inputPrice: 0.05, outputPrice: 0.05, context: '128K' },
-
-  // Cohere
-  { id: 'cohere/command-r-plus', name: 'Command R+', provider: 'Cohere', inputPrice: 2.50, outputPrice: 10.00, context: '128K' },
-  { id: 'cohere/command-r', name: 'Command R', provider: 'Cohere', inputPrice: 0.15, outputPrice: 0.60, context: '128K' },
-
-  // Perplexity
-  { id: 'perplexity/sonar-pro', name: 'Sonar Pro', provider: 'Perplexity', inputPrice: 3.00, outputPrice: 15.00, context: '200K' },
-  { id: 'perplexity/sonar', name: 'Sonar', provider: 'Perplexity', inputPrice: 1.00, outputPrice: 1.00, context: '128K' },
-]
+import { MODELS } from '@/lib/constants'
 
 // ─── Provider metadata ──────────────────────────────────────────────
 const PROVIDERS = [
@@ -148,6 +85,9 @@ export default function ModelsPage() {
             </h2>
             {PROVIDERS.map(p => {
               const count = providerCounts.get(p.slug) || 0
+              // Only render provider if it has models
+              if (count === 0) return null
+              
               const active = selectedProvider === p.slug
               return (
                 <button
