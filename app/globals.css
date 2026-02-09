@@ -3,58 +3,119 @@
 @tailwind utilities;
 
 :root {
-  --foreground-rgb: 229, 231, 235;
-  --background-start-rgb: 10, 10, 15;
-  --background-end-rgb: 10, 10, 15;
+  --sol-dark: #0f0f23;
+  --sol-card: #1a1a33;
+  --sol-green: #14F195;
+  --sol-purple: #9945FF;
+  --sol-border: #27273a;
+  --sol-text: #e4e4e7;
 }
 
 body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      rgb(var(--background-start-rgb)),
-      rgb(var(--background-end-rgb))
-    );
+  color: var(--sol-text);
+  background: var(--sol-dark);
 }
 
-/* Wallet adapter styles override */
+/* Wallet adapter - Solana colors */
 .wallet-adapter-button {
-  background-color: #FF6B35 !important;
+  background: linear-gradient(135deg, #14F195 0%, #9945FF 100%) !important;
+  border: none !important;
   border-radius: 8px !important;
   font-weight: 600 !important;
+  transition: all 0.2s !important;
 }
 
 .wallet-adapter-button:hover {
-  background-color: #E55A2B !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 8px 20px rgba(20, 241, 149, 0.3) !important;
 }
 
 .wallet-adapter-modal-wrapper {
-  background-color: #1a1a2e !important;
+  background-color: var(--sol-card) !important;
+  border: 1px solid var(--sol-border) !important;
 }
 
-/* Custom scrollbar */
+/* Custom scrollbar - Solana green */
 ::-webkit-scrollbar {
   width: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #12121a;
+  background: var(--sol-dark);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #333;
+  background: var(--sol-purple);
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #FF6B35;
+  background: var(--sol-green);
+}
+
+/* Card hover effect */
+.card-hover {
+  transition: all 0.3s ease;
+}
+
+.card-hover:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 30px rgba(20, 241, 149, 0.15);
+  border-color: var(--sol-green);
+}
+
+/* Feature cards with Solana accent colors */
+.feature-card-1 {
+  border-left: 4px solid #14F195;
+}
+
+.feature-card-2 {
+  border-left: 4px solid #9945FF;
+}
+
+.feature-card-3 {
+  border-left: 4px solid #00D4FF;
+}
+
+.icon-bg-1 {
+  background: rgba(20, 241, 149, 0.1);
+}
+
+.icon-bg-2 {
+  background: rgba(153, 69, 255, 0.1);
+}
+
+.icon-bg-3 {
+  background: rgba(0, 212, 255, 0.1);
+}
+
+/* Step cards */
+.step-card {
+  transition: all 0.3s ease;
+}
+
+.step-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 50px rgba(153, 69, 255, 0.2);
+  border-color: var(--sol-purple);
+}
+
+.step-number {
+  background: linear-gradient(135deg, #14F195 0%, #9945FF 100%);
+  box-shadow: 0 8px 20px rgba(20, 241, 149, 0.3);
+}
+
+/* FAQ accordion */
+.faq-item {
+  transition: all 0.2s ease;
+}
+
+.faq-item.open {
+  background: rgba(153, 69, 255, 0.05);
+  border-color: var(--sol-purple);
 }
 
 /* Animations */
-.animate-pulse {
-  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-}
-
 @keyframes pulse {
   0%, 100% {
     opacity: 1;
@@ -64,46 +125,21 @@ body {
   }
 }
 
-.card-hover {
-  transition: all 0.3s ease;
+.animate-pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
 
-.card-hover:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-  border-color: rgba(124, 58, 237, 0.3);
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-/* Feature cards */
-.feature-card-1 { border-left: 4px solid #FF6B35; }
-.feature-card-2 { border-left: 4px solid #3B82F6; }
-.feature-card-3 { border-left: 4px solid #10B981; }
-
-.icon-bg-1 { background: rgba(255, 107, 53, 0.1); }
-.icon-bg-2 { background: rgba(59, 130, 246, 0.1); }
-.icon-bg-3 { background: rgba(16, 185, 129, 0.1); }
-
-/* Step cards */
-.step-card {
-  transition: all 0.3s ease;
-}
-
-.step-card:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
-}
-
-.step-number {
-  background: linear-gradient(135deg, #FF6B35 0%, #7C3AED 100%);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
-}
-
-/* FAQ accordion */
-.faq-item {
-  transition: all 0.2s ease;
-}
-
-.faq-item.open {
-  background: rgba(124, 58, 237, 0.05);
-  border-color: rgba(124, 58, 237, 0.3);
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-out;
 }

@@ -9,42 +9,40 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
+        // Solana Brand Colors
         primary: {
-          DEFAULT: '#FF6B35',
-          light: '#FF8559',
-          dark: '#E55A2B',
-          50: '#FFF5F0',
-          100: '#FFE5D9',
-          200: '#FFCBB3',
-          300: '#FFB18D',
-          400: '#FF8E59',
-          500: '#FF6B35',
-          600: '#E55A2B',
-          700: '#CC4A21',
-          800: '#993817',
-          900: '#66250F',
+          DEFAULT: '#14F195',
+          light: '#5FFAC1',
+          dark: '#0FD67E',
         },
-        accent: {
-          blue: '#3B82F6',
-          green: '#10B981',
-          purple: '#7C3AED',
-          pink: '#EC4899',
+        secondary: {
+          DEFAULT: '#9945FF',
+          light: '#B96FFF',
+          dark: '#7B2ECC',
         },
-        dark: {
-          DEFAULT: '#1A1A2E',
-          light: '#25253D',
-          lighter: '#2D2D4A',
+        // Background
+        'sol-dark': {
+          DEFAULT: '#0f0f23',
+          card: '#1a1a33',
+          lighter: '#252545',
+        },
+        // Borders
+        'sol-border': {
+          DEFAULT: '#27273a',
+          light: '#3a3a55',
+        },
+        // Text
+        'sol-text': {
+          DEFAULT: '#e4e4e7',
+          muted: '#a1a1aa',
         },
       },
       backgroundImage: {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
-        'gradient-conic': 'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
-        'hero-gradient': 'linear-gradient(135deg, #FF6B35 0%, #7C3AED 100%)',
-        'feature-glow': 'radial-gradient(circle at center, rgba(255, 107, 53, 0.1) 0%, transparent 70%)',
+        'gradient-sol': 'linear-gradient(135deg, #14F195 0%, #9945FF 100%)',
       },
       animation: {
         'float': 'float 3s ease-in-out infinite',
-        'pulse-slow': 'pulse 3s ease-in-out infinite',
         'fade-in': 'fadeIn 0.3s ease-out',
       },
       keyframes: {

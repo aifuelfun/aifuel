@@ -55,7 +55,7 @@ export default function ModelsPage() {
   })
 
   return (
-    <div className="min-h-screen bg-[#0a0a0f] text-gray-200">
+    <div className="min-h-screen bg-sol-dark text-sol-text">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
 
         {/* Search */}
@@ -66,7 +66,7 @@ export default function ModelsPage() {
             placeholder={isZh ? '搜索模型...' : 'Search models...'}
             value={search}
             onChange={e => setSearch(e.target.value)}
-            className="w-full pl-11 pr-4 py-2.5 bg-[#16161f] border border-gray-800 rounded-lg text-sm text-gray-200 placeholder-gray-600 focus:outline-none focus:ring-1 focus:ring-purple-500 focus:border-purple-500 transition"
+            className="w-full pl-11 pr-4 py-2.5 bg-sol-dark-lighter border border-sol-border rounded-lg text-sm text-sol-text placeholder-gray-600 focus:outline-none focus:ring-1 focus:ring-purple-500 focus:border-primary transition"
           />
         </div>
 
@@ -88,8 +88,8 @@ export default function ModelsPage() {
                     onClick={() => setSelectedProvider(p.slug)}
                     className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-left transition ${
                       active
-                        ? 'bg-purple-500/10 border border-purple-500/30 text-white'
-                        : 'border border-transparent hover:bg-[#16161f] text-gray-400 hover:text-gray-200'
+                        ? 'bg-primary/10 border border-primary/30 text-sol-text'
+                        : 'border border-transparent hover:bg-sol-dark-lighter text-sol-text-muted hover:text-sol-text'
                     }`}
                   >
                     <Image
@@ -100,11 +100,11 @@ export default function ModelsPage() {
                       className="flex-shrink-0 rounded"
                     />
                     <div className="flex-1 min-w-0">
-                      <div className={`text-sm font-medium truncate ${active ? 'text-white' : ''}`}>
+                      <div className={`text-sm font-medium truncate ${active ? 'text-sol-text' : ''}`}>
                         {p.slug}
                       </div>
                     </div>
-                    <span className={`text-xs ${active ? 'text-purple-300' : 'text-gray-600'}`}>
+                    <span className={`text-xs ${active ? 'text-primary-light' : 'text-gray-600'}`}>
                       {count}
                     </span>
                   </button>
@@ -134,12 +134,12 @@ export default function ModelsPage() {
                 {filtered.map(m => (
                   <div
                     key={m.id}
-                    className="p-4 bg-[#12121a] border border-gray-800/60 rounded-xl hover:border-purple-500/40 hover:bg-[#16161f] transition group"
+                    className="p-4 bg-sol-dark-card border border-sol-border/60 rounded-xl hover:border-primary/40 hover:bg-sol-dark-lighter transition group"
                   >
                     {/* Header: name + copy */}
                     <div className="flex items-start justify-between mb-3">
                       <div className="min-w-0 flex-1">
-                        <h3 className="text-sm font-semibold text-white group-hover:text-purple-300 transition truncate">
+                        <h3 className="text-sm font-semibold text-sol-text group-hover:text-primary-light transition truncate">
                           {m.name}
                         </h3>
                         <p className="text-[10px] text-gray-600 font-mono truncate mt-0.5">{m.id}</p>
@@ -147,7 +147,7 @@ export default function ModelsPage() {
                       <button
                         onClick={() => copy(m.id)}
                         title={isZh ? '复制模型 ID' : 'Copy model ID'}
-                        className="ml-2 p-1.5 text-gray-600 hover:text-purple-400 hover:bg-purple-500/10 rounded-lg transition flex-shrink-0"
+                        className="ml-2 p-1.5 text-gray-600 hover:text-primary hover:bg-primary/10 rounded-lg transition flex-shrink-0"
                       >
                         {copiedId === m.id ? (
                           <Check className="h-3.5 w-3.5 text-green-400" />
@@ -161,19 +161,19 @@ export default function ModelsPage() {
                     <div className="flex items-center gap-4 text-xs">
                       <div className="flex-1">
                         <div className="text-gray-500 mb-0.5">{isZh ? '输入' : 'Input'}</div>
-                        <div className={`font-mono font-medium ${m.inputPrice === 0 ? 'text-green-400' : 'text-gray-200'}`}>
+                        <div className={`font-mono font-medium ${m.inputPrice === 0 ? 'text-green-400' : 'text-sol-text'}`}>
                           {fmtPrice(m.inputPrice)}
                         </div>
                       </div>
                       <div className="flex-1">
                         <div className="text-gray-500 mb-0.5">{isZh ? '输出' : 'Output'}</div>
-                        <div className={`font-mono font-medium ${m.outputPrice === 0 ? 'text-green-400' : 'text-gray-200'}`}>
+                        <div className={`font-mono font-medium ${m.outputPrice === 0 ? 'text-green-400' : 'text-sol-text'}`}>
                           {fmtPrice(m.outputPrice)}
                         </div>
                       </div>
                       <div className="flex-1">
                         <div className="text-gray-500 mb-0.5">{isZh ? '上下文' : 'Context'}</div>
-                        <div className="font-mono text-gray-400">{m.context}</div>
+                        <div className="font-mono text-sol-text-muted">{m.context}</div>
                       </div>
                     </div>
                   </div>
@@ -184,7 +184,7 @@ export default function ModelsPage() {
         </div>
 
         {/* Footer */}
-        <div className="mt-10 pt-6 border-t border-gray-800/50 text-center text-xs text-gray-600">
+        <div className="mt-10 pt-6 border-t border-sol-border/50 text-center text-xs text-gray-600">
           {isZh
             ? '实际费用与 OpenRouter 完全一致 · 零加价透传'
             : 'Exact same pricing as OpenRouter · Zero markup pass-through'}
