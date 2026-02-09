@@ -214,9 +214,9 @@ export function WalletPanel() {
 
   if (loading) {
     return (
-      <div className="bg-sol-dark-card rounded-2xl border border-sol-border p-8 text-center animate-pulse">
+      <div className="bg-dark-card rounded-2xl border border-border p-8 text-center animate-pulse">
         <RefreshCw className="h-8 w-8 text-primary animate-spin mx-auto mb-4" />
-        <p className="text-sol-text-muted">{t('walletLoading')}</p>
+        <p className="text-text-muted">{t('walletLoading')}</p>
       </div>
     )
   }
@@ -239,15 +239,15 @@ export function WalletPanel() {
   return (
     <div className="space-y-6">
       {/* Wallet Info Card */}
-      <div className="bg-sol-dark-card rounded-2xl border border-sol-border p-6">
+      <div className="bg-dark-card rounded-2xl border border-border p-6">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-full overflow-hidden flex items-center justify-center bg-sol-dark-lighter border border-sol-border shrink-0">
+            <div className="w-12 h-12 rounded-full overflow-hidden flex items-center justify-center bg-dark-lighter border border-border shrink-0">
               <img src="/logo.webp" alt="AIFuel" className="w-8 h-8 object-contain" />
             </div>
             <div className="min-w-0">
               <div className="flex items-center gap-2">
-                <span className="text-xs font-semibold text-sol-text-muted uppercase tracking-wider">{t('connectedWallet')}</span>
+                <span className="text-xs font-semibold text-text-muted uppercase tracking-wider">{t('connectedWallet')}</span>
                 {credits?.isDiamondHands && hasTokens && (
                   <span className="inline-flex items-center gap-1 bg-yellow-500/10 text-yellow-500 border border-yellow-500/20 text-[10px] font-bold px-2 py-0.5 rounded-full">
                     <Diamond className="h-3 w-3" /> {t('diamondHand')}
@@ -255,19 +255,19 @@ export function WalletPanel() {
                 )}
               </div>
               <div className="flex items-center gap-2 mt-1">
-                <code className="text-lg font-mono font-bold text-sol-text truncate">
+                <code className="text-lg font-mono font-bold text-text truncate">
                   {shortenAddress(address, 6)}
                 </code>
-                <button onClick={() => copyToClipboard(address, 'wallet')} className="p-1.5 hover:bg-sol-dark-lighter rounded-lg transition-colors">
-                  {copiedKey === 'wallet' ? <Check className="h-4 w-4 text-green-400" /> : <Copy className="h-4 w-4 text-sol-text-muted" />}
+                <button onClick={() => copyToClipboard(address, 'wallet')} className="p-1.5 hover:bg-dark-lighter rounded-lg transition-colors">
+                  {copiedKey === 'wallet' ? <Check className="h-4 w-4 text-green-400" /> : <Copy className="h-4 w-4 text-text-muted" />}
                 </button>
-                <a href={`https://solscan.io/account/${address}`} target="_blank" rel="noopener noreferrer" className="p-1.5 hover:bg-sol-dark-lighter rounded-lg transition-colors">
-                  <ExternalLink className="h-4 w-4 text-sol-text-muted" />
+                <a href={`https://solscan.io/account/${address}`} target="_blank" rel="noopener noreferrer" className="p-1.5 hover:bg-dark-lighter rounded-lg transition-colors">
+                  <ExternalLink className="h-4 w-4 text-text-muted" />
                 </a>
               </div>
             </div>
           </div>
-          <button onClick={handleDisconnect} className="inline-flex items-center justify-center gap-2 px-4 py-2 bg-sol-dark-lighter border border-sol-border text-sol-text-muted rounded-lg hover:text-sol-text transition-all text-sm font-medium">
+          <button onClick={handleDisconnect} className="inline-flex items-center justify-center gap-2 px-4 py-2 bg-dark-lighter border border-border text-text-muted rounded-lg hover:text-text transition-all text-sm font-medium">
             <LogOut className="h-4 w-4" /> {t('disconnect')}
           </button>
         </div>
@@ -316,7 +316,7 @@ export function WalletPanel() {
             <p className="font-bold text-blue-100">{t('noTokens')}</p>
             <p className="text-sm text-blue-300/80">{t('buyToUnlock')}</p>
           </div>
-          <a href={`https://raydium.io/swap/?inputMint=sol&outputMint=${TOKEN_CA}`} target="_blank" rel="noopener noreferrer" className="px-6 py-2.5 bg-blue-600 hover:bg-blue-500 text-sol-text rounded-lg font-medium transition-colors shadow-lg shadow-blue-900/20 w-full md:w-auto text-center">
+          <a href={`https://raydium.io/swap/?inputMint=sol&outputMint=${TOKEN_CA}`} target="_blank" rel="noopener noreferrer" className="px-6 py-2.5 bg-blue-600 hover:bg-blue-500 text-text rounded-lg font-medium transition-colors shadow-lg shadow-blue-900/20 w-full md:w-auto text-center">
             {t('buyFuel')}
           </a>
         </div>
@@ -324,22 +324,22 @@ export function WalletPanel() {
 
       {/* API Key Section */}
       {hasTokens && (
-        <div className="bg-sol-dark-card rounded-2xl border border-sol-border overflow-hidden">
-          <div className="p-6 border-b border-sol-border bg-sol-dark/50">
+        <div className="bg-dark-card rounded-2xl border border-border overflow-hidden">
+          <div className="p-6 border-b border-border bg-dark/50">
             <div className="flex flex-col md:flex-row items-center justify-between gap-4">
               <div className="flex items-center gap-3">
                 <div className="p-2 bg-primary/20 rounded-lg">
                   <Key className="h-5 w-5 text-primary" />
                 </div>
                 <div>
-                  <h2 className="text-lg font-bold text-sol-text">{t('yourApiKey')}</h2>
-                  <p className="text-xs text-sol-text-muted font-mono mt-0.5">https://api.aifuel.fun/v1</p>
+                  <h2 className="text-lg font-bold text-text">{t('yourApiKey')}</h2>
+                  <p className="text-xs text-text-muted font-mono mt-0.5">https://api.aifuel.fun/v1</p>
                 </div>
               </div>
               <button 
                 onClick={generateApiKey} 
                 disabled={regenerating} 
-                className="inline-flex items-center gap-2 px-4 py-2 bg-sol-dark-lighter border border-sol-border text-sol-text rounded-lg hover:text-sol-text disabled:opacity-50 transition-all text-sm font-medium w-full md:w-auto justify-center"
+                className="inline-flex items-center gap-2 px-4 py-2 bg-dark-lighter border border-border text-text rounded-lg hover:text-text disabled:opacity-50 transition-all text-sm font-medium w-full md:w-auto justify-center"
               >
                 <RefreshCw className={`h-4 w-4 ${regenerating ? 'animate-spin' : ''}`} /> 
                 {t('regenerate')}
@@ -351,13 +351,13 @@ export function WalletPanel() {
             {fullApiKey ? (
               // Case 1: Full Key Available
               <div className="space-y-4">
-                <div className="bg-sol-dark border border-primary/30 rounded-xl p-4 flex flex-col gap-3">
+                <div className="bg-dark border border-primary/30 rounded-xl p-4 flex flex-col gap-3">
                   <label className="text-[10px] uppercase font-bold text-primary tracking-wider">Secret Key</label>
                   <div className="flex items-center gap-3">
-                    <code className="flex-1 font-mono text-sm md:text-base text-sol-text break-all">{fullApiKey}</code>
+                    <code className="flex-1 font-mono text-sm md:text-base text-text break-all">{fullApiKey}</code>
                     <button 
                       onClick={() => copyToClipboard(fullApiKey, 'apikey')} 
-                      className="p-2 bg-sol-dark-lighter hover:bg-gray-700 rounded-lg text-sol-text transition-colors shrink-0"
+                      className="p-2 bg-dark-lighter hover:bg-gray-700 rounded-lg text-text transition-colors shrink-0"
                     >
                       {copiedKey === 'apikey' ? <Check className="h-5 w-5 text-green-400" /> : <Copy className="h-5 w-5" />}
                     </button>
@@ -371,11 +371,11 @@ export function WalletPanel() {
             ) : apiKey ? (
               // Case 2: Only Prefix Available
               <div className="space-y-4">
-                <div className="bg-sol-dark border border-sol-border rounded-xl p-4 flex flex-col gap-3 opacity-70">
-                   <label className="text-[10px] uppercase font-bold text-sol-text-muted tracking-wider">Partial Key (Hidden)</label>
+                <div className="bg-dark border border-border rounded-xl p-4 flex flex-col gap-3 opacity-70">
+                   <label className="text-[10px] uppercase font-bold text-text-muted tracking-wider">Partial Key (Hidden)</label>
                    <div className="flex items-center gap-3">
-                     <code className="flex-1 font-mono text-sm text-sol-text-muted break-all">{apiKey.prefix}...******</code>
-                     <button disabled className="p-2 bg-sol-dark-lighter rounded-lg text-sol-text-dim cursor-not-allowed">
+                     <code className="flex-1 font-mono text-sm text-text-muted break-all">{apiKey.prefix}...******</code>
+                     <button disabled className="p-2 bg-dark-lighter rounded-lg text-text-dim cursor-not-allowed">
                        <Copy className="h-5 w-5" />
                      </button>
                    </div>
@@ -390,8 +390,8 @@ export function WalletPanel() {
             ) : (
               // Case 3: Loading
               <div className="text-center py-8">
-                <RefreshCw className="h-8 w-8 text-sol-text-dim mx-auto mb-4 animate-spin" />
-                <p className="text-sol-text-muted text-sm">Generating secure key...</p>
+                <RefreshCw className="h-8 w-8 text-text-dim mx-auto mb-4 animate-spin" />
+                <p className="text-text-muted text-sm">Generating secure key...</p>
               </div>
             )}
           </div>
@@ -400,16 +400,16 @@ export function WalletPanel() {
 
       {/* Quick Start Code Snippet - Only if full key available */}
       {fullApiKey && hasTokens && (
-        <div className="bg-sol-dark-card border border-sol-border rounded-xl p-6 hidden md:block">
-          <h3 className="text-sm font-bold text-sol-text-muted uppercase tracking-wider mb-4">{t('quickStart')}</h3>
-          <div className="bg-sol-dark p-4 rounded-lg border border-sol-border overflow-x-auto relative group">
+        <div className="bg-dark-card border border-border rounded-xl p-6 hidden md:block">
+          <h3 className="text-sm font-bold text-text-muted uppercase tracking-wider mb-4">{t('quickStart')}</h3>
+          <div className="bg-dark p-4 rounded-lg border border-border overflow-x-auto relative group">
              <button 
                 onClick={() => copyToClipboard(`curl https://api.aifuel.fun/v1/chat/completions ...`, 'curl')} 
-                className="absolute top-3 right-3 p-1.5 text-sol-text-muted hover:text-sol-text bg-sol-dark-lighter hover:bg-gray-700 rounded opacity-0 group-hover:opacity-100 transition-opacity"
+                className="absolute top-3 right-3 p-1.5 text-text-muted hover:text-text bg-dark-lighter hover:bg-gray-700 rounded opacity-0 group-hover:opacity-100 transition-opacity"
              >
                 <Copy className="h-3 w-3" />
              </button>
-             <pre className="font-mono text-sm text-sol-text leading-relaxed">
+             <pre className="font-mono text-sm text-text leading-relaxed">
 {`curl https://api.aifuel.fun/v1/chat/completions \\
   -H "Authorization: Bearer ${fullApiKey}" \\
   -H "Content-Type: application/json" \\
@@ -425,17 +425,17 @@ export function WalletPanel() {
   )
 }
 
-function StatCard({ label, value, sub, highlight = false, valueColor = "text-sol-text", icon, action }: any) {
+function StatCard({ label, value, sub, highlight = false, valueColor = "text-text", icon, action }: any) {
   return (
-    <div className={`bg-sol-dark-card border border-sol-border rounded-xl p-4 md:p-5 flex flex-col justify-between min-h-[120px] ${highlight ? 'border-primary/30' : ''}`}>
+    <div className={`bg-dark-card border border-border rounded-xl p-4 md:p-5 flex flex-col justify-between min-h-[120px] ${highlight ? 'border-primary/30' : ''}`}>
       <div className="flex justify-between items-start mb-2">
-        <span className="text-xs font-semibold text-sol-text-muted uppercase tracking-wider">{label}</span>
-        {icon && <div className={`p-1.5 rounded-md ${highlight ? 'bg-purple-900/20 text-primary' : 'bg-sol-dark-lighter text-sol-text-muted'}`}>{icon}</div>}
-        {action && <div className="text-sol-text-muted hover:text-sol-text transition-colors">{action}</div>}
+        <span className="text-xs font-semibold text-text-muted uppercase tracking-wider">{label}</span>
+        {icon && <div className={`p-1.5 rounded-md ${highlight ? 'bg-purple-900/20 text-primary' : 'bg-dark-lighter text-text-muted'}`}>{icon}</div>}
+        {action && <div className="text-text-muted hover:text-text transition-colors">{action}</div>}
       </div>
       <div>
         <div className={`text-2xl md:text-3xl font-bold font-mono tracking-tight ${valueColor}`}>{value}</div>
-        <div className={`text-xs mt-1 ${highlight ? 'text-primary' : 'text-sol-text-muted'}`}>{sub}</div>
+        <div className={`text-xs mt-1 ${highlight ? 'text-primary' : 'text-text-muted'}`}>{sub}</div>
       </div>
     </div>
   )

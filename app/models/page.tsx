@@ -55,18 +55,18 @@ export default function ModelsPage() {
   })
 
   return (
-    <div className="min-h-screen bg-sol-dark text-sol-text">
+    <div className="min-h-screen bg-dark text-text">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
 
         {/* Search */}
         <div className="relative mb-6 max-w-md">
-          <Search className="absolute left-4 top-3 h-4 w-4 text-sol-text-muted" />
+          <Search className="absolute left-4 top-3 h-4 w-4 text-text-muted" />
           <input
             type="text"
             placeholder={isZh ? '搜索模型...' : 'Search models...'}
             value={search}
             onChange={e => setSearch(e.target.value)}
-            className="w-full pl-11 pr-4 py-2.5 bg-sol-dark-lighter border border-sol-border rounded-lg text-sm text-sol-text placeholder-gray-600 focus:outline-none focus:ring-1 focus:ring-purple-500 focus:border-primary transition"
+            className="w-full pl-11 pr-4 py-2.5 bg-dark-lighter border border-border rounded-lg text-sm text-text placeholder-gray-600 focus:outline-none focus:ring-1 focus:ring-purple-500 focus:border-primary transition"
           />
         </div>
 
@@ -74,7 +74,7 @@ export default function ModelsPage() {
 
           {/* ─── Left Panel: Providers ─── */}
           <div className="w-52 flex-shrink-0">
-            <h2 className="text-[10px] font-semibold text-sol-text-muted uppercase tracking-wider mb-3 px-1">
+            <h2 className="text-[10px] font-semibold text-text-muted uppercase tracking-wider mb-3 px-1">
               {isZh ? '提供商' : 'Providers'}
             </h2>
             <div className="space-y-1">
@@ -88,8 +88,8 @@ export default function ModelsPage() {
                     onClick={() => setSelectedProvider(p.slug)}
                     className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-left transition ${
                       active
-                        ? 'bg-primary/10 border border-primary/30 text-sol-text'
-                        : 'border border-transparent hover:bg-sol-dark-lighter text-sol-text-muted hover:text-sol-text'
+                        ? 'bg-primary/10 border border-primary/30 text-text'
+                        : 'border border-transparent hover:bg-dark-lighter text-text-muted hover:text-text'
                     }`}
                   >
                     <Image
@@ -100,11 +100,11 @@ export default function ModelsPage() {
                       className="flex-shrink-0 rounded"
                     />
                     <div className="flex-1 min-w-0">
-                      <div className={`text-sm font-medium truncate ${active ? 'text-sol-text' : ''}`}>
+                      <div className={`text-sm font-medium truncate ${active ? 'text-text' : ''}`}>
                         {p.slug}
                       </div>
                     </div>
-                    <span className={`text-xs ${active ? 'text-primary-light' : 'text-sol-text-dim'}`}>
+                    <span className={`text-xs ${active ? 'text-primary' : 'text-text-dim'}`}>
                       {count}
                     </span>
                   </button>
@@ -116,17 +116,17 @@ export default function ModelsPage() {
           {/* ─── Right Panel: Model Cards ─── */}
           <div className="flex-1">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-[10px] font-semibold text-sol-text-muted uppercase tracking-wider">
+              <h2 className="text-[10px] font-semibold text-text-muted uppercase tracking-wider">
                 {selectedProvider} {isZh ? '模型' : 'Models'}
-                <span className="ml-2 text-sol-text-dim">({filtered.length})</span>
+                <span className="ml-2 text-text-dim">({filtered.length})</span>
               </h2>
-              <span className="text-[10px] text-sol-text-dim">
+              <span className="text-[10px] text-text-dim">
                 {isZh ? '价格 / 1M tokens · 零加价' : 'per 1M tokens · zero markup'}
               </span>
             </div>
 
             {filtered.length === 0 ? (
-              <div className="text-center py-16 text-sol-text-dim">
+              <div className="text-center py-16 text-text-dim">
                 {isZh ? '未找到模型' : 'No models found'}
               </div>
             ) : (
@@ -134,20 +134,20 @@ export default function ModelsPage() {
                 {filtered.map(m => (
                   <div
                     key={m.id}
-                    className="p-4 bg-sol-dark-card border border-sol-border/60 rounded-xl hover:border-primary/40 hover:bg-sol-dark-lighter transition group"
+                    className="p-4 bg-dark-card border border-border/60 rounded-xl hover:border-primary/40 hover:bg-dark-lighter transition group"
                   >
                     {/* Header: name + copy */}
                     <div className="flex items-start justify-between mb-3">
                       <div className="min-w-0 flex-1">
-                        <h3 className="text-sm font-semibold text-sol-text group-hover:text-primary-light transition truncate">
+                        <h3 className="text-sm font-semibold text-text group-hover:text-primary transition truncate">
                           {m.name}
                         </h3>
-                        <p className="text-[10px] text-sol-text-dim font-mono truncate mt-0.5">{m.id}</p>
+                        <p className="text-[10px] text-text-dim font-mono truncate mt-0.5">{m.id}</p>
                       </div>
                       <button
                         onClick={() => copy(m.id)}
                         title={isZh ? '复制模型 ID' : 'Copy model ID'}
-                        className="ml-2 p-1.5 text-sol-text-dim hover:text-primary hover:bg-primary/10 rounded-lg transition flex-shrink-0"
+                        className="ml-2 p-1.5 text-text-dim hover:text-primary hover:bg-primary/10 rounded-lg transition flex-shrink-0"
                       >
                         {copiedId === m.id ? (
                           <Check className="h-3.5 w-3.5 text-green-400" />
@@ -160,20 +160,20 @@ export default function ModelsPage() {
                     {/* Pricing Row */}
                     <div className="flex items-center gap-4 text-xs">
                       <div className="flex-1">
-                        <div className="text-sol-text-muted mb-0.5">{isZh ? '输入' : 'Input'}</div>
-                        <div className={`font-mono font-medium ${m.inputPrice === 0 ? 'text-green-400' : 'text-sol-text'}`}>
+                        <div className="text-text-muted mb-0.5">{isZh ? '输入' : 'Input'}</div>
+                        <div className={`font-mono font-medium ${m.inputPrice === 0 ? 'text-green-400' : 'text-text'}`}>
                           {fmtPrice(m.inputPrice)}
                         </div>
                       </div>
                       <div className="flex-1">
-                        <div className="text-sol-text-muted mb-0.5">{isZh ? '输出' : 'Output'}</div>
-                        <div className={`font-mono font-medium ${m.outputPrice === 0 ? 'text-green-400' : 'text-sol-text'}`}>
+                        <div className="text-text-muted mb-0.5">{isZh ? '输出' : 'Output'}</div>
+                        <div className={`font-mono font-medium ${m.outputPrice === 0 ? 'text-green-400' : 'text-text'}`}>
                           {fmtPrice(m.outputPrice)}
                         </div>
                       </div>
                       <div className="flex-1">
-                        <div className="text-sol-text-muted mb-0.5">{isZh ? '上下文' : 'Context'}</div>
-                        <div className="font-mono text-sol-text-muted">{m.context}</div>
+                        <div className="text-text-muted mb-0.5">{isZh ? '上下文' : 'Context'}</div>
+                        <div className="font-mono text-text-muted">{m.context}</div>
                       </div>
                     </div>
                   </div>
@@ -184,7 +184,7 @@ export default function ModelsPage() {
         </div>
 
         {/* Footer */}
-        <div className="mt-10 pt-6 border-t border-sol-border/50 text-center text-xs text-sol-text-dim">
+        <div className="mt-10 pt-6 border-t border-border/50 text-center text-xs text-text-dim">
           {isZh
             ? '实际费用与 OpenRouter 完全一致 · 零加价透传'
             : 'Exact same pricing as OpenRouter · Zero markup pass-through'}

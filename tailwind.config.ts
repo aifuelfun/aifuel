@@ -9,52 +9,37 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // Solana Brand Colors (高对比度优化版)
+        // Pure Contrast Theme - 极简高对比
         primary: {
-          DEFAULT: '#14F195',  // Solana 绿
-          light: '#5FFAC1',
-          dark: '#0FD67E',
+          DEFAULT: '#00d4ff',  // 亮蓝
+          light: '#33e0ff',
+          dark: '#00a8cc',
         },
         secondary: {
-          DEFAULT: '#9945FF',  // Solana 紫
-          light: '#B96FFF',
-          dark: '#7B2ECC',
+          DEFAULT: '#ff6b35',  // 橙色
+          light: '#ff8c5f',
+          dark: '#cc5529',
         },
-        // Background (优化对比度)
-        'sol-dark': {
-          DEFAULT: '#0f0f23',      // 主背景
-          card: '#1e1e3a',         // 卡片背景 (提亮)
-          lighter: '#2a2a48',      // 更亮的卡片
+        // Background
+        dark: {
+          DEFAULT: '#1a1a1a',      // 主背景
+          card: '#2a2a2a',         // 卡片
+          lighter: '#3a3a3a',      // 更亮
         },
-        // Borders (更清晰)
-        'sol-border': {
-          DEFAULT: '#3a3a55',      // 边框 (提亮)
-          light: '#4a4a65',
+        // Borders
+        border: {
+          DEFAULT: '#444444',
+          light: '#555555',
         },
-        // Text (高对比度)
-        'sol-text': {
-          DEFAULT: '#f4f4f5',      // 主文字 (提亮)
-          muted: '#d4d4d8',        // 次要文字 (大幅提亮)
-          dim: '#a1a1aa',          // 更暗的辅助文字
+        // Text - 高对比度
+        text: {
+          DEFAULT: '#ffffff',      // 纯白
+          muted: '#cccccc',        // 浅灰（清晰）
+          dim: '#999999',          // 暗灰
         },
       },
       backgroundImage: {
-        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
-        'gradient-sol': 'linear-gradient(135deg, #14F195 0%, #9945FF 100%)',
-      },
-      animation: {
-        'float': 'float 3s ease-in-out infinite',
-        'fade-in': 'fadeIn 0.3s ease-out',
-      },
-      keyframes: {
-        float: {
-          '0%, 100%': { transform: 'translateY(0)' },
-          '50%': { transform: 'translateY(-10px)' },
-        },
-        fadeIn: {
-          '0%': { opacity: '0', transform: 'translateY(10px)' },
-          '100%': { opacity: '1', transform: 'translateY(0)' },
-        },
+        'gradient-primary': 'linear-gradient(135deg, #00d4ff 0%, #0099ff 100%)',
       },
     },
   },

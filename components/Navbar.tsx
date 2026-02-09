@@ -52,27 +52,27 @@ export const Navbar: FC<Props> = ({ locale, setLocale, t }) => {
   }
 
   return (
-    <nav className="fixed w-full top-0 z-50 bg-sol-dark/90 backdrop-blur-md border-b border-sol-border">
+    <nav className="fixed w-full top-0 z-50 bg-dark/90 backdrop-blur-md border-b border-border">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2">
             <Logo size={32} />
-            <span className="text-xl font-bold text-sol-text">AIFuel</span>
+            <span className="text-xl font-bold text-text">AIFuel</span>
           </Link>
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center gap-8">
-            <a href="/#features" onClick={(e) => handleAnchorClick(e, 'features')} className="text-sol-text-muted hover:text-primary transition cursor-pointer">
+            <a href="/#features" onClick={(e) => handleAnchorClick(e, 'features')} className="text-text-muted hover:text-primary transition cursor-pointer">
               {t('features')}
             </a>
-            <a href="/#pricing" onClick={(e) => handleAnchorClick(e, 'pricing')} className="text-sol-text-muted hover:text-primary transition cursor-pointer">
+            <a href="/#pricing" onClick={(e) => handleAnchorClick(e, 'pricing')} className="text-text-muted hover:text-primary transition cursor-pointer">
               {t('pricing')}
             </a>
-            <Link href="/docs" className="text-sol-text-muted hover:text-primary transition">
+            <Link href="/docs" className="text-text-muted hover:text-primary transition">
               {t('docs')}
             </Link>
-            <Link href="/models" className="text-sol-text-muted hover:text-primary transition">
+            <Link href="/models" className="text-text-muted hover:text-primary transition">
               {t('models')}
             </Link>
           </div>
@@ -80,10 +80,10 @@ export const Navbar: FC<Props> = ({ locale, setLocale, t }) => {
           {/* Social, Language Switch & Wallet Button */}
           <div className="hidden md:flex items-center gap-4">
             <div className="flex items-center gap-3">
-              <a href={SOCIAL_LINKS.twitter} target="_blank" rel="noopener noreferrer" className="text-sol-text-muted hover:text-primary transition">
+              <a href={SOCIAL_LINKS.twitter} target="_blank" rel="noopener noreferrer" className="text-text-muted hover:text-primary transition">
                 <XIcon className="h-4 w-4" />
               </a>
-              <a href={SOCIAL_LINKS.discord} target="_blank" rel="noopener noreferrer" className="text-sol-text-muted hover:text-primary transition">
+              <a href={SOCIAL_LINKS.discord} target="_blank" rel="noopener noreferrer" className="text-text-muted hover:text-primary transition">
                 <DiscordIcon className="h-4 w-4" />
               </a>
             </div>
@@ -97,34 +97,34 @@ export const Navbar: FC<Props> = ({ locale, setLocale, t }) => {
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           >
             {mobileMenuOpen ? (
-              <X className="h-6 w-6 text-sol-text-muted" />
+              <X className="h-6 w-6 text-text-muted" />
             ) : (
-              <Menu className="h-6 w-6 text-sol-text-muted" />
+              <Menu className="h-6 w-6 text-text-muted" />
             )}
           </button>
         </div>
 
         {/* Mobile Navigation */}
         {mobileMenuOpen && (
-          <div className="md:hidden py-4 border-t border-sol-border">
+          <div className="md:hidden py-4 border-t border-border">
             <div className="flex flex-col gap-4">
-              <a href="/#features" onClick={(e) => handleAnchorClick(e, 'features')} className="text-sol-text-muted hover:text-primary transition cursor-pointer">
+              <a href="/#features" onClick={(e) => handleAnchorClick(e, 'features')} className="text-text-muted hover:text-primary transition cursor-pointer">
                 {t('features')}
               </a>
-              <a href="/#pricing" onClick={(e) => handleAnchorClick(e, 'pricing')} className="text-sol-text-muted hover:text-primary transition cursor-pointer">
+              <a href="/#pricing" onClick={(e) => handleAnchorClick(e, 'pricing')} className="text-text-muted hover:text-primary transition cursor-pointer">
                 {t('pricing')}
               </a>
-              <Link href="/docs" className="text-sol-text-muted hover:text-primary transition">
+              <Link href="/docs" className="text-text-muted hover:text-primary transition">
                 {t('docs')}
               </Link>
-              <Link href="/models" className="text-sol-text-muted hover:text-primary transition">
+              <Link href="/models" className="text-text-muted hover:text-primary transition">
                 {t('models')}
               </Link>
               <div className="pt-2 flex items-center gap-4">
-                <a href={SOCIAL_LINKS.twitter} target="_blank" rel="noopener noreferrer" className="text-sol-text-muted hover:text-primary transition">
+                <a href={SOCIAL_LINKS.twitter} target="_blank" rel="noopener noreferrer" className="text-text-muted hover:text-primary transition">
                   <XIcon className="h-4 w-4" />
                 </a>
-                <a href={SOCIAL_LINKS.discord} target="_blank" rel="noopener noreferrer" className="text-sol-text-muted hover:text-primary transition">
+                <a href={SOCIAL_LINKS.discord} target="_blank" rel="noopener noreferrer" className="text-text-muted hover:text-primary transition">
                   <DiscordIcon className="h-4 w-4" />
                 </a>
                 <LanguageSwitch locale={locale} setLocale={setLocale} />
