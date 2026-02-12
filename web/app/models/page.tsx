@@ -1,99 +1,64 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { Search, Copy, Check } from 'lucide-react'
 import { useLocale } from '@/lib/LocaleContext'
+import Image from 'next/image'
+import { MODELS } from '@/lib/constants'
 
-const PROVIDERS: any = {
-  'openai': { label: 'OpenAI', logo: '🟢' },
-  'anthropic': { label: 'Anthropic', logo: '🟠' },
-  'google': { label: 'Google', logo: '🔵' },
-  'meta-llama': { label: 'Meta', logo: '🟣' },
-  'mistralai': { label: 'Mistral', logo: '🟡' },
-  'deepseek': { label: 'DeepSeek', logo: '🔴' },
-  'x-ai': { label: 'xAI', logo: '⚫' },
-  'qwen': { label: 'Qwen', logo: '🟣' },
-  'cohere': { label: 'Cohere', logo: '🩵' },
-  'nvidia': { label: 'NVIDIA', logo: '🟩' },
-  'amazon': { label: 'Amazon', logo: '🟧' },
-  'microsoft': { label: 'Microsoft', logo: '🔷' },
-  'perplexity': { label: 'Perplexity', logo: '🔮' },
-  'minimax': { label: 'MiniMax', logo: '🩷' },
-  'bytedance-research': { label: 'ByteDance', logo: '🎵' },
-}
+// ─── Provider metadata ──────────────────────────────────────────────
+const PROVIDERS = [
+  { slug: 'OpenAI',      logo: '/logos/openai.svg' },
+  { slug: 'Anthropic',   logo: '/logos/anthropic.svg' },
+  { slug: 'Google',      logo: '/logos/google.svg' },
+  { slug: 'DeepSeek',    logo: '/logos/deepseek.svg' },
+  { slug: 'Meta',        logo: '/logos/meta.svg' },
+  { slug: 'Mistral',     logo: '/logos/mistral.svg' },
+  { slug: 'xAI',         logo: '/logos/xai.svg' },
+  { slug: 'Qwen',        logo: '/logos/qwen.svg' },
+  { slug: 'Perplexity',  logo: '/logos/perplexity.svg' },
+  { slug: 'Cohere',      logo: '/logos/cohere.svg' },
+  { slug: 'Microsoft',   logo: '/logos/microsoft.svg' },
+  { slug: 'Amazon',      logo: '/logos/amazon.svg' },
+  { slug: '01.AI',       logo: '/logos/01.ai.svg' },
+  { slug: 'AI21',        logo: '/logos/ai21.svg' },
+  { slug: 'Moonshot',    logo: '/logos/moonshot.svg' },
+  { slug: 'MiniMax',     logo: '/logos/minimax.svg' },
+  { slug: 'ByteDance',   logo: '/logos/bytedance.svg' },
+  { slug: 'Xiaomi',      logo: '/logos/xiaomi.svg' },
+  { slug: 'Z.AI',        logo: '/logos/zai.svg' },
+  { slug: 'Writer',      logo: '/logos/writer.svg' },
+]
 
-function getInfo(slug: string) {
-  return PROVIDERS[slug] || { label: slug, logo: '⬜' }
-}
-
-function fmtPrice(raw: string) {
-  const v = parseFloat(raw || '0')
+function fmtPrice(v: number) {
   if (v === 0) return 'Free'
-  const p = v * 1000000
-  if (p >= 100) return `$${p.toFixed(0)}`
-  if (p >= 1) return `$${p.toFixed(2)}`
-  if (p >= 0.01) return `$${p.toFixed(3)}`
-  return `$${p.toFixed(4)}`
+  if (v >= 10) return `$${v.toFixed(0)}`
+  if (v < 0.1) return `$${v.toFixed(3)}`
+  return `$${v.toFixed(2)}`
 }
 
-function fmtCtx(m: any) {
-  const c = m.context_length || m.top_provider?.context_length
-  if (!c) return '-'
-  if (c >= 1000000) return `${(c / 1000000).toFixed(1)}M`
-  if (c >= 1000) return `${Math.round(c / 1000)}K`
-  return String(c)
+function TagBadge({ tag }: { tag?: string }) {
+  if (!tag) return null
+  const styles: Record<string, string> = {
+    new: 'bg-green-900/40 text-green-400 border-green-700/40',
+    hot: 'bg-orange-900/40 text-orange-400 border-orange-700/40',
+    reasoning: 'bg-purple-900/40 text-purple-400 border-purple-700/40',
+  }
+  const labels: Record<string, string> = { new: '🆕 New', hot: '🔥 Hot', reasoning: '🧠 Reasoning' }
+  return (
+    <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded border ${styles[tag] || ''}`}>
+      {labels[tag] || tag}
+    </span>
+  )
 }
 
+// ─── Page ───────────────────────────────────────────────────────────
 export default function ModelsPage() {
   const { locale } = useLocale()
   const isZh = locale === 'zh'
-  const [models, setModels] = useState<any[]>([])
-  const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState('')
-  const [selectedProvider, setSelectedProvider] = useState<string | null>(null)
+  const [selectedProvider, setSelectedProvider] = useState('OpenAI')
   const [copiedId, setCopiedId] = useState<string | null>(null)
-
-  useEffect(() => {
-    fetch('https://api.aifuel.fun/v1/models')
-      .then(r => r.json())
-      .then(data => {
-        const paid = (data.data || []).filter((m: any) => {
-          const p = parseFloat(m.pricing?.prompt || '0')
-          const c = parseFloat(m.pricing?.completion || '0')
-          return p > 0 || c > 0
-        })
-        paid.sort((a: any, b: any) => a.name.localeCompare(b.name))
-        setModels(paid)
-        setLoading(false)
-      })
-      .catch(() => setLoading(false))
-  }, [])
-
-  // Get unique providers with counts
-  const providerStats = new Map<string, { label: string; logo: string; count: number }>()
-  models.forEach(m => {
-    const slug = m.id.split('/')[0]
-    const info = getInfo(slug)
-    if (!providerStats.has(slug)) {
-      providerStats.set(slug, { ...info, count: 0 })
-    }
-    providerStats.get(slug)!.count++
-  })
-
-  const providerList = Array.from(providerStats.entries())
-    .map(([slug, stats]) => ({ slug, ...stats }))
-    .sort((a, b) => a.label.localeCompare(b.label))
-
-  // Filter models
-  const filteredModels = models.filter(m => {
-    const slug = m.id.split('/')[0]
-    if (selectedProvider && slug !== selectedProvider) return false
-    if (search) {
-      const s = search.toLowerCase()
-      return m.name.toLowerCase().includes(s) || m.id.toLowerCase().includes(s)
-    }
-    return true
-  })
 
   const copy = (text: string) => {
     navigator.clipboard.writeText(text)
@@ -101,164 +66,199 @@ export default function ModelsPage() {
     setTimeout(() => setCopiedId(null), 2000)
   }
 
-  return (
-    <div className="min-h-screen bg-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+  // Count models per provider
+  const providerCounts = new Map<string, number>()
+  MODELS.forEach(m => providerCounts.set(m.provider, (providerCounts.get(m.provider) || 0) + 1))
 
-        {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">
-            {isZh ? '模型列表' : 'Models'}
-          </h1>
-          <p className="text-gray-500">
-            {isZh ? '浏览所有付费模型并选择提供商' : 'Browse all paid models and select a provider'}
-          </p>
-        </div>
+  // Filter
+  // Case 1: Search active → show ALL matching models (ignore provider selection)
+  // Case 2: No search → show ONLY selected provider models
+  const filtered = MODELS.filter(m => {
+    if (search) {
+      const s = search.toLowerCase()
+      return m.name.toLowerCase().includes(s) || m.id.toLowerCase().includes(s) || m.provider.toLowerCase().includes(s)
+    }
+    return m.provider === selectedProvider
+  })
+
+  // Sort by tag priority (New > Hot > Reasoning > Standard) for "No Search" mode
+  if (!search) {
+    filtered.sort((a, b) => {
+      const score = (t?: string) => {
+        if (t === 'new') return 3
+        if (t === 'hot') return 2
+        if (t === 'reasoning') return 2
+        return 0
+      }
+      return score(b.tag) - score(a.tag)
+    })
+  }
+
+  return (
+    <div className="min-h-screen bg-[#1a1a1a] text-white">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 pt-24">
 
         {/* Search */}
-        <div className="relative mb-6">
-          <Search className="absolute left-4 top-3.5 h-5 w-5 text-gray-400" />
+        <div className="relative mb-6 max-w-md">
+          <Search className="absolute left-4 top-3 h-4 w-4 text-[#888]" />
           <input
             type="text"
-            placeholder={isZh ? '搜索模型或提供商...' : 'Search models or providers...'}
+            placeholder={isZh ? '搜索模型 (例如: gpt, claude, deepseek)...' : 'Search models (e.g., gpt, claude, deepseek)...'}
             value={search}
             onChange={e => setSearch(e.target.value)}
-            className="w-full pl-12 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:bg-white transition"
+            className="w-full pl-11 pr-4 py-2.5 bg-[#2a2a2a] border border-[#444] rounded-lg text-sm text-white placeholder-[#888] focus:outline-none focus:ring-1 focus:ring-[#00d4ff] focus:border-[#00d4ff] transition"
           />
         </div>
 
-        <div className="flex gap-6">
-          {/* Left Panel - Providers */}
-          <div className="w-80 flex-shrink-0">
-            <h2 className="text-sm font-semibold text-gray-500 uppercase mb-4">
-              {isZh ? '提供商' : 'Providers'}
-            </h2>
-            <div className="grid grid-cols-2 gap-3">
-              {/* All option */}
-              <button
-                onClick={() => setSelectedProvider(null)}
-                className={`p-4 rounded-xl border-2 transition text-center ${selectedProvider === null ? 'border-primary bg-primary/5 shadow-md' : 'border-gray-200 hover:border-gray-300'}`}
-              >
-                <div className="text-2xl mb-2">🌐</div>
-                <div className="font-medium text-sm text-gray-900">
-                  {isZh ? '全部' : 'All'}
-                </div>
-                <div className="text-xs text-gray-500 mt-1">
-                  {models.length}
-                </div>
-              </button>
+        <div className="flex flex-col md:flex-row gap-6">
 
-              {/* Provider cards */}
-              {providerList.map(provider => (
-                <button
-                  key={provider.slug}
-                  onClick={() => setSelectedProvider(selectedProvider === provider.slug ? null : provider.slug)}
-                  className={`p-4 rounded-xl border-2 transition text-center ${selectedProvider === provider.slug ? 'border-primary bg-primary/5 shadow-md' : 'border-gray-200 hover:border-gray-300'}`}
-                >
-                  <div className="text-2xl mb-2">{provider.logo}</div>
-                  <div className="font-medium text-sm text-gray-900 truncate">
-                    {provider.label}
-                  </div>
-                  <div className="text-xs text-gray-500 mt-1">
-                    {provider.count}
-                  </div>
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Right Panel - Models */}
-          <div className="flex-1">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-sm font-semibold text-gray-500 uppercase">
-                {isZh ? '模型' : 'Models'}
-                <span className="ml-2 text-gray-400">({filteredModels.length})</span>
+          {/* ─── Left Panel: Providers ─── */}
+          {/* Always show provider list, search only filters right panel */}
+          <div className="w-full md:w-56 flex-shrink-0">
+              <h2 className="text-[10px] font-semibold text-[#888] uppercase tracking-wider mb-3 px-1 hidden md:block">
+                {isZh ? '提供商' : 'Providers'}
               </h2>
-            </div>
-
-            {loading ? (
-              <div className="text-center py-16 text-gray-400">{isZh ? '加载中...' : 'Loading...'}</div>
-            ) : filteredModels.length === 0 ? (
-              <div className="text-center py-16 text-gray-400">{isZh ? '未找到模型' : 'No models found'}</div>
-            ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {filteredModels.map((m: any) => {
-                  const slug = m.id.split('/')[0]
-                  const info = getInfo(slug)
-                  const modelName = m.name.replace(/^[a-zA-Z]+[.-]/, '') // Remove provider prefix
-
+              
+              {/* Desktop: Vertical List */}
+              <div className="hidden md:flex flex-col gap-1 h-[calc(100vh-200px)] overflow-y-auto pr-2 custom-scrollbar">
+                {PROVIDERS.map(p => {
+                  const count = providerCounts.get(p.slug) || 0
+                  if (count === 0) return null
+                  const active = selectedProvider === p.slug
                   return (
-                    <div
-                      key={m.id}
-                      className="p-4 border border-gray-200 rounded-xl hover:border-primary/50 hover:shadow-md transition group"
+                    <button
+                      key={p.slug}
+                      onClick={() => setSelectedProvider(p.slug)}
+                      className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-left transition ${
+                        active
+                          ? 'bg-[#00d4ff]/10 border border-[#00d4ff]/40 text-white'
+                          : 'border border-transparent hover:bg-[#2a2a2a] text-[#ccc] hover:text-white'
+                      }`}
                     >
-                      <div className="flex items-start justify-between">
-                        <div className="flex-1 min-w-0">
-                          {/* Provider badge */}
-                          <div className="flex items-center gap-2 mb-2">
-                            <span className="text-lg">{info.logo}</span>
-                            <span className="text-xs font-medium text-gray-500 uppercase">
-                              {info.label}
-                            </span>
-                          </div>
-
-                          {/* Model name */}
-                          <h3 className="font-semibold text-gray-900 mb-1 group-hover:text-primary transition truncate">
-                            {modelName}
-                          </h3>
-
-                          {/* Full ID */}
-                          <p className="text-xs text-gray-400 font-mono truncate mb-3">
-                            {m.id}
-                          </p>
-
-                          {/* Prices */}
-                          <div className="flex gap-4 text-sm">
-                            <div>
-                              <span className="text-gray-500">{isZh ? '输入' : 'In'}:</span>
-                              <span className="ml-1 font-mono text-gray-700">{fmtPrice(m.pricing?.prompt)}</span>
-                            </div>
-                            <div>
-                              <span className="text-gray-500">{isZh ? '输出' : 'Out'}:</span>
-                              <span className="ml-1 font-mono text-gray-700">{fmtPrice(m.pricing?.completion)}</span>
-                            </div>
-                          </div>
-
-                          {/* Context length */}
-                          <div className="mt-2 text-xs text-gray-500">
-                            {isZh ? '上下文' : 'Context'}: {fmtCtx(m)}
-                          </div>
+                      <Image
+                        src={p.logo}
+                        alt={p.slug}
+                        width={20}
+                        height={20}
+                        className="flex-shrink-0 rounded"
+                        onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }}
+                      />
+                      <div className="flex-1 min-w-0">
+                        <div className={`text-sm font-medium truncate ${active ? 'text-white' : ''}`}>
+                          {p.slug}
                         </div>
-
-                        {/* Copy button */}
-                        <button
-                          onClick={() => copy(m.id)}
-                          title={isZh ? '复制模型 ID' : 'Copy model ID'}
-                          className="ml-3 p-2 text-gray-400 hover:text-primary hover:bg-gray-100 rounded-lg transition flex-shrink-0"
-                        >
-                          {copiedId === m.id ? (
-                            <Check className="h-4 w-4 text-green-500" />
-                          ) : (
-                            <Copy className="h-4 w-4" />
-                          )}
-                        </button>
                       </div>
-                    </div>
+                      <span className={`text-xs ${active ? 'text-[#00d4ff]' : 'text-[#888]'}`}>
+                        {count}
+                      </span>
+                    </button>
                   )
                 })}
+              </div>
+
+              {/* Mobile: Horizontal Scroll */}
+              <div className="md:hidden flex overflow-x-auto gap-2 pb-2 mb-2 no-scrollbar">
+                {PROVIDERS.map(p => {
+                  const count = providerCounts.get(p.slug) || 0
+                  if (count === 0) return null
+                  const active = selectedProvider === p.slug
+                  return (
+                    <button
+                      key={p.slug}
+                      onClick={() => setSelectedProvider(p.slug)}
+                      className={`flex-shrink-0 flex items-center gap-2 px-3 py-2 rounded-full border text-sm transition whitespace-nowrap ${
+                        active
+                          ? 'bg-[#00d4ff]/10 border-[#00d4ff] text-white'
+                          : 'bg-[#2a2a2a] border-[#444] text-[#ccc]'
+                      }`}
+                    >
+                      {active && <Check className="w-3 h-3 text-[#00d4ff]" />}
+                      {p.slug}
+                    </button>
+                  )
+                })}
+              </div>
+            </div>
+
+          {/* ─── Right Panel: Model Cards ─── */}
+          <div className="flex-1">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-[10px] font-semibold text-[#888] uppercase tracking-wider">
+                {search ? (isZh ? '搜索结果' : 'Search Results') : (
+                  <>
+                    {selectedProvider} {isZh ? '模型' : 'Models'}
+                    <span className="ml-2 text-[#666]">({filtered.length})</span>
+                  </>
+                )}
+              </h2>
+              <span className="text-[10px] text-[#888]">
+                {isZh ? '价格 / 1M tokens · 零加价' : 'per 1M tokens · zero markup'}
+              </span>
+            </div>
+
+            {filtered.length === 0 ? (
+              <div className="text-center py-16 text-[#888]">
+                {isZh ? '未找到模型' : 'No models found'}
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
+                {filtered.map(m => (
+                  <div
+                    key={m.id}
+                    className="p-4 bg-[#2a2a2a] border border-[#444] rounded-xl hover:border-[#00d4ff]/50 hover:bg-[#333] transition group"
+                  >
+                    {/* Header */}
+                    <div className="flex items-start justify-between mb-3">
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-center gap-2 mb-1">
+                          <h3 className="text-sm font-semibold text-white group-hover:text-[#00d4ff] transition truncate">
+                            {m.name}
+                          </h3>
+                          <TagBadge tag={m.tag} />
+                        </div>
+                        <p className="text-[10px] text-[#888] font-mono truncate">{m.id}</p>
+                      </div>
+                      <button
+                        onClick={() => copy(m.id)}
+                        title={isZh ? '复制模型 ID' : 'Copy model ID'}
+                        className="ml-2 p-1.5 text-[#888] hover:text-[#00d4ff] hover:bg-[#00d4ff]/10 rounded-lg transition flex-shrink-0"
+                      >
+                        {copiedId === m.id ? (
+                          <Check className="h-3.5 w-3.5 text-green-400" />
+                        ) : (
+                          <Copy className="h-3.5 w-3.5" />
+                        )}
+                      </button>
+                    </div>
+
+                    {/* Pricing */}
+                    <div className="flex items-center gap-4 text-xs">
+                      <div className="flex-1">
+                        <div className="text-[#888] mb-0.5">{isZh ? '输入' : 'Input'}</div>
+                        <div className="font-mono font-medium text-white">{fmtPrice(m.inputPrice)}</div>
+                      </div>
+                      <div className="flex-1">
+                        <div className="text-[#888] mb-0.5">{isZh ? '输出' : 'Output'}</div>
+                        <div className="font-mono font-medium text-white">{fmtPrice(m.outputPrice)}</div>
+                      </div>
+                      <div className="flex-1">
+                        <div className="text-[#888] mb-0.5">{isZh ? '上下文' : 'Context'}</div>
+                        <div className="font-mono text-[#ccc]">{m.context}</div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
               </div>
             )}
           </div>
         </div>
 
-        {/* Footer info */}
-        {!loading && filteredModels.length > 0 && (
-          <div className="mt-8 pt-6 border-t border-gray-100 text-center text-xs text-gray-400">
-            {isZh
-              ? '价格以每 1M tokens 为单位显示。点击复制按钮可复制模型 ID。'
-              : 'Prices shown per 1M tokens. Click copy button to copy model ID.'}
-          </div>
-        )}
+        {/* Footer */}
+        <div className="mt-10 pt-6 border-t border-[#444] text-center text-xs text-[#888]">
+          {isZh
+            ? `共 ${MODELS.length} 个付费模型 · 实际费用与 OpenRouter 完全一致 · 零加价透传`
+            : `${MODELS.length} paid models · Exact same pricing as OpenRouter · Zero markup pass-through`}
+        </div>
       </div>
     </div>
   )

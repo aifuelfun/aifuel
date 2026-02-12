@@ -9,53 +9,37 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
+        // Pure Contrast Theme - 极简高对比
         primary: {
-          DEFAULT: '#FF6B35',
-          light: '#FF8559',
-          dark: '#E55A2B',
-          50: '#FFF5F0',
-          100: '#FFE5D9',
-          200: '#FFCBB3',
-          300: '#FFB18D',
-          400: '#FF8E59',
-          500: '#FF6B35',
-          600: '#E55A2B',
-          700: '#CC4A21',
-          800: '#993817',
-          900: '#66250F',
+          DEFAULT: '#00d4ff',  // 亮蓝
+          light: '#33e0ff',
+          dark: '#00a8cc',
         },
-        accent: {
-          blue: '#3B82F6',
-          green: '#10B981',
-          purple: '#7C3AED',
-          pink: '#EC4899',
+        secondary: {
+          DEFAULT: '#ff6b35',  // 橙色
+          light: '#ff8c5f',
+          dark: '#cc5529',
         },
+        // Background
         dark: {
-          DEFAULT: '#1A1A2E',
-          light: '#25253D',
-          lighter: '#2D2D4A',
+          DEFAULT: '#1a1a1a',      // 主背景
+          card: '#2a2a2a',         // 卡片
+          lighter: '#3a3a3a',      // 更亮
+        },
+        // Borders
+        border: {
+          DEFAULT: '#444444',
+          light: '#555555',
+        },
+        // Text - 高对比度
+        text: {
+          DEFAULT: '#ffffff',      // 纯白
+          muted: '#cccccc',        // 浅灰（清晰）
+          dim: '#999999',          // 暗灰
         },
       },
       backgroundImage: {
-        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
-        'gradient-conic': 'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
-        'hero-gradient': 'linear-gradient(135deg, #FF6B35 0%, #7C3AED 100%)',
-        'feature-glow': 'radial-gradient(circle at center, rgba(255, 107, 53, 0.1) 0%, transparent 70%)',
-      },
-      animation: {
-        'float': 'float 3s ease-in-out infinite',
-        'pulse-slow': 'pulse 3s ease-in-out infinite',
-        'fade-in': 'fadeIn 0.3s ease-out',
-      },
-      keyframes: {
-        float: {
-          '0%, 100%': { transform: 'translateY(0)' },
-          '50%': { transform: 'translateY(-10px)' },
-        },
-        fadeIn: {
-          '0%': { opacity: '0', transform: 'translateY(10px)' },
-          '100%': { opacity: '1', transform: 'translateY(0)' },
-        },
+        'gradient-primary': 'linear-gradient(135deg, #00d4ff 0%, #0099ff 100%)',
       },
     },
   },

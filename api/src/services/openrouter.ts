@@ -57,10 +57,25 @@ export function estimateRequestCost(body: any): number {
 
 /**
  * Calculate actual cost from response
+ * Uses OpenRouter's real cost directly (1.0 = no markup)
+ * Falls back to local pricing table × 1.2 markup (safety buffer for estimates)
  */
-export function calculateActualCost(model: string, usage: { prompt_tokens: number; completion_tokens: number }): number {
+const MARKUP = 1.0;        // No markup on real OpenRouter cost
+const FALLBACK_MARKUP = 1.2; // 20% buffer on local estimate (less accurate)
+
+export function calculateActualCost(model: string, usage: { prompt_tokens: number; completion_tokens: number; cost?: number }): number {
+  // Use OpenRouter's real cost if available, with markup
+  if (usage.cost && usage.cost > 0) {
+    const marked = usage.cost * MARKUP;
+    console.log(`[cost] OpenRouter real=$${usage.cost} × ${MARKUP} = $${marked} for ${model}`);
+    return marked;
+  }
+  // Fallback to local pricing table with higher markup
   const pricing = getModelPricing(model);
-  return (usage.prompt_tokens * pricing.input + usage.completion_tokens * pricing.output) / 1_000_000;
+  const base = (usage.prompt_tokens * pricing.input + usage.completion_tokens * pricing.output) / 1_000_000;
+  const marked = base * FALLBACK_MARKUP;
+  console.log(`[cost] Local estimate=$${base} × ${FALLBACK_MARKUP} = $${marked} for ${model} (${usage.prompt_tokens}in/${usage.completion_tokens}out)`);
+  return marked;
 }
 
 /**

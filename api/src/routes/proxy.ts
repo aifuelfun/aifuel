@@ -60,10 +60,10 @@ router.post('/chat/completions', apiKeyAuth, apiRateLimit, async (req: Request, 
     // Forward to OpenRouter
     const response = await forwardToOpenRouter(req.body);
     
-    // Calculate actual cost
+    // Calculate actual cost — use OpenRouter's real cost when available
     const actualCost = calculateActualCost(
       response.model,
-      response.usage || { prompt_tokens: 0, completion_tokens: 0 }
+      response.usage || { prompt_tokens: 0, completion_tokens: 0, cost: 0 }
     );
     
     // Deduct credit
@@ -117,20 +117,32 @@ async function handleStreamingRequest(req: Request, res: Response, userId: numbe
     
     let totalInputTokens = 0;
     let totalOutputTokens = 0;
+    let realCost = 0;
     let model = req.body.model;
+    let buffer = '';
     
     stream.on('data', (chunk: Buffer) => {
       const text = chunk.toString();
       res.write(text);
+      buffer += text;
       
-      // Try to parse usage from final chunk
+      // Try to parse usage from SSE data lines
       if (text.includes('"usage"')) {
         try {
-          const match = text.match(/"usage":\s*({[^}]+})/);
-          if (match) {
-            const usage = JSON.parse(match[1]);
-            totalInputTokens = usage.prompt_tokens || 0;
-            totalOutputTokens = usage.completion_tokens || 0;
+          // Extract all SSE data lines from buffer
+          const lines = buffer.split('\n');
+          for (const line of lines) {
+            if (line.startsWith('data: ') && line !== 'data: [DONE]') {
+              try {
+                const json = JSON.parse(line.slice(6));
+                if (json.usage) {
+                  totalInputTokens = json.usage.prompt_tokens || 0;
+                  totalOutputTokens = json.usage.completion_tokens || 0;
+                  realCost = json.usage.cost || 0;
+                  console.log(`[stream] Parsed usage: input=${totalInputTokens}, output=${totalOutputTokens}, cost=$${realCost}`);
+                }
+              } catch {}
+            }
           }
         } catch {}
       }
@@ -139,10 +151,11 @@ async function handleStreamingRequest(req: Request, res: Response, userId: numbe
     stream.on('end', async () => {
       res.end();
       
-      // Deduct credit after stream ends
+      // Deduct credit after stream ends — use OpenRouter's real cost
       const actualCost = calculateActualCost(model, {
         prompt_tokens: totalInputTokens,
         completion_tokens: totalOutputTokens,
+        cost: realCost,
       });
       
       await deductCredit(userId, actualCost);

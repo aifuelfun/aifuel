@@ -18,7 +18,6 @@ export const WalletButton: FC<Props> = ({ className }) => {
   const [copied, setCopied] = useState(false)
   const ref = useRef<HTMLDivElement>(null)
 
-  // Close menu on click outside
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       if (ref.current && !ref.current.contains(e.target as Node)) {
@@ -52,13 +51,12 @@ export const WalletButton: FC<Props> = ({ className }) => {
     setShowConnectModal(true)
   }, [])
 
-  // Not connected → custom button that opens the custom wallet modal
   if (!connected) {
     return (
       <>
         <button
           onClick={() => setShowConnectModal(true)}
-          className={`inline-flex items-center gap-2 px-6 py-3 bg-primary text-white font-medium rounded-lg hover:bg-primary/90 transition text-sm ${className || ''}`}
+          className={`inline-flex items-center gap-2 px-6 py-3 bg-[#00d4ff] text-black font-semibold rounded-lg hover:bg-[#33e0ff] transition text-sm ${className || ''}`}
         >
           <Wallet className="h-4 w-4" />
           {t('walletConnect') || '连接钱包'}
@@ -71,12 +69,11 @@ export const WalletButton: FC<Props> = ({ className }) => {
     )
   }
 
-  // Connected → custom dropdown
   return (
     <div ref={ref} className="relative">
       <button
         onClick={() => setMenuOpen(!menuOpen)}
-        className={`inline-flex items-center gap-2 px-4 py-2 bg-gray-100 text-gray-900 font-medium rounded-lg hover:bg-gray-200 transition text-sm ${className || ''}`}
+        className={`inline-flex items-center gap-2 px-4 py-2 bg-[#2a2a2a] text-white font-medium rounded-lg hover:bg-[#3a3a3a] border border-[#444] transition text-sm ${className || ''}`}
       >
         {wallet?.adapter.icon && (
           <img src={wallet.adapter.icon} alt="" className="h-4 w-4" />
@@ -86,25 +83,25 @@ export const WalletButton: FC<Props> = ({ className }) => {
       </button>
 
       {menuOpen && (
-        <div className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-lg border border-gray-200 py-1 z-50">
+        <div className="absolute right-0 mt-2 w-48 bg-[#2a2a2a] rounded-xl shadow-lg border border-[#444] py-1 z-50">
           <button
             onClick={copyAddress}
-            className="w-full px-4 py-2.5 text-left text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2"
+            className="w-full px-4 py-2.5 text-left text-sm text-[#ccc] hover:bg-[#333] flex items-center gap-2"
           >
-            {copied ? <Check className="h-4 w-4 text-green-600" /> : <Copy className="h-4 w-4 text-gray-400" />}
+            {copied ? <Check className="h-4 w-4 text-green-400" /> : <Copy className="h-4 w-4 text-[#888]" />}
             {t('walletCopyAddress') || '复制地址'}
           </button>
           <button
             onClick={handleChangeWallet}
-            className="w-full px-4 py-2.5 text-left text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2"
+            className="w-full px-4 py-2.5 text-left text-sm text-[#ccc] hover:bg-[#333] flex items-center gap-2"
           >
-            <Wallet className="h-4 w-4 text-gray-400" />
+            <Wallet className="h-4 w-4 text-[#888]" />
             {t('walletChange') || '切换钱包'}
           </button>
-          <div className="border-t border-gray-100 my-1" />
+          <div className="border-t border-[#444] my-1" />
           <button
             onClick={handleDisconnect}
-            className="w-full px-4 py-2.5 text-left text-sm text-red-600 hover:bg-red-50 flex items-center gap-2"
+            className="w-full px-4 py-2.5 text-left text-sm text-red-400 hover:bg-red-900/20 flex items-center gap-2"
           >
             <LogOut className="h-4 w-4" />
             {t('walletDisconnect') || '断开连接'}

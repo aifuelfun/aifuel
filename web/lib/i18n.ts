@@ -47,6 +47,20 @@ export const translations = {
     feature3Title: 'Transparent Credits',
     feature3Desc: 'Daily credits based on your holdings. Formula is public, treasury is on-chain.',
     
+    // Credit System Section
+    creditSystemTitle: '💎 Credit System · Hold to Earn',
+    creditSystemDesc: 'Your daily AI credits are calculated based on your on-chain holdings',
+    creditFormulaLabel: 'Daily Credit Formula',
+    creditFormula: '(Your Balance / Circulating Supply) × Daily Pool × Multiplier',
+    diamondHand: 'Diamond Hand',
+    diamondHandDesc: 'Never transferred out, full credits',
+    standardUser: 'Standard User',
+    standardUserDesc: 'Ever transferred out, max 80%',
+    cooldownPeriod: 'Cooldown',
+    cooldownPeriodDesc: '0% for 30 min after sell',
+    circulatingSupply: 'Circulating Supply',
+    dailyReset: 'Credits reset daily at UTC 00:00',
+    
     // How It Works
     howItWorks: 'How It Works',
     threeSteps: 'Three simple steps to free AI',
@@ -83,8 +97,7 @@ export const translations = {
     enterAmount: 'Enter amount',
     estimatedDaily: 'Estimated Daily Credit',
     multiplier: 'Multiplier',
-    diamondHand: 'Diamond Hand',
-    neverTransferred: '(never transferred out)',
+    // diamondHand and neverTransferred moved to Credit System Section
     
     // On-Chain Proof
     onChainProof: 'On-Chain Transparency',
@@ -220,6 +233,20 @@ export const translations = {
     feature3Title: '透明额度',
     feature3Desc: '每日额度基于持仓量。公式公开，国库链上可查。',
     
+    // Credit System Section
+    creditSystemTitle: '💎 额度系统 · 持仓即算力',
+    creditSystemDesc: '你的每日 AI 额度，由链上持仓实时计算',
+    creditFormulaLabel: '每日额度计算公式',
+    creditFormula: '(你的余额 / 流通量) × 每日池 × 倍数',
+    diamondHand: '钻石手',
+    diamondHandDesc: '从未转出，拿满额度',
+    standardUser: '标准用户',
+    standardUserDesc: '曾转出，上限 80%',
+    cooldownPeriod: '冷却期',
+    cooldownPeriodDesc: '卖出后 30 分钟',
+    circulatingSupply: '流通量',
+    dailyReset: '额度每日 UTC 00:00 重置',
+    
     // How It Works
     howItWorks: '如何使用',
     threeSteps: '三步免费使用 AI',
@@ -256,8 +283,7 @@ export const translations = {
     enterAmount: '输入数量',
     estimatedDaily: '预估每日额度',
     multiplier: '倍数',
-    diamondHand: '钻石手',
-    neverTransferred: '（从未转出）',
+    // diamondHand and neverTransferred moved to Credit System Section
     
     // On-Chain Proof
     onChainProof: '链上透明',

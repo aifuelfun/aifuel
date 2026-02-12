@@ -9,10 +9,23 @@ const texts = {
   en: {
     title: 'Documentation',
     subtitle: 'Everything you need to integrate AIFuel into your applications.',
+    openclawGuide: 'OpenClaw Configuration Guide',
+    openclawDesc: 'Use AIFuel API as your AI provider in OpenClaw',
+    openclawStep1: '1. Get AIFuel API Key',
+    openclawStep1Desc: 'Visit aifuel.fun, connect your wallet and create your API key (format: fuel_sk_xxx)',
+    openclawStep2: '2. Configure OpenClaw',
+    openclawStep2Desc: 'Add AIFuel as a provider in your OpenClaw settings:',
+    openclawStep3: '3. Start Using',
+    openclawStep3Desc: 'After configuration, you can use all models provided by AIFuel in OpenClaw.',
+    openclawConfigExplain: 'Configuration Notes',
+    openclawProvider: 'Provider name can be customized (e.g., aifuel)',
+    openclawBaseUrl: 'baseUrl must be https://api.aifuel.fun/v1',
+    openclawApiKey: 'apiKey: your AIFuel API key',
+    openclawModel: 'model ID: use full AIFuel model ID (e.g., anthropic/claude-3.5-sonnet)',
     quickStart: 'Quick Start',
     step1Title: '1. Get your API Key',
     step1Desc: 'Connect your wallet at',
-    step1Link: 'dashboard',
+    step1Link: 'homepage',
     step1Desc2: 'and create an API key.',
     step2Title: '2. Install the SDK',
     step2Desc: 'Use the official OpenAI SDK - our API is fully compatible.',
@@ -45,10 +58,23 @@ const texts = {
   zh: {
     title: '文档',
     subtitle: '将 AIFuel 集成到你的应用所需的一切。',
+    openclawGuide: 'OpenClaw 配置指南',
+    openclawDesc: '在 OpenClaw 中使用 AIFuel API 作为你的 AI 提供商',
+    openclawStep1: '1. 获取 AIFuel API 密钥',
+    openclawStep1Desc: '访问 aifuel.fun 连接钱包并创建你的 API 密钥（格式为 fuel_sk_xxx）',
+    openclawStep2: '2. 配置 OpenClaw',
+    openclawStep2Desc: '在 OpenClaw 的设置中添加 AIFuel 作为 provider：',
+    openclawStep3: '3. 开始使用',
+    openclawStep3Desc: '配置完成后，你就可以在 OpenClaw 中使用 AIFuel 提供的所有模型了。',
+    openclawConfigExplain: '配置说明',
+    openclawProvider: 'provider 名称可以自定义（如 aifuel）',
+    openclawBaseUrl: 'baseUrl 必须是 https://api.aifuel.fun/v1',
+    openclawApiKey: 'apiKey 填写你的 AIFuel 密钥',
+    openclawModel: 'model ID 使用 AIFuel 的完整模型 ID（如 anthropic/claude-3.5-sonnet）',
     quickStart: '快速开始',
     step1Title: '1. 获取 API 密钥',
     step1Desc: '在',
-    step1Link: '控制台',
+    step1Link: '首页',
     step1Desc2: '连接钱包并创建 API 密钥。',
     step2Title: '2. 安装 SDK',
     step2Desc: '使用官方 OpenAI SDK - 我们的 API 完全兼容。',
@@ -92,76 +118,154 @@ export default function DocsPage() {
   }
 
   const CodeBlock = ({ code, language, id }: { code: string; language: string; id: string }) => (
-    <div className="relative bg-dark rounded-lg overflow-hidden">
-      <div className="flex items-center justify-between px-4 py-2 bg-dark-light border-b border-gray-800">
-        <span className="text-xs text-gray-400">{language}</span>
-        <button
-          onClick={() => copyCode(code, id)}
-          className="p-1 text-gray-400 hover:text-white transition"
-        >
-          {copiedCode === id ? (
-            <Check className="h-4 w-4 text-green-400" />
-          ) : (
-            <Copy className="h-4 w-4" />
-          )}
+    <div className="relative rounded-lg overflow-hidden border border-[#444]">
+      <div className="flex items-center justify-between px-4 py-2 bg-[#333] border-b border-[#444]">
+        <span className="text-xs text-[#aaa]">{language}</span>
+        <button onClick={() => copyCode(code, id)} className="p-1 text-[#aaa] hover:text-white transition">
+          {copiedCode === id ? <Check className="h-4 w-4 text-green-400" /> : <Copy className="h-4 w-4" />}
         </button>
       </div>
-      <pre className="p-4 overflow-x-auto text-sm">
-        <code className="text-gray-300">{code}</code>
+      <pre className="p-4 overflow-x-auto text-sm bg-[#1a1a1a]">
+        <code className="text-[#e0e0e0]">{code}</code>
       </pre>
     </div>
   )
 
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      {/* Header */}
-      <div className="mb-12">
-        <div className="flex items-center gap-3 mb-4">
-          <Book className="h-8 w-8 text-primary" />
-          <h1 className="text-4xl font-bold text-gray-900">{t.title}</h1>
-        </div>
-        <p className="text-xl text-gray-600">
-          {t.subtitle}
-        </p>
-      </div>
+    <div className="min-h-screen bg-[#1a1a1a]">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 pt-24">
 
-      {/* Quick Start */}
-      <section className="mb-12">
-        <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-2">
-          <Zap className="h-6 w-6 text-primary" />
-          {t.quickStart}
-        </h2>
-        
-        <div className="space-y-6">
-          <div className="bg-white border border-gray-200 rounded-xl p-6">
-            <h3 className="font-semibold text-gray-900 mb-2">{t.step1Title}</h3>
-            <p className="text-gray-600 mb-4">
-              {t.step1Desc} <a href="/dashboard" className="text-primary hover:underline">{t.step1Link}</a> {t.step1Desc2}
-            </p>
+        {/* Header */}
+        <div className="mb-12">
+          <div className="flex items-center gap-3 mb-4">
+            <Book className="h-8 w-8 text-[#00d4ff]" />
+            <h1 className="text-4xl font-bold text-white">{t.title}</h1>
           </div>
+          <p className="text-xl text-[#ccc]">{t.subtitle}</p>
+        </div>
 
-          <div className="bg-white border border-gray-200 rounded-xl p-6">
-            <h3 className="font-semibold text-gray-900 mb-2">{t.step2Title}</h3>
-            <p className="text-gray-600 mb-4">
-              {t.step2Desc}
-            </p>
-            <CodeBlock
-              id="install"
-              language="bash"
-              code={`# Python
+        {/* OpenClaw Guide - FIRST POSITION */}
+        <section className="mb-12">
+          <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-2">
+            <Terminal className="h-6 w-6 text-[#00d4ff]" />
+            {t.openclawGuide}
+          </h2>
+
+          <div className="space-y-6">
+            <div className="bg-[#2a2a2a] border border-[#444] rounded-xl p-6">
+              <p className="text-[#ccc] mb-6">{t.openclawDesc}</p>
+
+              <div className="space-y-6">
+                <div>
+                  <h3 className="font-semibold text-white mb-2">{t.openclawStep1}</h3>
+                  <p className="text-[#ccc]">{t.openclawStep1Desc}</p>
+                </div>
+
+                <div>
+                  <h3 className="font-semibold text-white mb-2">{t.openclawStep2}</h3>
+                  <p className="text-[#ccc] mb-4">{t.openclawStep2Desc}</p>
+                  <CodeBlock id="openclaw-config" language="json" code={`{
+  "models": {
+    "mode": "merge",
+    "providers": {
+      "aifuel": {
+        "baseUrl": "https://api.aifuel.fun/v1",
+        "apiKey": "fuel_sk_your_api_key_here",
+        "api": "openai-completions",
+        "models": [
+          {
+            "id": "anthropic/claude-3.5-sonnet",
+            "name": "Claude 3.5 Sonnet",
+            "reasoning": false
+          },
+          {
+            "id": "openai/gpt-4o",
+            "name": "GPT-4o",
+            "reasoning": false
+          },
+          {
+            "id": "deepseek/deepseek-r1",
+            "name": "DeepSeek R1",
+            "reasoning": true
+          }
+        ]
+      }
+    }
+  },
+  "agents": {
+    "defaults": {
+      "model": {
+        "primary": "aifuel/anthropic/claude-3.5-sonnet"
+      },
+      "models": {
+        "aifuel/anthropic/claude-3.5-sonnet": {},
+        "aifuel/openai/gpt-4o": {},
+        "aifuel/deepseek/deepseek-r1": {}
+      }
+    }
+  }
+}`} />
+                </div>
+
+                <div className="bg-[#1a1a1a] border border-[#444] rounded-xl p-6">
+                  <h3 className="font-semibold text-white mb-4">{t.openclawConfigExplain}</h3>
+                  <ul className="space-y-3 text-[#ccc]">
+                    <li className="flex items-start gap-2">
+                      <span className="text-[#00d4ff] mt-1">•</span>
+                      <span><strong className="text-white">provider:</strong> {t.openclawProvider}</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="text-[#00d4ff] mt-1">•</span>
+                      <span><strong className="text-white">baseUrl:</strong> {t.openclawBaseUrl}</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="text-[#00d4ff] mt-1">•</span>
+                      <span><strong className="text-white">apiKey:</strong> {t.openclawApiKey}</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="text-[#00d4ff] mt-1">•</span>
+                      <span><strong className="text-white">model id:</strong> {t.openclawModel}</span>
+                    </li>
+                  </ul>
+                </div>
+
+                <div>
+                  <h3 className="font-semibold text-white mb-2">{t.openclawStep3}</h3>
+                  <p className="text-[#ccc]">{t.openclawStep3Desc}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Quick Start */}
+        <section className="mb-12">
+          <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-2">
+            <Zap className="h-6 w-6 text-[#00d4ff]" />
+            {t.quickStart}
+          </h2>
+
+          <div className="space-y-6">
+            <div className="bg-[#2a2a2a] border border-[#444] rounded-xl p-6">
+              <h3 className="font-semibold text-white mb-2">{t.step1Title}</h3>
+              <p className="text-[#ccc]">
+                {t.step1Desc} <a href="/" className="text-[#00d4ff] hover:underline">{t.step1Link}</a> {t.step1Desc2}
+              </p>
+            </div>
+
+            <div className="bg-[#2a2a2a] border border-[#444] rounded-xl p-6">
+              <h3 className="font-semibold text-white mb-2">{t.step2Title}</h3>
+              <p className="text-[#ccc] mb-4">{t.step2Desc}</p>
+              <CodeBlock id="install" language="bash" code={`# Python
 pip install openai
 
 # Node.js
-npm install openai`}
-            />
-          </div>
+npm install openai`} />
+            </div>
 
-          <div className="bg-white border border-gray-200 rounded-xl p-6">
-            <h3 className="font-semibold text-gray-900 mb-2">{t.step3Title}</h3>
-            <CodeBlock
-              id="first-request"
-              language="python"
-              code={`from openai import OpenAI
+            <div className="bg-[#2a2a2a] border border-[#444] rounded-xl p-6">
+              <h3 className="font-semibold text-white mb-2">{t.step3Title}</h3>
+              <CodeBlock id="first-request" language="python" code={`from openai import OpenAI
 
 client = OpenAI(
     api_key="fuel_sk_your_key_here",
@@ -175,122 +279,118 @@ response = client.chat.completions.create(
     ]
 )
 
-print(response.choices[0].message.content)`}
-            />
-          </div>
-        </div>
-      </section>
-
-      {/* API Reference */}
-      <section className="mb-12">
-        <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-2">
-          <Code className="h-6 w-6 text-primary" />
-          {t.apiReference}
-        </h2>
-
-        <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">
-          <div className="p-6 border-b border-gray-200">
-            <h3 className="font-semibold text-gray-900">{t.baseUrl}</h3>
-            <code className="bg-gray-100 px-3 py-1 rounded text-sm mt-2 inline-block">
-              https://api.aifuel.fun/v1
-            </code>
-          </div>
-
-          <div className="p-6 border-b border-gray-200">
-            <h3 className="font-semibold text-gray-900 mb-4">{t.authentication}</h3>
-            <p className="text-gray-600 mb-4">
-              {t.authDesc}
-            </p>
-            <CodeBlock
-              id="auth"
-              language="http"
-              code={`Authorization: Bearer fuel_sk_your_key_here`}
-            />
-          </div>
-
-          <div className="p-6">
-            <h3 className="font-semibold text-gray-900 mb-4">{t.endpoints}</h3>
-            <div className="space-y-4">
-              {[
-                { method: 'POST', path: '/v1/chat/completions', desc: t.endpoint1 },
-                { method: 'POST', path: '/v1/completions', desc: t.endpoint2 },
-                { method: 'POST', path: '/v1/embeddings', desc: t.endpoint3 },
-                { method: 'GET', path: '/v1/models', desc: t.endpoint4 },
-                { method: 'GET', path: '/v1/credits', desc: t.endpoint5 },
-              ].map((endpoint, i) => (
-                <div key={i} className="flex items-center gap-4 p-3 bg-gray-50 rounded-lg">
-                  <span className={`px-2 py-1 text-xs font-bold rounded ${
-                    endpoint.method === 'GET' ? 'bg-green-100 text-green-700' : 'bg-blue-100 text-blue-700'
-                  }`}>
-                    {endpoint.method}
-                  </span>
-                  <code className="text-sm font-mono text-gray-900">{endpoint.path}</code>
-                  <span className="text-sm text-gray-500">{endpoint.desc}</span>
-                </div>
-              ))}
+print(response.choices[0].message.content)`} />
             </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* Models */}
-      <section className="mb-12">
-        <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-2">
-          <MessageSquare className="h-6 w-6 text-primary" />
-          {t.availableModels}
-        </h2>
+        {/* API Reference */}
+        <section className="mb-12">
+          <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-2">
+            <Code className="h-6 w-6 text-[#00d4ff]" />
+            {t.apiReference}
+          </h2>
 
-        <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">
-          <table className="w-full">
-            <thead className="bg-gray-50">
-              <tr>
-                <th className="text-left px-6 py-3 text-sm font-semibold text-gray-900">{t.modelId}</th>
-                <th className="text-left px-6 py-3 text-sm font-semibold text-gray-900">{t.provider}</th>
-                <th className="text-left px-6 py-3 text-sm font-semibold text-gray-900">{t.tier}</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-200">
-              {MODELS.map((model, i) => (
-                <tr key={i} className="hover:bg-gray-50">
-                  <td className="px-6 py-4">
-                    <code className="text-sm">{model.id}</code>
-                  </td>
-                  <td className="px-6 py-4 text-sm text-gray-600">{model.provider}</td>
-                  <td className="px-6 py-4">
-                    <span className={`px-2 py-1 text-xs font-medium rounded ${
-                      model.tier === 'premium' ? 'bg-purple-100 text-purple-700' :
-                      model.tier === 'standard' ? 'bg-blue-100 text-blue-700' :
-                      'bg-green-100 text-green-700'
+          <div className="bg-[#2a2a2a] border border-[#444] rounded-xl overflow-hidden">
+            <div className="p-6 border-b border-[#444]">
+              <h3 className="font-semibold text-white mb-2">{t.baseUrl}</h3>
+              <code className="bg-[#333] text-[#00d4ff] px-3 py-1.5 rounded text-sm inline-block">
+                https://api.aifuel.fun/v1
+              </code>
+            </div>
+
+            <div className="p-6 border-b border-[#444]">
+              <h3 className="font-semibold text-white mb-3">{t.authentication}</h3>
+              <p className="text-[#ccc] mb-4">{t.authDesc}</p>
+              <CodeBlock id="auth" language="http" code={`Authorization: Bearer fuel_sk_your_key_here`} />
+            </div>
+
+            <div className="p-6">
+              <h3 className="font-semibold text-white mb-4">{t.endpoints}</h3>
+              <div className="space-y-3">
+                {[
+                  { method: 'POST', path: '/v1/chat/completions', desc: t.endpoint1 },
+                  { method: 'POST', path: '/v1/completions', desc: t.endpoint2 },
+                  { method: 'POST', path: '/v1/embeddings', desc: t.endpoint3 },
+                  { method: 'GET',  path: '/v1/models', desc: t.endpoint4 },
+                  { method: 'GET',  path: '/v1/credits', desc: t.endpoint5 },
+                ].map((ep, i) => (
+                  <div key={i} className="flex items-center gap-4 p-3 bg-[#333] rounded-lg">
+                    <span className={`px-2 py-1 text-xs font-bold rounded ${
+                      ep.method === 'GET'
+                        ? 'bg-green-900/50 text-green-400 border border-green-700/50'
+                        : 'bg-blue-900/50 text-blue-400 border border-blue-700/50'
                     }`}>
-                      {model.tier}
+                      {ep.method}
                     </span>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-          <div className="p-4 bg-gray-50 text-sm text-gray-500 text-center">
-            <a href="/models" className="hover:text-primary transition underline">
-              {t.moreModels}
-            </a>
+                    <code className="text-sm font-mono text-white">{ep.path}</code>
+                    <span className="text-sm text-[#aaa] hidden sm:inline">{ep.desc}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* Code Examples */}
-      <section className="mb-12">
-        <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-2">
-          <Terminal className="h-6 w-6 text-primary" />
-          {t.codeExamples}
-        </h2>
+        {/* Models */}
+        <section className="mb-12">
+          <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-2">
+            <MessageSquare className="h-6 w-6 text-[#00d4ff]" />
+            {t.availableModels}
+          </h2>
 
-        <div className="space-y-6">
-          <div className="bg-white border border-gray-200 rounded-xl p-6">
-            <h3 className="font-semibold text-gray-900 mb-4">Python</h3>
-            <CodeBlock
-              id="python-example"
-              language="python"
-              code={`from openai import OpenAI
+          <div className="bg-[#2a2a2a] border border-[#444] rounded-xl overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead>
+                  <tr className="bg-[#333]">
+                    <th className="text-left px-6 py-3 text-sm font-semibold text-[#ccc]">{t.modelId}</th>
+                    <th className="text-left px-6 py-3 text-sm font-semibold text-[#ccc]">{t.provider}</th>
+                    <th className="text-left px-6 py-3 text-sm font-semibold text-[#ccc]">{t.tier}</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-[#444]">
+                  {MODELS.slice(0, 10).map((model, i) => (
+                    <tr key={i} className="hover:bg-[#333] transition">
+                      <td className="px-6 py-3">
+                        <code className="text-sm text-[#00d4ff]">{model.id}</code>
+                      </td>
+                      <td className="px-6 py-3 text-sm text-[#ccc]">{model.provider}</td>
+                      <td className="px-6 py-3">
+                        <span className={`px-2 py-1 text-xs font-medium rounded ${
+                          model.tier === 'premium'
+                            ? 'bg-purple-900/40 text-purple-300 border border-purple-700/40'
+                            : model.tier === 'standard'
+                            ? 'bg-blue-900/40 text-blue-300 border border-blue-700/40'
+                            : 'bg-green-900/40 text-green-300 border border-green-700/40'
+                        }`}>
+                          {model.tier}
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <div className="p-4 bg-[#333] text-sm text-center">
+              <a href="/models" className="text-[#00d4ff] hover:underline">
+                {t.moreModels}
+              </a>
+            </div>
+          </div>
+        </section>
+
+        {/* Code Examples */}
+        <section className="mb-12">
+          <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-2">
+            <Terminal className="h-6 w-6 text-[#00d4ff]" />
+            {t.codeExamples}
+          </h2>
+
+          <div className="space-y-6">
+            <div className="bg-[#2a2a2a] border border-[#444] rounded-xl p-6">
+              <h3 className="font-semibold text-white mb-4">Python</h3>
+              <CodeBlock id="python-example" language="python" code={`from openai import OpenAI
 
 client = OpenAI(
     api_key="fuel_sk_xxx",
@@ -319,16 +419,12 @@ stream = client.chat.completions.create(
 
 for chunk in stream:
     if chunk.choices[0].delta.content:
-        print(chunk.choices[0].delta.content, end="")`}
-            />
-          </div>
+        print(chunk.choices[0].delta.content, end="")`} />
+            </div>
 
-          <div className="bg-white border border-gray-200 rounded-xl p-6">
-            <h3 className="font-semibold text-gray-900 mb-4">Node.js / TypeScript</h3>
-            <CodeBlock
-              id="nodejs-example"
-              language="typescript"
-              code={`import OpenAI from 'openai';
+            <div className="bg-[#2a2a2a] border border-[#444] rounded-xl p-6">
+              <h3 className="font-semibold text-white mb-4">Node.js / TypeScript</h3>
+              <CodeBlock id="nodejs-example" language="typescript" code={`import OpenAI from 'openai';
 
 const client = new OpenAI({
   apiKey: 'fuel_sk_xxx',
@@ -346,16 +442,12 @@ async function main() {
   console.log(response.choices[0].message.content);
 }
 
-main();`}
-            />
-          </div>
+main();`} />
+            </div>
 
-          <div className="bg-white border border-gray-200 rounded-xl p-6">
-            <h3 className="font-semibold text-gray-900 mb-4">cURL</h3>
-            <CodeBlock
-              id="curl-example"
-              language="bash"
-              code={`curl https://api.aifuel.fun/v1/chat/completions \\
+            <div className="bg-[#2a2a2a] border border-[#444] rounded-xl p-6">
+              <h3 className="font-semibold text-white mb-4">cURL</h3>
+              <CodeBlock id="curl-example" language="bash" code={`curl https://api.aifuel.fun/v1/chat/completions \\
   -H "Authorization: Bearer fuel_sk_xxx" \\
   -H "Content-Type: application/json" \\
   -d '{
@@ -363,17 +455,12 @@ main();`}
     "messages": [
       {"role": "user", "content": "Hello!"}
     ]
-  }'`}
-            />
-          </div>
+  }'`} />
+            </div>
 
-          {/* Switch Models */}
-          <div className="bg-white border border-gray-200 rounded-xl p-6">
-            <h3 className="font-semibold text-gray-900 mb-4">🔄 Switch Models (Claude, DeepSeek, Gemini)</h3>
-            <CodeBlock
-              id="switch-model"
-              language="python"
-              code={`# Use Claude 3.5 Sonnet
+            <div className="bg-[#2a2a2a] border border-[#444] rounded-xl p-6">
+              <h3 className="font-semibold text-white mb-4">🔄 Switch Models (Claude, DeepSeek, Gemini)</h3>
+              <CodeBlock id="switch-model" language="python" code={`# Use Claude 3.5 Sonnet
 response = client.chat.completions.create(
     model="anthropic/claude-3.5-sonnet",
     messages=[{"role": "user", "content": "Explain Solana"}]
@@ -389,83 +476,31 @@ response = client.chat.completions.create(
 response = client.chat.completions.create(
     model="google/gemini-2.0-flash-001",
     messages=[{"role": "user", "content": "Write a haiku about coding"}]
-)`}
-            />
+)`} />
+            </div>
           </div>
+        </section>
 
-          {/* Vision */}
-          <div className="bg-white border border-gray-200 rounded-xl p-6">
-            <h3 className="font-semibold text-gray-900 mb-4">🖼️ Vision (Image Analysis)</h3>
-            <CodeBlock
-              id="vision-example"
-              language="python"
-              code={`# Analyze an image with GPT-4o Vision
-response = client.chat.completions.create(
-    model="gpt-4o",
-    messages=[
-        {
-            "role": "user",
-            "content": [
-                {"type": "text", "text": "What's in this image?"},
-                {
-                    "type": "image_url",
-                    "image_url": {
-                        "url": "https://example.com/image.jpg"
-                    }
-                }
-            ]
-        }
-    ]
-)
+        {/* Credits */}
+        <section className="mb-12">
+          <h2 className="text-2xl font-bold text-white mb-6">{t.creditSystem}</h2>
 
-print(response.choices[0].message.content)`}
-            />
+          <div className="bg-[#2a2a2a] border border-[#444] rounded-xl p-6">
+            <h3 className="font-semibold text-white mb-4">{t.howCreditsWork}</h3>
+            <p className="text-[#ccc] mb-4">{t.creditsDesc}</p>
+            <div className="bg-[#1a1a1a] border border-[#00d4ff]/30 rounded-lg p-4 mb-4">
+              <code className="text-[#00d4ff] text-sm">{t.creditFormula}</code>
+            </div>
+            <ul className="space-y-2 text-[#ccc]">
+              <li className="flex items-start gap-2"><span className="text-[#00d4ff]">•</span> {t.credit1}</li>
+              <li className="flex items-start gap-2"><span className="text-[#00d4ff]">•</span> {t.credit2}</li>
+              <li className="flex items-start gap-2"><span className="text-[#00d4ff]">•</span> {t.credit3}</li>
+              <li className="flex items-start gap-2"><span className="text-[#00d4ff]">•</span> {t.credit4}</li>
+            </ul>
           </div>
+        </section>
 
-          {/* Streaming */}
-          <div className="bg-white border border-gray-200 rounded-xl p-6">
-            <h3 className="font-semibold text-gray-900 mb-4">⚡ Streaming Response</h3>
-            <CodeBlock
-              id="streaming-example"
-              language="typescript"
-              code={`// Node.js streaming example
-const stream = await client.chat.completions.create({
-  model: 'gpt-4o',
-  messages: [{ role: 'user', content: 'Tell me a story' }],
-  stream: true,
-});
-
-for await (const chunk of stream) {
-  const content = chunk.choices[0]?.delta?.content || '';
-  process.stdout.write(content);
-}`}
-            />
-          </div>
-        </div>
-      </section>
-
-      {/* Credits */}
-      <section>
-        <h2 className="text-2xl font-bold text-gray-900 mb-6">{t.creditSystem}</h2>
-        
-        <div className="bg-white border border-gray-200 rounded-xl p-6">
-          <h3 className="font-semibold text-gray-900 mb-4">{t.howCreditsWork}</h3>
-          <p className="text-gray-600 mb-4">
-            {t.creditsDesc}
-          </p>
-          <div className="bg-primary/5 border border-primary/20 rounded-lg p-4 mb-4">
-            <code className="text-primary">
-              {t.creditFormula}
-            </code>
-          </div>
-          <ul className="space-y-2 text-gray-600">
-            <li>• {t.credit1}</li>
-            <li>• {t.credit2}</li>
-            <li>• {t.credit3}</li>
-            <li>• {t.credit4}</li>
-          </ul>
-        </div>
-      </section>
+      </div>
     </div>
   )
 }

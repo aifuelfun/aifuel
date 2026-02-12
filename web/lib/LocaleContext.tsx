@@ -12,7 +12,7 @@ interface LocaleContextType {
 const LocaleContext = createContext<LocaleContextType | undefined>(undefined)
 
 export function LocaleProvider({ children }: { children: ReactNode }) {
-  const [locale, setLocaleState] = useState<Locale>('en')
+  const [locale, setLocaleState] = useState<Locale>('zh')
 
   useEffect(() => {
     const saved = localStorage.getItem('locale') as Locale
@@ -47,7 +47,7 @@ export function useLocale() {
   const context = useContext(LocaleContext)
   if (context === undefined) {
     // Fallback for when used outside provider (shouldn't happen but just in case)
-    const [locale, setLocaleState] = useState<Locale>('en')
+    const [locale, setLocaleState] = useState<Locale>('zh')
     
     useEffect(() => {
       const saved = localStorage.getItem('locale') as Locale
