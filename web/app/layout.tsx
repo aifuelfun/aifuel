@@ -15,9 +15,15 @@ export const metadata: Metadata = {
   description: 'Access 200+ AI models for free by holding $FUEL tokens. No subscriptions, no credit cards. GPT-4, Claude, Gemini and more.',
   keywords: ['AI', 'API', 'Solana', 'Token', 'GPT-4', 'Claude', 'Free AI', 'FUEL'],
   icons: {
-    icon: '/favicon.webp',
-    apple: '/logo.webp',
+    icon: [
+      { url: '/favicon.webp', sizes: '32x32' },
+      { url: '/logo.png', sizes: '512x512', type: 'image/png' },
+    ],
+    apple: [
+      { url: '/apple-touch-icon.png', sizes: '512x512', type: 'image/png' },
+    ],
   },
+  manifest: '/manifest.json',
   openGraph: {
     title: 'AIFuel - Fuel Your AI',
     description: 'Hold $FUEL tokens to get free AI API credits. 200+ models including GPT-4, Claude, Gemini.',

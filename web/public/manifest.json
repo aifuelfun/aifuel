@@ -1,0 +1,22 @@
+{
+  "name": "AIFuel - Hold $FUEL, Use AI Free",
+  "short_name": "AIFuel",
+  "description": "Access 200+ AI models for free by holding $FUEL tokens",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#1a1a1a",
+  "theme_color": "#00d4ff",
+  "icons": [
+    {
+      "src": "/logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/apple-touch-icon.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
