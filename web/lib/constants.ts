@@ -164,14 +164,14 @@ export const MODELS: Model[] = [
   { id: 'cognitivecomputations/dolphin-mixtral-8x22b', name: 'Dolphin Mixtral 22B', provider: 'Cognitive', inputPrice: 0.90, outputPrice: 2.70, context: '64K', tier: 'budget' },
 
   // ── Moonshot (Kimi) ───────────────────────────────────────────────
-  { id: 'moonshotai/kimi-k2.5', name: 'Kimi K2.5', provider: 'Moonshot', inputPrice: 0.45, outputPrice: 2.25, context: '256K', tier: 'standard' },
+  { id: 'moonshotai/kimi-k2.5', name: 'Kimi K2.5', provider: 'Moonshot', inputPrice: 0.45, outputPrice: 2.25, context: '256K', tier: 'premium', tag: 'new' },
+  { id: 'moonshotai/kimi-k2-thinking', name: 'Kimi K2 Thinking', provider: 'Moonshot', inputPrice: 0.40, outputPrice: 2.00, context: '256K', tier: 'standard' },
+  { id: 'moonshotai/kimi-k2', name: 'Kimi K2', provider: 'Moonshot', inputPrice: 0.50, outputPrice: 2.50, context: '128K', tier: 'standard' },
 
   // ── MiniMax ───────────────────────────────────────────────────────
-  { id: 'minimax/minimax-m2-her', name: 'MiniMax M2-her', provider: 'MiniMax', inputPrice: 0.30, outputPrice: 1.20, context: '66K', tier: 'standard', tag: 'new' },
-  { id: 'minimax/minimax-m2.1', name: 'MiniMax M2.1', provider: 'MiniMax', inputPrice: 0.27, outputPrice: 0.95, context: '197K', tier: 'budget' },
-  { id: 'minimax/minimax-m2', name: 'MiniMax M2', provider: 'MiniMax', inputPrice: 0.26, outputPrice: 1.00, context: '197K', tier: 'budget' },
+  { id: 'minimax/minimax-m2.5', name: 'MiniMax M2.5', provider: 'MiniMax', inputPrice: 0.30, outputPrice: 1.10, context: '1M', tier: 'premium', tag: 'new' },
+  { id: 'minimax/minimax-m2-her', name: 'MiniMax M2-her', provider: 'MiniMax', inputPrice: 0.30, outputPrice: 1.20, context: '66K', tier: 'standard' },
   { id: 'minimax/minimax-m1', name: 'MiniMax M1', provider: 'MiniMax', inputPrice: 0.40, outputPrice: 2.20, context: '1M', tier: 'standard' },
-  { id: 'minimax/minimax-01', name: 'MiniMax-01', provider: 'MiniMax', inputPrice: 0.20, outputPrice: 1.10, context: '1M', tier: 'budget' },
 
   // ── ByteDance (DeepSeek/Doubao Competitors) ───────────────────────
   { id: 'bytedance/doubao-pro-32k', name: 'Doubao Pro 32K', provider: 'ByteDance', inputPrice: 0.11, outputPrice: 0.44, context: '32K', tier: 'budget' },
@@ -181,13 +181,9 @@ export const MODELS: Model[] = [
   { id: 'xiaomi/mimo-v2-flash', name: 'MiMo V2 Flash', provider: 'Xiaomi', inputPrice: 0.09, outputPrice: 0.29, context: '256K', tier: 'budget' },
 
   // ── Z.AI (GLM Series) ─────────────────────────────────────────────
-  { id: 'z-ai/glm-5', name: 'GLM 5', provider: 'Z.AI', inputPrice: 1.00, outputPrice: 3.20, context: '203K', tier: 'standard', tag: 'new' },
+  { id: 'z-ai/glm-5', name: 'GLM-5', provider: 'Z.AI', inputPrice: 1.00, outputPrice: 3.20, context: '203K', tier: 'premium', tag: 'new' },
   { id: 'z-ai/glm-4.7-flash', name: 'GLM 4.7 Flash', provider: 'Z.AI', inputPrice: 0.06, outputPrice: 0.40, context: '203K', tier: 'budget', tag: 'hot' },
   { id: 'z-ai/glm-4.7', name: 'GLM 4.7', provider: 'Z.AI', inputPrice: 0.40, outputPrice: 1.50, context: '203K', tier: 'standard' },
-  { id: 'z-ai/glm-4.6v', name: 'GLM 4.6V (Vision)', provider: 'Z.AI', inputPrice: 0.30, outputPrice: 0.90, context: '131K', tier: 'budget' },
-  { id: 'z-ai/glm-4.6', name: 'GLM 4.6', provider: 'Z.AI', inputPrice: 0.35, outputPrice: 1.50, context: '203K', tier: 'budget' },
-  { id: 'z-ai/glm-4.5-air', name: 'GLM 4.5 Air', provider: 'Z.AI', inputPrice: 0.13, outputPrice: 0.85, context: '131K', tier: 'budget' },
-  { id: 'z-ai/glm-4-32b', name: 'GLM 4 32B', provider: 'Z.AI', inputPrice: 0.10, outputPrice: 0.10, context: '128K', tier: 'budget' },
   
   // ── Writer ────────────────────────────────────────────────────────
   { id: 'writer/palmyra-x5', name: 'Palmyra X5', provider: 'Writer', inputPrice: 0.60, outputPrice: 6.00, context: '1M', tier: 'standard' },

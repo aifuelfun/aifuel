@@ -76,6 +76,8 @@ export const translations = {
     modelsDesc: 'All the models you need, one API endpoint',
     moreModels: '+ 190 more models via OpenRouter',
     viewAllModels: 'View all 200+ models',
+    modelInput: 'In',
+    modelOutput: 'Out',
 
     // Pricing
     simpleCreditSystem: 'Simple Credit System',
@@ -262,6 +264,8 @@ export const translations = {
     modelsDesc: '你需要的所有模型，一个 API 端点',
     moreModels: '+ 190 更多模型通过 OpenRouter',
     viewAllModels: '查看全部 200+ 模型',
+    modelInput: '输入',
+    modelOutput: '输出',
 
     // Pricing
     simpleCreditSystem: '简单的额度系统',

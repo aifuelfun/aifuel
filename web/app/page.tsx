@@ -184,8 +184,8 @@ export default function Home() {
                 <h3 className="font-bold text-text text-lg mb-0.5 group-hover:text-primary transition-colors truncate pr-8">{model.name}</h3>
                 
                 <div className="flex items-center gap-3 text-xs text-text-muted mt-3 pt-3 border-t border-white/5">
-                  <div>In: <span className="text-text">${model.inputPrice}</span></div>
-                  <div>Out: <span className="text-text">${model.outputPrice}</span></div>
+                  <div>{t('modelInput')}: <span className="text-text">${model.inputPrice}</span></div>
+                  <div>{t('modelOutput')}: <span className="text-text">${model.outputPrice}</span></div>
                 </div>
               </Link>
             ))}
