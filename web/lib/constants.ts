@@ -60,7 +60,6 @@ export const MODELS: Model[] = [
   // ── Google (Gemini) ───────────────────────────────────────────────
   { id: 'google/gemini-3-pro-preview', name: 'Gemini 3 Pro Preview', provider: 'Google', inputPrice: 2.00, outputPrice: 12.00, context: '1M', tier: 'premium', tag: 'new' },
   { id: 'google/gemini-3-flash-preview', name: 'Gemini 3 Flash Preview', provider: 'Google', inputPrice: 0.50, outputPrice: 3.00, context: '1M', tier: 'standard' },
-  { id: 'google/gemini-2.0-flash-exp', name: 'Gemini 2.0 Flash Exp', provider: 'Google', inputPrice: 0.00, outputPrice: 0.00, context: '1M', tier: 'budget', tag: 'new' },
   { id: 'google/gemini-2.0-flash-thinking-exp', name: 'Gemini 2.0 Thinking', provider: 'Google', inputPrice: 0.00, outputPrice: 0.00, context: '1M', tier: 'budget', tag: 'reasoning' },
   { id: 'google/gemini-pro-1.5', name: 'Gemini 1.5 Pro', provider: 'Google', inputPrice: 3.50, outputPrice: 10.50, context: '2M', tier: 'standard' },
   { id: 'google/gemini-flash-1.5', name: 'Gemini 1.5 Flash', provider: 'Google', inputPrice: 0.075, outputPrice: 0.30, context: '1M', tier: 'budget', tag: 'hot' },
