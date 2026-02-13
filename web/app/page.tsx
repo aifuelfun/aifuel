@@ -12,42 +12,35 @@ import { WalletConnectModal } from '@/components/WalletConnectModal'
 
 // Credit Calculator Component
 function CreditCalculator() {
-  const [fuelAmount, setFuelAmount] = useState<string>('10000')
+  const [fuelAmount, setFuelAmount] = useState<string>('230000')
   
   // Constants
   const CIRCULATING = 200_000_000
-  const DAILY_POOL = 300
+  const DAILY_POOL = 1000
   
   const balance = parseFloat(fuelAmount) || 0
   const dailyCredit = (balance / CIRCULATING) * DAILY_POOL
   
   return (
-    <div className="bg-dark-card border border-border rounded-2xl p-6 md:p-8 mt-8 max-w-2xl mx-auto">
-      <div className="flex items-center justify-center gap-2 mb-6">
-        <Calculator className="w-5 h-5 text-primary" />
-        <h3 className="text-lg font-bold text-text">额度计算器</h3>
+    <div className="bg-dark-card border border-border rounded-xl p-6 text-center hover:border-primary/30 transition">
+      <div className="w-10 h-10 rounded-full bg-purple-500/20 flex items-center justify-center mx-auto mb-4">
+        <Calculator className="w-5 h-5 text-purple-400" />
+      </div>
+      <h3 className="font-bold text-text mb-3">额度计算器</h3>
+      
+      <div className="mb-4">
+        <input
+          type="number"
+          value={fuelAmount}
+          onChange={(e) => setFuelAmount(e.target.value)}
+          placeholder="FUEL 数量"
+          className="w-full px-3 py-2 bg-[#2a2a2a] border border-[#444] rounded-lg text-text text-sm placeholder-[#666] focus:outline-none focus:ring-1 focus:ring-primary/50 font-mono text-center"
+        />
       </div>
       
-      {/* Input */}
-      <div className="mb-6">
-        <label className="block text-sm text-text-muted mb-2">持有 FUEL 数量</label>
-        <div className="relative">
-          <input
-            type="number"
-            value={fuelAmount}
-            onChange={(e) => setFuelAmount(e.target.value)}
-            placeholder="输入 FUEL 数量"
-            className="w-full px-4 py-3 bg-[#2a2a2a] border border-[#444] rounded-lg text-text placeholder-[#666] focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary font-mono"
-          />
-          <span className="absolute right-4 top-1/2 -translate-y-1/2 text-text-muted">FUEL</span>
-        </div>
-      </div>
-      
-      {/* Result */}
-      <div className="bg-[#1a1a1a] rounded-xl p-6 text-center">
-        <p className="text-sm text-text-muted mb-2">每日免费额度</p>
-        <p className="text-4xl font-bold text-primary">${dailyCredit.toFixed(2)}</p>
-        <p className="text-xs text-text-muted mt-2">/ 每天</p>
+      <div className="text-center">
+        <p className="text-xs text-text-muted mb-1">每日额度</p>
+        <p className="text-2xl font-bold text-primary">${dailyCredit.toFixed(2)}</p>
       </div>
     </div>
   )
@@ -217,8 +210,10 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Multiplier Cards */}
-          <div className="grid md:grid-cols-2 gap-4 max-w-3xl mx-auto">
+          {/* Three Cards: Calculator + Diamond Hand + Active Trader */}
+          <div className="grid md:grid-cols-3 gap-4 max-w-4xl mx-auto">
+            <CreditCalculator />
+            
             <div className="bg-dark-card border border-border rounded-xl p-6 text-center hover:border-primary/30 transition">
               <div className="w-10 h-10 rounded-full bg-green-500/20 flex items-center justify-center mx-auto mb-4">
                 <span className="text-xl">💎</span>
@@ -232,14 +227,11 @@ export default function Home() {
               <div className="w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center mx-auto mb-4">
                 <span className="text-xl">⚡</span>
               </div>
-              <h3 className="font-bold text-text mb-1">{t('standardUser')}</h3>
+              <h3 className="font-bold text-text mb-1">{t('activeTrader')}</h3>
               <p className="text-2xl font-bold text-blue-400 mb-1">80%</p>
-              <p className="text-xs text-text-muted">{t('standardUserDesc')}</p>
+              <p className="text-xs text-text-muted">{t('activeTraderDesc')}</p>
             </div>
           </div>
-
-          {/* Credit Calculator */}
-          <CreditCalculator />
 
           <p className="text-center text-text-muted text-sm mt-6">
             {t('circulatingSupply')}: 200,000,000 FUEL · {t('dailyReset')}
