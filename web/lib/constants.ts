@@ -15,7 +15,6 @@ export interface Model {
 // Includes Future/Preview models for AIFuel "Future Access" feature
 export const MODELS: Model[] = [
 
-  // ── OpenAI (GPT-5 & o3 Series) ─────────────────────────────────────
   // GPT-5.2 Series (Latest)
   { id: 'openai/gpt-5.2-pro', name: 'GPT-5.2 Pro', provider: 'OpenAI', inputPrice: 21.00, outputPrice: 168.00, context: '400K', tier: 'premium', tag: 'new' },
   { id: 'openai/gpt-5.2-codex', name: 'GPT-5.2 Codex', provider: 'OpenAI', inputPrice: 1.75, outputPrice: 14.00, context: '400K', tier: 'premium', tag: 'new' },
@@ -47,7 +46,6 @@ export const MODELS: Model[] = [
   { id: 'openai/gpt-4-turbo', name: 'GPT-4 Turbo', provider: 'OpenAI', inputPrice: 10.00, outputPrice: 30.00, context: '128K', tier: 'premium' },
   { id: 'openai/gpt-3.5-turbo', name: 'GPT-3.5 Turbo', provider: 'OpenAI', inputPrice: 0.50, outputPrice: 1.50, context: '16K', tier: 'budget' },
 
-  // ── Anthropic (Claude Family) ─────────────────────────────────────
   { id: 'anthropic/claude-opus-4.6', name: 'Claude Opus 4.6', provider: 'Anthropic', inputPrice: 5.00, outputPrice: 25.00, context: '1M', tier: 'premium', tag: 'new' },
   { id: 'anthropic/claude-opus-4.5', name: 'Claude Opus 4.5', provider: 'Anthropic', inputPrice: 5.00, outputPrice: 25.00, context: '200K', tier: 'premium', tag: 'new' },
   { id: 'anthropic/claude-sonnet-4.5', name: 'Claude Sonnet 4.5', provider: 'Anthropic', inputPrice: 3.00, outputPrice: 15.00, context: '1M', tier: 'premium', tag: 'hot' },
@@ -57,28 +55,23 @@ export const MODELS: Model[] = [
   { id: 'anthropic/claude-3.5-haiku', name: 'Claude 3.5 Haiku', provider: 'Anthropic', inputPrice: 0.25, outputPrice: 1.25, context: '200K', tier: 'budget' },
   { id: 'anthropic/claude-3-opus', name: 'Claude 3 Opus', provider: 'Anthropic', inputPrice: 15.00, outputPrice: 75.00, context: '200K', tier: 'premium' },
 
-  // ── Google (Gemini) ───────────────────────────────────────────────
   { id: 'google/gemini-3-pro-preview', name: 'Gemini 3 Pro Preview', provider: 'Google', inputPrice: 2.00, outputPrice: 12.00, context: '1M', tier: 'premium', tag: 'new' },
   { id: 'google/gemini-3-flash-preview', name: 'Gemini 3 Flash Preview', provider: 'Google', inputPrice: 0.50, outputPrice: 3.00, context: '1M', tier: 'standard' },
   { id: 'google/gemini-2.0-flash-thinking-exp', name: 'Gemini 2.0 Thinking', provider: 'Google', inputPrice: 0.00, outputPrice: 0.00, context: '1M', tier: 'budget', tag: 'reasoning' },
   { id: 'google/gemini-pro-1.5', name: 'Gemini 1.5 Pro', provider: 'Google', inputPrice: 3.50, outputPrice: 10.50, context: '2M', tier: 'standard' },
   { id: 'google/gemini-flash-1.5', name: 'Gemini 1.5 Flash', provider: 'Google', inputPrice: 0.075, outputPrice: 0.30, context: '1M', tier: 'budget', tag: 'hot' },
 
-  // ── xAI (Grok) ────────────────────────────────────────────────────
   { id: 'x-ai/grok-4', name: 'Grok 4', provider: 'xAI', inputPrice: 3.00, outputPrice: 15.00, context: '256K', tier: 'premium', tag: 'new' },
   { id: 'x-ai/grok-4.1-fast', name: 'Grok 4.1 Fast', provider: 'xAI', inputPrice: 0.20, outputPrice: 0.50, context: '2M', tier: 'standard' },
   { id: 'x-ai/grok-3', name: 'Grok 3', provider: 'xAI', inputPrice: 3.00, outputPrice: 15.00, context: '128K', tier: 'premium' },
   { id: 'x-ai/grok-2', name: 'Grok 2', provider: 'xAI', inputPrice: 5.00, outputPrice: 10.00, context: '128K', tier: 'standard' },
   { id: 'x-ai/grok-2-mini', name: 'Grok 2 Mini', provider: 'xAI', inputPrice: 2.00, outputPrice: 5.00, context: '128K', tier: 'budget' },
 
-  // ── DeepSeek (The Disruptor) ──────────────────────────────────────
   { id: 'deepseek/deepseek-r1', name: 'DeepSeek R1', provider: 'DeepSeek', inputPrice: 0.55, outputPrice: 2.19, context: '64K', tier: 'budget', tag: 'reasoning' },
   { id: 'deepseek/deepseek-r1-distill-llama-70b', name: 'DeepSeek R1 (Llama 70B)', provider: 'DeepSeek', inputPrice: 0.23, outputPrice: 0.40, context: '128K', tier: 'budget', tag: 'hot' },
   { id: 'deepseek/deepseek-chat', name: 'DeepSeek V3', provider: 'DeepSeek', inputPrice: 0.14, outputPrice: 0.28, context: '64K', tier: 'budget', tag: 'hot' },
   { id: 'deepseek/deepseek-coder', name: 'DeepSeek Coder V2', provider: 'DeepSeek', inputPrice: 0.14, outputPrice: 0.28, context: '128K', tier: 'budget' },
 
-  // ── Meta (Llama 4 & 3+) ───────────────────────────────────────────────
-  // ── Qwen (Alibaba) ────────────────────────────────────────────────
   // Qwen3 Series (Latest)
   { id: 'qwen/qwen3-max', name: 'Qwen3 Max', provider: 'Qwen', inputPrice: 1.20, outputPrice: 6.00, context: '262K', tier: 'standard', tag: 'new' },
   { id: 'qwen/qwen3-max-thinking', name: 'Qwen3 Max Thinking', provider: 'Qwen', inputPrice: 1.20, outputPrice: 6.00, context: '262K', tier: 'standard', tag: 'reasoning' },
@@ -96,40 +89,19 @@ export const MODELS: Model[] = [
   { id: 'qwen/qwq-32b', name: 'QwQ 32B (Reasoning)', provider: 'Qwen', inputPrice: 0.15, outputPrice: 0.40, context: '32K', tier: 'budget', tag: 'reasoning' },
   { id: 'qwen/qwen-vl-plus', name: 'Qwen VL Plus', provider: 'Qwen', inputPrice: 0.21, outputPrice: 0.63, context: '131K', tier: 'budget' },
 
-  // ── Mistral (Europe's Finest) ─────────────────────────────────────
-  // ── Perplexity (Online Models) ────────────────────────────────────
-  // ── Cohere (RAG Specialists) ──────────────────────────────────────
-  // ── Microsoft & Phi ───────────────────────────────────────────────
-  // ── 01.AI (China) ─────────────────────────────────────────────────
-  // ── AI21 (Jamba) ──────────────────────────────────────────────────
-  // ── Amazon (Nova) ─────────────────────────────────────────────────
-  // ── Databricks (DBRX) ────────��────────────────────────────────────
-  // ── Nvidia (Nemotron) ─────────────────────────────────────────────
-  // ── Liquid (LFM) ──────────────────────────────────────────────────
 
-  // ── Gryphe (Roleplay) ─────────────────────────────────────────────
-  // ── Pygmalion (Roleplay) ──────────────────────────────────────────
-  // ── Nous Research (Hermes) ────────────────────────────────────────
-  // ── Cognitive Computations (Dolphin) ──────────────────────────────
-  // ── Moonshot (Kimi) ───────────────────────────────────────────────
   { id: 'moonshotai/kimi-k2.5', name: 'Kimi K2.5', provider: 'Moonshot', inputPrice: 0.45, outputPrice: 2.25, context: '256K', tier: 'premium', tag: 'new' },
   { id: 'moonshotai/kimi-k2-thinking', name: 'Kimi K2 Thinking', provider: 'Moonshot', inputPrice: 0.40, outputPrice: 2.00, context: '256K', tier: 'standard' },
   { id: 'moonshotai/kimi-k2', name: 'Kimi K2', provider: 'Moonshot', inputPrice: 0.50, outputPrice: 2.50, context: '128K', tier: 'standard' },
 
-  // ── MiniMax ───────────────────────────────────────────────────────
   { id: 'minimax/minimax-m2.5', name: 'MiniMax M2.5', provider: 'MiniMax', inputPrice: 0.30, outputPrice: 1.10, context: '1M', tier: 'premium', tag: 'new' },
   { id: 'minimax/minimax-m2-her', name: 'MiniMax M2-her', provider: 'MiniMax', inputPrice: 0.30, outputPrice: 1.20, context: '66K', tier: 'standard' },
   { id: 'minimax/minimax-m1', name: 'MiniMax M1', provider: 'MiniMax', inputPrice: 0.40, outputPrice: 2.20, context: '1M', tier: 'standard' },
 
-  // ── ByteDance (DeepSeek/Doubao Competitors) ───────────────────────
-  // ── Xiaomi ────────────────────────────────────────────────────────
-  // ── Z.AI (GLM Series) ─────────────────────────────────────────────
   { id: 'z-ai/glm-5', name: 'GLM-5', provider: 'Z.AI', inputPrice: 1.00, outputPrice: 3.20, context: '203K', tier: 'premium', tag: 'new' },
   { id: 'z-ai/glm-4.7-flash', name: 'GLM 4.7 Flash', provider: 'Z.AI', inputPrice: 0.06, outputPrice: 0.40, context: '203K', tier: 'budget', tag: 'hot' },
   { id: 'z-ai/glm-4.7', name: 'GLM 4.7', provider: 'Z.AI', inputPrice: 0.40, outputPrice: 1.50, context: '203K', tier: 'standard' },
   
-  // ── Writer ────────────────────────────────────────────────────────
-  // ── Inflection (Pi) ───────────────────────────────────────────────
 // API Configuration
 export const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://api.aifuel.fun'
 
