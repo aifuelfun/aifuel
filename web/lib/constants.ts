@@ -101,6 +101,7 @@ export const MODELS: Model[] = [
   { id: 'z-ai/glm-5', name: 'GLM-5', provider: 'Z.AI', inputPrice: 1.00, outputPrice: 3.20, context: '203K', tier: 'premium', tag: 'new' },
   { id: 'z-ai/glm-4.7-flash', name: 'GLM 4.7 Flash', provider: 'Z.AI', inputPrice: 0.06, outputPrice: 0.40, context: '203K', tier: 'budget', tag: 'hot' },
   { id: 'z-ai/glm-4.7', name: 'GLM 4.7', provider: 'Z.AI', inputPrice: 0.40, outputPrice: 1.50, context: '203K', tier: 'standard' },
+] as const
   
 // API Configuration
 export const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://api.aifuel.fun'
