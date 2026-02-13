@@ -263,7 +263,7 @@ export const translations = {
     modelsTitle: '精选 AI 模型',
     modelsDesc: '你需要的所有模型，一个 API 端点',
     moreModels: '更多优质模型',
-    viewAllModels: '查看全部 200+ 模型',
+    viewAllModels: '查看全部 精选模型',
     modelInput: '输入',
     modelOutput: '输出',
 
@@ -368,7 +368,7 @@ export const translations = {
     joinFuture: '加入 AI 访问的未来。无需订阅，只需代币。',
     
     // Footer
-    footerDesc: '持有 $FUEL 代币获取免费 AI API 额度。访问 200+ 模型，包括 GPT-4、Claude 等。',
+    footerDesc: '持有 $FUEL 代币获取免费 AI API 额度。访问 最新模型，包括 GPT、Claude 等。',
     product: '产品',
     documentation: '文档',
     resources: '资源',

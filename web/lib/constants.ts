@@ -104,27 +104,13 @@ export const MODELS: Model[] = [
   // ── AI21 (Jamba) ──────────────────────────────────────────────────
   // ── Amazon (Nova) ─────────────────────────────────────────────────
   // ── Databricks (DBRX) ────────��────────────────────────────────────
-  { id: 'databricks/dbrx-instruct', name: 'DBRX Instruct', provider: 'Databricks', inputPrice: 0.60, outputPrice: 0.60, context: '32K', tier: 'standard' },
-
   // ── Nvidia (Nemotron) ─────────────────────────────────────────────
-  { id: 'nvidia/llama-3.1-nemotron-70b-instruct', name: 'Llama 3.1 Nemotron', provider: 'Nvidia', inputPrice: 0.35, outputPrice: 0.40, context: '128K', tier: 'budget' },
-
   // ── Liquid (LFM) ──────────────────────────────────────────────────
-  { id: 'liquid/lfm-40b', name: 'Liquid LFM 40B', provider: 'Liquid', inputPrice: 0.15, outputPrice: 0.15, context: '32K', tier: 'budget', tag: 'new' },
 
   // ── Gryphe (Roleplay) ─────────────────────────────────────────────
-  { id: 'gryphe/mythomax-l2-13b', name: 'MythoMax L2 13B', provider: 'Gryphe', inputPrice: 0.10, outputPrice: 0.10, context: '4K', tier: 'budget' },
-
   // ── Pygmalion (Roleplay) ──────────────────────────────────────────
-  { id: 'pygmalion/mythalion-13b', name: 'Mythalion 13B', provider: 'Pygmalion', inputPrice: 0.10, outputPrice: 0.10, context: '8K', tier: 'budget' },
-
   // ── Nous Research (Hermes) ────────────────────────────────────────
-  { id: 'nousresearch/hermes-3-llama-3.1-405b', name: 'Hermes 3 405B', provider: 'Nous', inputPrice: 2.00, outputPrice: 2.00, context: '128K', tier: 'standard' },
-  { id: 'nousresearch/hermes-3-llama-3.1-70b', name: 'Hermes 3 70B', provider: 'Nous', inputPrice: 0.40, outputPrice: 0.40, context: '128K', tier: 'budget' },
-
   // ── Cognitive Computations (Dolphin) ──────────────────────────────
-  { id: 'cognitivecomputations/dolphin-mixtral-8x22b', name: 'Dolphin Mixtral 22B', provider: 'Cognitive', inputPrice: 0.90, outputPrice: 2.70, context: '64K', tier: 'budget' },
-
   // ── Moonshot (Kimi) ───────────────────────────────────────────────
   { id: 'moonshotai/kimi-k2.5', name: 'Kimi K2.5', provider: 'Moonshot', inputPrice: 0.45, outputPrice: 2.25, context: '256K', tier: 'premium', tag: 'new' },
   { id: 'moonshotai/kimi-k2-thinking', name: 'Kimi K2 Thinking', provider: 'Moonshot', inputPrice: 0.40, outputPrice: 2.00, context: '256K', tier: 'standard' },
@@ -137,8 +123,6 @@ export const MODELS: Model[] = [
 
   // ── ByteDance (DeepSeek/Doubao Competitors) ───────────────────────
   // ── Xiaomi ────────────────────────────────────────────────────────
-  { id: 'xiaomi/mimo-v2-flash', name: 'MiMo V2 Flash', provider: 'Xiaomi', inputPrice: 0.09, outputPrice: 0.29, context: '256K', tier: 'budget' },
-
   // ── Z.AI (GLM Series) ─────────────────────────────────────────────
   { id: 'z-ai/glm-5', name: 'GLM-5', provider: 'Z.AI', inputPrice: 1.00, outputPrice: 3.20, context: '203K', tier: 'premium', tag: 'new' },
   { id: 'z-ai/glm-4.7-flash', name: 'GLM 4.7 Flash', provider: 'Z.AI', inputPrice: 0.06, outputPrice: 0.40, context: '203K', tier: 'budget', tag: 'hot' },
@@ -146,12 +130,6 @@ export const MODELS: Model[] = [
   
   // ── Writer ────────────────────────────────────────────────────────
   // ── Inflection (Pi) ───────────────────────────────────────────────
-  { id: 'inflection/inflection-2.5', name: 'Inflection 2.5', provider: 'Inflection', inputPrice: 1.00, outputPrice: 2.00, context: '32K', tier: 'standard' }
-
-]
-
-import { PublicKey } from '@solana/web3.js'
-
 // API Configuration
 export const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://api.aifuel.fun'
 
