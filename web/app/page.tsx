@@ -152,20 +152,16 @@ export default function Home() {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {(() => {
-              // Get unique providers with their best model (preferably tagged)
-              const providerMap = new Map<string, typeof MODELS[0]>()
-              for (const model of MODELS) {
-                if (!providerMap.has(model.provider)) {
-                  providerMap.set(model.provider, model)
-                } else {
-                  const existing = providerMap.get(model.provider)!
-                  // Prefer models with tags
-                  if (model.tag && !existing.tag) {
-                    providerMap.set(model.provider, model)
-                  }
+              // Show latest 12 models, sorted by tag priority (new > hot > reasoning)
+              return [...MODELS].sort((a, b) => {
+                const score = (t?: string) => {
+                  if (t === 'new') return 3
+                  if (t === 'hot') return 2
+                  if (t === 'reasoning') return 1
+                  return 0
                 }
-              }
-              return Array.from(providerMap.values()).slice(0, 12)
+                return score(b.tag) - score(a.tag)
+              }).slice(0, 12)
             })().map((model) => (
               <Link href="/models" key={model.id} className="bg-dark-card border border-border rounded-xl p-4 hover:border-primary/50 transition group relative overflow-hidden">
                 <div className="absolute top-0 right-0 p-2">

@@ -40,7 +40,7 @@ export const translations = {
     // Features
     whyAIFuel: 'Why AIFuel?',
     whyAIFuelDesc: 'A new paradigm for AI access. Hold tokens, use AI forever.',
-    feature1Title: '200+ AI Models',
+    feature1Title: '精选 AI 模型',
     feature1Desc: 'Access GPT-4o, Claude, Gemini, DeepSeek and more through a single API endpoint.',
     feature2Title: "Hold, Don't Pay",
     feature2Desc: 'Your tokens stay in your wallet. No subscriptions, no monthly fees, no credit cards.',
@@ -72,10 +72,10 @@ export const translations = {
     step3Desc: 'Call our API like OpenAI. Daily credits based on your token holdings.',
     
     // Models
-    modelsTitle: '200+ AI Models',
+    modelsTitle: '精选 AI 模型',
     modelsDesc: 'All the models you need, one API endpoint',
-    moreModels: '+ 190 more models via OpenRouter',
-    viewAllModels: 'View all 200+ models',
+    moreModels: '更多优质模型',
+    viewAllModels: 'View all models',
     modelInput: 'In',
     modelOutput: 'Out',
 
@@ -87,7 +87,7 @@ export const translations = {
     pro: 'Pro',
     popular: 'POPULAR',
     perDay: '/day',
-    allModels: 'All 200+ models',
+    allModels: 'All models',
     dailyRefresh: 'Daily credit refresh',
     sdkCompatible: 'OpenAI SDK compatible',
     formula: 'Formula: Daily Credit = (Your Balance / Circulating Supply) × Daily Pool. Hold >30 days +10% (up to 120%).',
@@ -146,7 +146,7 @@ export const translations = {
     apiKeyRegenNote: 'Click Regenerate to get a new visible key (old key will be invalidated).',
     generatingKey: 'Generating your API key...',
     quickStart: 'Quick Start',
-    quickStartDesc: 'Use this API key to access 200+ AI models through our API endpoints.',
+    quickStartDesc: 'Use this API key to access premium AI models through our API endpoints.',
     endpoint: 'Endpoint',
     exampleCurl: 'Example cURL',
     copy: 'Copy',
@@ -180,7 +180,7 @@ export const translations = {
     joinFuture: 'Join the future of AI access. No subscriptions, just tokens.',
     
     // Footer
-    footerDesc: 'Hold $FUEL tokens to get free AI API credits. Access 200+ models including GPT-4, Claude, and more.',
+    footerDesc: 'Hold $FUEL tokens to get free AI API credits. Access premium models including GPT-4, Claude, and more.',
     product: 'Product',
     documentation: 'Documentation',
     resources: 'Resources',
@@ -199,7 +199,7 @@ export const translations = {
     nowOnSolana: '现已上线 Solana',
     fuelYourAI: '为你的 AI 加油',
     heroTitle: 'Hold $FUEL, Use AI Free',
-    heroDesc: '持有 $FUEL 代币，免费使用 200+ AI 模型。无需订阅，无需信用卡。',
+    heroDesc: '持有 $FUEL 代币，免费使用顶级 AI 模型。无需订阅，无需信用卡。',
     buyFuel: '购买 $FUEL',
     goToDashboard: '进入控制台',
     poolOpenAt: '池子开放时间',
@@ -228,7 +228,7 @@ export const translations = {
     // Features
     whyAIFuel: '为什么选择 AIFuel？',
     whyAIFuelDesc: 'AI 访问的新范式。持有代币，永久使用 AI。',
-    feature1Title: '200+ AI 模型',
+    feature1Title: '精选 AI 模型',
     feature1Desc: '通过单一 API 端点访问 GPT-4o、Claude、Gemini、DeepSeek 等。',
     feature2Title: '持有即用，无需付费',
     feature2Desc: '代币留在你的钱包里。无需订阅、无月费、无信用卡。',
@@ -260,9 +260,9 @@ export const translations = {
     step3Desc: '像调用 OpenAI 一样调用我们的 API。每日额度基于持仓量。',
     
     // Models
-    modelsTitle: '200+ AI 模型',
+    modelsTitle: '精选 AI 模型',
     modelsDesc: '你需要的所有模型，一个 API 端点',
-    moreModels: '+ 190 更多模型通过 OpenRouter',
+    moreModels: '更多优质模型',
     viewAllModels: '查看全部 200+ 模型',
     modelInput: '输入',
     modelOutput: '输出',
@@ -334,7 +334,7 @@ export const translations = {
     apiKeyRegenNote: '点击重新生成获取新密钥（旧密钥将失效）。',
     generatingKey: '正在生成 API 密钥...',
     quickStart: '快速开始',
-    quickStartDesc: '使用此 API 密钥访问我们 API 端点中的 200+ AI 模型。',
+    quickStartDesc: '使用此 API 密钥访问我们 API 端点中的 精选 AI 模型。',
     endpoint: '端点',
     exampleCurl: '示例 cURL',
     copy: '复制',
