@@ -12,35 +12,42 @@ import { WalletConnectModal } from '@/components/WalletConnectModal'
 
 // Credit Calculator Component
 function CreditCalculator() {
-  const [fuelAmount, setFuelAmount] = useState<string>('230000')
+  const [usdtAmount, setUsdtAmount] = useState<string>('10')
+  const { t } = useLocale()
   
   // Constants
   const CIRCULATING = 200_000_000
   const DAILY_POOL = 1000
+  const FUEL_PRICE = 0.00004363  // Current FUEL price in USD
   
-  const balance = parseFloat(fuelAmount) || 0
-  const dailyCredit = (balance / CIRCULATING) * DAILY_POOL
+  const usdt = parseFloat(usdtAmount) || 0
+  const fuelAmount = usdt / FUEL_PRICE
+  const dailyCredit = (fuelAmount / CIRCULATING) * DAILY_POOL
   
   return (
     <div className="bg-dark-card border border-border rounded-xl p-6 text-center hover:border-primary/30 transition">
       <div className="w-10 h-10 rounded-full bg-purple-500/20 flex items-center justify-center mx-auto mb-4">
         <Calculator className="w-5 h-5 text-purple-400" />
       </div>
-      <h3 className="font-bold text-text mb-3">额度计算器</h3>
+      <h3 className="font-bold text-text mb-3">{t('creditCalculator')}</h3>
       
       <div className="mb-4">
-        <input
-          type="number"
-          value={fuelAmount}
-          onChange={(e) => setFuelAmount(e.target.value)}
-          placeholder="FUEL 数量"
-          className="w-full px-3 py-2 bg-[#2a2a2a] border border-[#444] rounded-lg text-text text-sm placeholder-[#666] focus:outline-none focus:ring-1 focus:ring-primary/50 font-mono text-center"
-        />
+        <div className="relative">
+          <input
+            type="number"
+            value={usdtAmount}
+            onChange={(e) => setUsdtAmount(e.target.value)}
+            placeholder="USDT"
+            className="w-full px-3 py-2 bg-[#2a2a2a] border border-[#444] rounded-lg text-text text-sm placeholder-[#666] focus:outline-none focus:ring-1 focus:ring-primary/50 font-mono text-center pr-12"
+          />
+          <span className="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted text-xs">USDT</span>
+        </div>
       </div>
       
       <div className="text-center">
-        <p className="text-xs text-text-muted mb-1">每日额度</p>
+        <p className="text-xs text-text-muted mb-1">{t('dailyCredit')}</p>
         <p className="text-2xl font-bold text-primary">${dailyCredit.toFixed(2)}</p>
+        <p className="text-[10px] text-text-dim mt-1">≈ {fuelAmount.toLocaleString('en-US', {maximumFractionDigits: 0})} FUEL</p>
       </div>
     </div>
   )
