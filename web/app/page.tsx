@@ -136,7 +136,7 @@ export default function Home() {
       </section>
 
       {/* Models Grid */}
-      <section className="py-16 border-t border-border/50">
+      <section id="credit" className="py-16 border-t border-border/50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-end justify-between mb-8">
             <div>
@@ -196,7 +196,7 @@ export default function Home() {
       </section>
 
       {/* Credit System Section */}
-      <section className="py-16 border-t border-border/50">
+      <section id="credit" className="py-16 border-t border-border/50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-10">
             <h2 className="text-2xl md:text-3xl font-bold text-text mb-3">{t('creditSystemTitle')}</h2>
