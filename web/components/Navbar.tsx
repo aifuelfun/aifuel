@@ -67,6 +67,9 @@ export const Navbar: FC<Props> = ({ locale, setLocale, t }) => {
             <Link href="/docs" className="text-text-muted hover:text-primary transition">
               {t('docs')}
             </Link>
+            <Link href="/#credit" className="text-text-muted hover:text-primary transition">
+              {t('creditSystem')}
+            </Link>
             <Link href="/models" className="text-text-muted hover:text-primary transition">
               {t('models')}
             </Link>
@@ -104,7 +107,7 @@ export const Navbar: FC<Props> = ({ locale, setLocale, t }) => {
           <div className="md:hidden py-4 border-t border-border">
             <div className="flex flex-col gap-4">
               {/* Features Link Removed */}
-              <Link href="/docs" className="text-text-muted hover:text-primary transition">
+              <Link href="/#credit" className="text-text-muted hover:text-primary transition">
                 {t('docs')}
               </Link>
               <Link href="/models" className="text-text-muted hover:text-primary transition">

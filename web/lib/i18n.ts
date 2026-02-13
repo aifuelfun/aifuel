@@ -48,6 +48,7 @@ export const translations = {
     feature3Desc: 'Daily credits based on your holdings. Formula is public, treasury is on-chain.',
     
     // Credit System Section
+    creditSystem: 'Credit System',
     creditSystemTitle: '💎 Credit System · Hold to Earn',
     creditSystemDesc: 'Your daily AI credits are calculated based on your on-chain holdings',
     creditFormulaLabel: 'Daily Credit Formula',
@@ -236,6 +237,7 @@ export const translations = {
     feature3Desc: '每日额度基于持仓量。公式公开，国库链上可查。',
     
     // Credit System Section
+    creditSystem: '额度系统',
     creditSystemTitle: '💎 额度系统 · 持仓即算力',
     creditSystemDesc: '你的每日 AI 额度，由链上持仓实时计算',
     creditFormulaLabel: '每日额度计算公式',
@@ -368,7 +370,7 @@ export const translations = {
     joinFuture: '加入 AI 访问的未来。无需订阅，只需代币。',
     
     // Footer
-    footerDesc: '持有 $FUEL 代币获取免费 AI API 额度。访问 最新模型，包括 GPT、Claude 等。',
+    footerDesc: '持有 $FUEL 代币获取免费 API 额度。访问 最新模型，包括 GPT、Claude、Gemini 等。',
     product: '产品',
     documentation: '文档',
     resources: '资源',

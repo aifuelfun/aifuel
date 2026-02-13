@@ -129,7 +129,7 @@ export default function ModelsPage() {
                         alt={p.slug}
                         width={20}
                         height={20}
-                        className="flex-shrink-0 rounded"
+                        className="flex-shrink-0 rounded bg-white/10 p-0.5"
                         onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }}
                       />
                       <div className="flex-1 min-w-0">
