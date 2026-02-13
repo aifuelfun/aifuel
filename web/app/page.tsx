@@ -13,14 +13,13 @@ import { WalletConnectModal } from '@/components/WalletConnectModal'
 // Credit Calculator Component
 function CreditCalculator() {
   const [fuelAmount, setFuelAmount] = useState<string>('10000')
-  const [multiplier, setMultiplier] = useState<1 | 0.8>(1)
   
   // Constants
   const CIRCULATING = 200_000_000
   const DAILY_POOL = 300
   
   const balance = parseFloat(fuelAmount) || 0
-  const dailyCredit = (balance / CIRCULATING) * DAILY_POOL * multiplier
+  const dailyCredit = (balance / CIRCULATING) * DAILY_POOL
   
   return (
     <div className="bg-dark-card border border-border rounded-2xl p-6 md:p-8 mt-8 max-w-2xl mx-auto">
@@ -44,44 +43,12 @@ function CreditCalculator() {
         </div>
       </div>
       
-      {/* Multiplier Toggle */}
-      <div className="mb-6">
-        <label className="block text-sm text-text-muted mb-2">持有状态</label>
-        <div className="flex gap-3">
-          <button
-            onClick={() => setMultiplier(1)}
-            className={`flex-1 py-3 px-4 rounded-lg border transition ${
-              multiplier === 1 
-                ? 'bg-green-500/20 border-green-500/50 text-green-400' 
-                : 'bg-[#2a2a2a] border-[#444] text-text-muted hover:border-primary/50'
-            }`}
-          >
-            💎 钻石手 (100%)
-          </button>
-          <button
-            onClick={() => setMultiplier(0.8)}
-            className={`flex-1 py-3 px-4 rounded-lg border transition ${
-              multiplier === 0.8 
-                ? 'bg-blue-500/20 border-blue-500/50 text-blue-400' 
-                : 'bg-[#2a2a2a] border-[#444] text-text-muted hover:border-primary/50'
-            }`}
-          >
-            ⚡ 标准用户 (80%)
-          </button>
-        </div>
-      </div>
-      
       {/* Result */}
       <div className="bg-[#1a1a1a] rounded-xl p-6 text-center">
         <p className="text-sm text-text-muted mb-2">每日免费额度</p>
         <p className="text-4xl font-bold text-primary">${dailyCredit.toFixed(2)}</p>
         <p className="text-xs text-text-muted mt-2">/ 每天</p>
       </div>
-      
-      {/* Formula */}
-      <p className="text-xs text-text-dim text-center mt-4">
-        公式: (持有量 ÷ 2亿) × $300 × {multiplier * 100}%
-      </p>
     </div>
   )
 }
