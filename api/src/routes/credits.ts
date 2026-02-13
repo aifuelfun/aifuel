@@ -10,6 +10,11 @@ const router = Router();
  */
 router.get('/', jwtAuth, async (req: Request, res: Response) => {
   try {
+    // Disable caching for credits endpoint
+    res.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+    res.set('Pragma', 'no-cache');
+    res.set('Expires', '0');
+    
     const userId = req.user!.id;
     const wallet = req.user!.wallet;
     
