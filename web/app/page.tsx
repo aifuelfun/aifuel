@@ -4,11 +4,87 @@ import { useState } from 'react'
 import { useWallet } from '@solana/wallet-adapter-react'
 import { WalletButton } from '@/components/WalletButton'
 import Link from 'next/link'
-import { Copy, Check, ExternalLink, Zap, Shield, Coins, ArrowRight, Wallet } from 'lucide-react'
+import { Copy, Check, ExternalLink, Zap, Shield, Coins, ArrowRight, Wallet, Calculator } from 'lucide-react'
 import { TOKEN_CA, MODELS } from '@/lib/constants'
 import { useLocale } from '@/lib/LocaleContext'
 import { WalletPanel } from '@/components/WalletPanel'
 import { WalletConnectModal } from '@/components/WalletConnectModal'
+
+// Credit Calculator Component
+function CreditCalculator() {
+  const [fuelAmount, setFuelAmount] = useState<string>('10000')
+  const [multiplier, setMultiplier] = useState<1 | 0.8>(1)
+  
+  // Constants
+  const CIRCULATING = 200_000_000
+  const DAILY_POOL = 300
+  
+  const balance = parseFloat(fuelAmount) || 0
+  const dailyCredit = (balance / CIRCULATING) * DAILY_POOL * multiplier
+  
+  return (
+    <div className="bg-dark-card border border-border rounded-2xl p-6 md:p-8 mt-8 max-w-2xl mx-auto">
+      <div className="flex items-center justify-center gap-2 mb-6">
+        <Calculator className="w-5 h-5 text-primary" />
+        <h3 className="text-lg font-bold text-text">额度计算器</h3>
+      </div>
+      
+      {/* Input */}
+      <div className="mb-6">
+        <label className="block text-sm text-text-muted mb-2">持有 FUEL 数量</label>
+        <div className="relative">
+          <input
+            type="number"
+            value={fuelAmount}
+            onChange={(e) => setFuelAmount(e.target.value)}
+            placeholder="输入 FUEL 数量"
+            className="w-full px-4 py-3 bg-[#2a2a2a] border border-[#444] rounded-lg text-text placeholder-[#666] focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary font-mono"
+          />
+          <span className="absolute right-4 top-1/2 -translate-y-1/2 text-text-muted">FUEL</span>
+        </div>
+      </div>
+      
+      {/* Multiplier Toggle */}
+      <div className="mb-6">
+        <label className="block text-sm text-text-muted mb-2">持有状态</label>
+        <div className="flex gap-3">
+          <button
+            onClick={() => setMultiplier(1)}
+            className={`flex-1 py-3 px-4 rounded-lg border transition ${
+              multiplier === 1 
+                ? 'bg-green-500/20 border-green-500/50 text-green-400' 
+                : 'bg-[#2a2a2a] border-[#444] text-text-muted hover:border-primary/50'
+            }`}
+          >
+            💎 钻石手 (100%)
+          </button>
+          <button
+            onClick={() => setMultiplier(0.8)}
+            className={`flex-1 py-3 px-4 rounded-lg border transition ${
+              multiplier === 0.8 
+                ? 'bg-blue-500/20 border-blue-500/50 text-blue-400' 
+                : 'bg-[#2a2a2a] border-[#444] text-text-muted hover:border-primary/50'
+            }`}
+          >
+            ⚡ 标准用户 (80%)
+          </button>
+        </div>
+      </div>
+      
+      {/* Result */}
+      <div className="bg-[#1a1a1a] rounded-xl p-6 text-center">
+        <p className="text-sm text-text-muted mb-2">每日免费额度</p>
+        <p className="text-4xl font-bold text-primary">${dailyCredit.toFixed(2)}</p>
+        <p className="text-xs text-text-muted mt-2">/ 每天</p>
+      </div>
+      
+      {/* Formula */}
+      <p className="text-xs text-text-dim text-center mt-4">
+        公式: (持有量 ÷ 2亿) × $300 × {multiplier * 100}%
+      </p>
+    </div>
+  )
+}
 
 export default function Home() {
   const { connected } = useWallet()
@@ -194,6 +270,9 @@ export default function Home() {
               <p className="text-xs text-text-muted">{t('standardUserDesc')}</p>
             </div>
           </div>
+
+          {/* Credit Calculator */}
+          <CreditCalculator />
 
           <p className="text-center text-text-muted text-sm mt-6">
             {t('circulatingSupply')}: 200,000,000 FUEL · {t('dailyReset')}
